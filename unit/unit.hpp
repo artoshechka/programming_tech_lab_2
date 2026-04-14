@@ -8,15 +8,15 @@
 class Unit
 {
   public:
-    using Flags = unsigned int;
+    using flags = unsigned int;
 
   public:
     virtual ~Unit() = default;
-    virtual void add(const std::shared_ptr<Unit> &, Flags);
-    virtual std::string compile(unsigned int level = 0) const = 0;
+    virtual void Add(const std::shared_ptr<Unit> &, flags);
+    virtual std::string Compile(unsigned int level = 0) const = 0;
 
   protected:
-    virtual std::string generateShift(unsigned int level) const;
+    virtual std::string GenerateShift(unsigned int level) const;
 };
 
 #endif

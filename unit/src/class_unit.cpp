@@ -1,40 +1,40 @@
 #include <unit/src/class_unit.hpp>
 
-const std::vector<std::string> ClassUnit::ACCESS_MODIFIERS = {"public", "protected", "private"};
+const std::vector<std::string> ClassUnit::access_modifiers_ = {"public", "protected", "private"};
 
-ClassUnit::ClassUnit(const std::string &name) : m_name(name)
+ClassUnit::ClassUnit(const std::string &name) : name_(name)
 {
-    m_fields.resize(ACCESS_MODIFIERS.size());
+    fields_.resize(access_modifiers_.size());
 }
 
-void ClassUnit::add(const std::shared_ptr<Unit> &unit, Flags flags)
+void ClassUnit::Add(const std::shared_ptr<Unit> &unit, flags flags_value)
 {
-    int accessModifier = PRIVATE;
+    int modifier = privateAccess;
 
-    if (flags < ACCESS_MODIFIERS.size())
+    if (flags_value < access_modifiers_.size())
     {
-        accessModifier = flags;
+        modifier = flags_value;
     }
-    m_fields[accessModifier].push_back(unit);
+    fields_[modifier].push_back(unit);
 }
 
-std::string ClassUnit::compile(unsigned int level) const
+std::string ClassUnit::Compile(unsigned int level) const
 {
-    std::string result = generateShift(level) + "class " + m_name + " {\n";
+    std::string result = GenerateShift(level) + "class " + name_ + " {\n";
 
-    for (size_t i = 0; i < ACCESS_MODIFIERS.size(); ++i)
+    for (size_t i = 0; i < access_modifiers_.size(); ++i)
     {
-        if (m_fields[i].empty())
+        if (fields_[i].empty())
         {
             continue;
         }
-        result += ACCESS_MODIFIERS[i] + ":\n";
-        for (const auto &f : m_fields[i])
+        result += access_modifiers_[i] + ":\n";
+        for (const auto &field : fields_[i])
         {
-            result += f->compile(level + 1);
+            result += field->Compile(level + 1);
         }
         result += "\n";
     }
-    result += generateShift(level) + "};\n";
+    result += GenerateShift(level) + "};\n";
     return result;
 }

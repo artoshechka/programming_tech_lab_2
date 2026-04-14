@@ -10,21 +10,21 @@ class MethodUnit : public Unit
   public:
     enum Modifier
     {
-        STATIC = 1,
-        CONST = 1 << 1,
-        VIRTUAL = 1 << 2
+        staticModifier = 1,
+        constModifier = 1 << 1,
+        virtualModifier = 1 << 2
     };
 
   public:
-    MethodUnit(const std::string &name, const std::string &returnType, Flags flags);
-    void add(const std::shared_ptr<Unit> &unit, Flags /* flags */ = 0) override;
-    std::string compile(unsigned int level = 0) const override;
+    MethodUnit(const std::string &name, const std::string &return_type, flags flags_value);
+    void Add(const std::shared_ptr<Unit> &unit, flags /* flags_value */ = 0) override;
+    std::string Compile(unsigned int level = 0) const override;
 
   private:
-    std::string m_name;
-    std::string m_returnType;
-    Flags m_flags;
-    std::vector<std::shared_ptr<Unit>> m_body;
+    std::string name_;
+    std::string return_type_;
+    flags flags_;
+    std::vector<std::shared_ptr<Unit>> body_;
 };
 
 #endif

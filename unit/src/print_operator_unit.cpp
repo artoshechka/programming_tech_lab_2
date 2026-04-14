@@ -1,10 +1,10 @@
 #include <unit/src/print_operator_unit.hpp>
 
-PrintOperatorUnit::PrintOperatorUnit(const std::string &text) : m_text(text)
+PrintOperatorUnit::PrintOperatorUnit(const std::string &text) : text_(text)
 {
 }
 
-std::string PrintOperatorUnit::compile(unsigned int level) const
+std::string PrintOperatorUnit::Compile(unsigned int level) const
 {
-    return generateShift(level) + "printf( \"" + m_text + "\" );\n";
+    return GenerateShift(level) + "printf( \"" + text_ + "\" );\n";
 }

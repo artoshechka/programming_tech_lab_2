@@ -6,22 +6,24 @@
 
 namespace
 {
-std::string generateProgram()
+std::string generate_program()
 {
-    ClassUnit myClass("MyClass");
-    myClass.add(std::make_shared<MethodUnit>("testFunc1", "void", 0), ClassUnit::PUBLIC);
-    myClass.add(std::make_shared<MethodUnit>("testFunc2", "void", MethodUnit::STATIC), ClassUnit::PRIVATE);
-    myClass.add(std::make_shared<MethodUnit>("testFunc3", "void", MethodUnit::VIRTUAL | MethodUnit::CONST),
-                ClassUnit::PUBLIC);
-    auto method = std::make_shared<MethodUnit>("testFunc4", "void", MethodUnit::STATIC);
-    method->add(std::make_shared<PrintOperatorUnit>(R"(Hello, world!\n)"));
-    myClass.add(method, ClassUnit::PROTECTED);
-    return myClass.compile();
+    ClassUnit my_class("MyClass");
+    my_class.Add(std::make_shared<MethodUnit>("testFunc1", "void", 0), ClassUnit::publicAccess);
+    my_class.Add(std::make_shared<MethodUnit>("testFunc2", "void", MethodUnit::staticModifier),
+                 ClassUnit::privateAccess);
+    my_class.Add(
+        std::make_shared<MethodUnit>("testFunc3", "void", MethodUnit::virtualModifier | MethodUnit::constModifier),
+        ClassUnit::publicAccess);
+    auto method = std::make_shared<MethodUnit>("testFunc4", "void", MethodUnit::staticModifier);
+    method->Add(std::make_shared<PrintOperatorUnit>(R"(Hello, world!\n)"));
+    my_class.Add(method, ClassUnit::protectedAccess);
+    return my_class.Compile();
 }
 } // namespace
 
 int main()
 {
-    std::cout << generateProgram() << std::endl;
+    std::cout << generate_program() << std::endl;
     return 0;
 }

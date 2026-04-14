@@ -10,21 +10,21 @@ class ClassUnit : public Unit
   public:
     enum AccessModifier
     {
-        PUBLIC,
-        PROTECTED,
-        PRIVATE
+        publicAccess,
+        protectedAccess,
+        privateAccess
     };
-    static const std::vector<std::string> ACCESS_MODIFIERS;
+    static const std::vector<std::string> access_modifiers_;
 
   public:
     explicit ClassUnit(const std::string &name);
-    void add(const std::shared_ptr<Unit> &unit, Flags flags) override;
-    std::string compile(unsigned int level = 0) const override;
+    void Add(const std::shared_ptr<Unit> &unit, flags flags_value) override;
+    std::string Compile(unsigned int level = 0) const override;
 
   private:
-    std::string m_name;
-    using Fields = std::vector<std::shared_ptr<Unit>>;
-    std::vector<Fields> m_fields;
+    std::string name_;
+    using fields = std::vector<std::shared_ptr<Unit>>;
+    std::vector<fields> fields_;
 };
 
 #endif

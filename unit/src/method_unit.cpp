@@ -1,37 +1,37 @@
 #include <unit/src/method_unit.hpp>
 
-MethodUnit::MethodUnit(const std::string &name, const std::string &returnType, Flags flags)
-    : m_name(name), m_returnType(returnType), m_flags(flags)
+MethodUnit::MethodUnit(const std::string &name, const std::string &return_type, flags flags_value)
+    : name_(name), return_type_(return_type), flags_(flags_value)
 {
 }
 
-void MethodUnit::add(const std::shared_ptr<Unit> &unit, Flags /* flags */)
+void MethodUnit::Add(const std::shared_ptr<Unit> &unit, flags /* flags_value */)
 {
-    m_body.push_back(unit);
+    body_.push_back(unit);
 }
 
-std::string MethodUnit::compile(unsigned int level) const
+std::string MethodUnit::Compile(unsigned int level) const
 {
-    std::string result = generateShift(level);
-    if (m_flags & STATIC)
+    std::string result = GenerateShift(level);
+    if (flags_ & staticModifier)
     {
         result += "static ";
     }
-    else if (m_flags & VIRTUAL)
+    else if (flags_ & virtualModifier)
     {
         result += "virtual ";
     }
-    result += m_returnType + " ";
-    result += m_name + "()";
-    if (m_flags & CONST)
+    result += return_type_ + " ";
+    result += name_ + "()";
+    if (flags_ & constModifier)
     {
         result += " const";
     }
     result += " {\n";
-    for (const auto &b : m_body)
+    for (const auto &statement : body_)
     {
-        result += b->compile(level + 1);
+        result += statement->Compile(level + 1);
     }
-    result += generateShift(level) + "}\n";
+    result += GenerateShift(level) + "}\n";
     return result;
 }
