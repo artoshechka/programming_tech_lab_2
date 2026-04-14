@@ -10,18 +10,18 @@ namespace codegen
 
 enum class AccessModifier { publicAccess, protectedAccess, privateAccess };
 
-class ClassUnit : public Unit
+class ClassDeclarationUnit : public CodeUnit
 {
    public:
-    explicit ClassUnit(const std::string& name);
-    void Add(const std::shared_ptr<Unit>& unit, AccessModifier access_modifier);
-    void Add(const std::shared_ptr<Unit>& unit, flags flags_value) override;
-    std::string Compile(unsigned int level = 0) const override;
+    explicit ClassDeclarationUnit(const std::string& name);
+    void Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier access_modifier);
+    void Append(const std::shared_ptr<CodeUnit>& unit, flags flags_value) override;
+    std::string Render(unsigned int indent_level = 0) const override;
 
    private:
     static const std::vector<std::string> accessModifiers_;
     std::string name_;
-    using fields = std::vector<std::shared_ptr<Unit>>;
+    using fields = std::vector<std::shared_ptr<CodeUnit>>;
     std::vector<fields> fields_;
 };
 

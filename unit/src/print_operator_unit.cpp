@@ -1,11 +1,11 @@
 #include <src/print_operator_unit.hpp>
 
-using codegen::PrintOperatorUnit;
-PrintOperatorUnit::PrintOperatorUnit(const std::string& text) : text_(text)
+using codegen::PrintStatementUnit;
+PrintStatementUnit::PrintStatementUnit(const std::string& text) : text_(text)
 {
 }
 
-std::string PrintOperatorUnit::Compile(unsigned int level) const
+std::string PrintStatementUnit::Render(unsigned int indent_level) const
 {
-    return GenerateShift(level) + "printf( \"" + text_ + "\" );\n";
+    return MakeIndent(indent_level) + "printf( \"" + text_ + "\" );\n";
 }

@@ -8,20 +8,20 @@
 namespace codegen
 {
 
-enum class MethodModifier : Unit::flags { staticModifier = 1, constModifier = 1 << 1, virtualModifier = 1 << 2 };
+enum class MethodModifier : CodeUnit::flags { staticModifier = 1, constModifier = 1 << 1, virtualModifier = 1 << 2 };
 
-class MethodUnit : public Unit
+class MethodDeclarationUnit : public CodeUnit
 {
    public:
-    MethodUnit(const std::string& name, const std::string& return_type, flags flags_value);
-    void Add(const std::shared_ptr<Unit>& unit, flags /* flags_value */ = 0) override;
-    std::string Compile(unsigned int level = 0) const override;
+    MethodDeclarationUnit(const std::string& name, const std::string& return_type, flags flags_value);
+    void Append(const std::shared_ptr<CodeUnit>& unit, flags /* flags_value */ = 0) override;
+    std::string Render(unsigned int indent_level = 0) const override;
 
    private:
     std::string name_;
     std::string return_type_;
     flags flags_;
-    std::vector<std::shared_ptr<Unit>> body_;
+    std::vector<std::shared_ptr<CodeUnit>> body_;
 };
 
 }  // namespace codegen

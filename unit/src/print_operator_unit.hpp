@@ -7,11 +7,11 @@
 namespace codegen
 {
 
-class PrintOperatorUnit : public Unit
+class PrintStatementUnit : public CodeUnit
 {
    public:
-    explicit PrintOperatorUnit(const std::string& text);
-    std::string Compile(unsigned int level = 0) const override;
+    explicit PrintStatementUnit(const std::string& text);
+    std::string Render(unsigned int indent_level = 0) const override;
 
    private:
     std::string text_;

@@ -1,14 +1,16 @@
 #include <src/class_unit.hpp>
 
-using codegen::ClassUnit;
-const std::vector<std::string> ClassUnit::accessModifiers_ = {"public", "protected", "private"};
+using codegen::AccessModifier;
+using codegen::ClassDeclarationUnit;
+using codegen::CodeUnit;
+const std::vector<std::string> ClassDeclarationUnit::accessModifiers_ = {"public", "protected", "private"};
 
-ClassUnit::ClassUnit(const std::string& name) : name_(name)
+ClassDeclarationUnit::ClassDeclarationUnit(const std::string& name) : name_(name)
 {
     fields_.resize(accessModifiers_.size());
 }
 
-void ClassUnit::Add(const std::shared_ptr<Unit>& unit, AccessModifier access_modifier)
+void ClassDeclarationUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier access_modifier)
 {
     size_t modifier_index = static_cast<size_t>(access_modifier);
 
@@ -19,14 +21,14 @@ void ClassUnit::Add(const std::shared_ptr<Unit>& unit, AccessModifier access_mod
     fields_[modifier_index].push_back(unit);
 }
 
-void ClassUnit::Add(const std::shared_ptr<Unit>& unit, flags flags_value)
+void ClassDeclarationUnit::Append(const std::shared_ptr<CodeUnit>& unit, flags flags_value)
 {
-    Add(unit, static_cast<AccessModifier>(flags_value));
+    Append(unit, static_cast<AccessModifier>(flags_value));
 }
 
-std::string ClassUnit::Compile(unsigned int level) const
+std::string ClassDeclarationUnit::Render(unsigned int indent_level) const
 {
-    std::string result = GenerateShift(level) + "class " + name_ + " {\n";
+    std::string result = MakeIndent(indent_level) + "class " + name_ + " {\n";
 
     for (size_t i = 0; i < accessModifiers_.size(); ++i)
     {
@@ -37,10 +39,10 @@ std::string ClassUnit::Compile(unsigned int level) const
         result += accessModifiers_[i] + ":\n";
         for (const auto& field : fields_[i])
         {
-            result += field->Compile(level + 1);
+            result += field->Render(indent_level + 1);
         }
         result += "\n";
     }
-    result += GenerateShift(level) + "};\n";
+    result += MakeIndent(indent_level) + "};\n";
     return result;
 }

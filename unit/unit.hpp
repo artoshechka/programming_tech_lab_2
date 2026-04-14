@@ -8,18 +8,18 @@
 namespace codegen
 {
 
-class Unit
+class CodeUnit
 {
    public:
     using flags = unsigned int;
 
    public:
-    virtual ~Unit() = default;
-    virtual void Add(const std::shared_ptr<Unit>&, flags);
-    virtual std::string Compile(unsigned int level = 0) const = 0;
+    virtual ~CodeUnit() = default;
+    virtual void Append(const std::shared_ptr<CodeUnit>&, flags);
+    virtual std::string Render(unsigned int indent_level = 0) const = 0;
 
    protected:
-    virtual std::string GenerateShift(unsigned int level) const;
+    virtual std::string MakeIndent(unsigned int indent_level) const;
 };
 
 }  // namespace codegen

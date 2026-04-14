@@ -6,28 +6,30 @@
 
 namespace
 {
-std::string generate_program()
+std::string GenerateProgramm()
 {
-    codegen::ClassUnit my_class("MyClass");
-    my_class.Add(std::make_shared<codegen::MethodUnit>("testFunc1", "void", 0), codegen::AccessModifier::publicAccess);
-    my_class.Add(std::make_shared<codegen::MethodUnit>(
-                     "testFunc2", "void", static_cast<codegen::Unit::flags>(codegen::MethodModifier::staticModifier)),
-                 codegen::AccessModifier::privateAccess);
-    my_class.Add(std::make_shared<codegen::MethodUnit>(
-                     "testFunc3", "void",
-                     static_cast<codegen::Unit::flags>(codegen::MethodModifier::virtualModifier) |
-                         static_cast<codegen::Unit::flags>(codegen::MethodModifier::constModifier)),
-                 codegen::AccessModifier::publicAccess);
-    auto method = std::make_shared<codegen::MethodUnit>(
-        "testFunc4", "void", static_cast<codegen::Unit::flags>(codegen::MethodModifier::staticModifier));
-    method->Add(std::make_shared<codegen::PrintOperatorUnit>(R"(Hello, world!\n)"));
-    my_class.Add(method, codegen::AccessModifier::protectedAccess);
-    return my_class.Compile();
+    codegen::ClassDeclarationUnit my_class("MyClass");
+    my_class.Append(std::make_shared<codegen::MethodDeclarationUnit>("testFunc1", "void", 0),
+                    codegen::AccessModifier::publicAccess);
+    my_class.Append(
+        std::make_shared<codegen::MethodDeclarationUnit>(
+            "testFunc2", "void", static_cast<codegen::CodeUnit::flags>(codegen::MethodModifier::staticModifier)),
+        codegen::AccessModifier::privateAccess);
+    my_class.Append(std::make_shared<codegen::MethodDeclarationUnit>(
+                        "testFunc3", "void",
+                        static_cast<codegen::CodeUnit::flags>(codegen::MethodModifier::virtualModifier) |
+                            static_cast<codegen::CodeUnit::flags>(codegen::MethodModifier::constModifier)),
+                    codegen::AccessModifier::publicAccess);
+    auto method = std::make_shared<codegen::MethodDeclarationUnit>(
+        "testFunc4", "void", static_cast<codegen::CodeUnit::flags>(codegen::MethodModifier::staticModifier));
+    method->Append(std::make_shared<codegen::PrintStatementUnit>(R"(Hello, world!\n)"));
+    my_class.Append(method, codegen::AccessModifier::protectedAccess);
+    return my_class.Render();
 }
 }  // namespace
 
 int main()
 {
-    std::cout << generate_program() << std::endl;
+    std::cout << GenerateProgramm() << std::endl;
     return 0;
 }

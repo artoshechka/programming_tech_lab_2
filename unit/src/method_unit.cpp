@@ -1,45 +1,45 @@
 #include <src/method_unit.hpp>
 
-using codegen::MethodUnit;
+using codegen::MethodDeclarationUnit;
 namespace
 {
-codegen::Unit::flags to_flags(codegen::MethodModifier modifier)
+codegen::CodeUnit::flags ToFlags(codegen::MethodModifier modifier)
 {
-    return static_cast<codegen::Unit::flags>(modifier);
+    return static_cast<codegen::CodeUnit::flags>(modifier);
 }
 }  // namespace
 
-MethodUnit::MethodUnit(const std::string& name, const std::string& return_type, flags flags_value)
+MethodDeclarationUnit::MethodDeclarationUnit(const std::string& name, const std::string& return_type, flags flags_value)
     : name_(name), return_type_(return_type), flags_(flags_value)
 {
 }
 
-void MethodUnit::Add(const std::shared_ptr<Unit>& unit, flags /* flags_value */)
+void MethodDeclarationUnit::Append(const std::shared_ptr<CodeUnit>& unit, flags /* flags_value */)
 {
     body_.push_back(unit);
 }
 
-std::string MethodUnit::Compile(unsigned int level) const
+std::string MethodDeclarationUnit::Render(unsigned int indent_level) const
 {
-    std::string result = GenerateShift(level);
-    if (flags_ & to_flags(MethodModifier::staticModifier))
+    std::string result = MakeIndent(indent_level);
+    if (flags_ & ToFlags(MethodModifier::staticModifier))
     {
         result += "static ";
-    } else if (flags_ & to_flags(MethodModifier::virtualModifier))
+    } else if (flags_ & ToFlags(MethodModifier::virtualModifier))
     {
         result += "virtual ";
     }
     result += return_type_ + " ";
     result += name_ + "()";
-    if (flags_ & to_flags(MethodModifier::constModifier))
+    if (flags_ & ToFlags(MethodModifier::constModifier))
     {
         result += " const";
     }
     result += " {\n";
     for (const auto& statement : body_)
     {
-        result += statement->Compile(level + 1);
+        result += statement->Render(indent_level + 1);
     }
-    result += GenerateShift(level) + "}\n";
+    result += MakeIndent(indent_level) + "}\n";
     return result;
 }
