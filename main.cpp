@@ -1,26 +1,30 @@
-#include <unit/src/method_unit.hpp>
-#include <unit/src/class_unit.hpp>
-#include <unit/src/print_operator_unit.hpp>
-#include <unit.hpp>
 #include <iostream>
+#include <src/class_unit.hpp>
+#include <src/method_unit.hpp>
+#include <src/print_operator_unit.hpp>
+#include <unit.hpp>
 
 namespace
 {
 std::string generate_program()
 {
-    ClassUnit my_class("MyClass");
-    my_class.Add(std::make_shared<MethodUnit>("testFunc1", "void", 0), ClassUnit::publicAccess);
-    my_class.Add(std::make_shared<MethodUnit>("testFunc2", "void", MethodUnit::staticModifier),
-                 ClassUnit::privateAccess);
-    my_class.Add(
-        std::make_shared<MethodUnit>("testFunc3", "void", MethodUnit::virtualModifier | MethodUnit::constModifier),
-        ClassUnit::publicAccess);
-    auto method = std::make_shared<MethodUnit>("testFunc4", "void", MethodUnit::staticModifier);
-    method->Add(std::make_shared<PrintOperatorUnit>(R"(Hello, world!\n)"));
-    my_class.Add(method, ClassUnit::protectedAccess);
+    codegen::ClassUnit my_class("MyClass");
+    my_class.Add(std::make_shared<codegen::MethodUnit>("testFunc1", "void", 0), codegen::AccessModifier::publicAccess);
+    my_class.Add(std::make_shared<codegen::MethodUnit>(
+                     "testFunc2", "void", static_cast<codegen::Unit::flags>(codegen::MethodModifier::staticModifier)),
+                 codegen::AccessModifier::privateAccess);
+    my_class.Add(std::make_shared<codegen::MethodUnit>(
+                     "testFunc3", "void",
+                     static_cast<codegen::Unit::flags>(codegen::MethodModifier::virtualModifier) |
+                         static_cast<codegen::Unit::flags>(codegen::MethodModifier::constModifier)),
+                 codegen::AccessModifier::publicAccess);
+    auto method = std::make_shared<codegen::MethodUnit>(
+        "testFunc4", "void", static_cast<codegen::Unit::flags>(codegen::MethodModifier::staticModifier));
+    method->Add(std::make_shared<codegen::PrintOperatorUnit>(R"(Hello, world!\n)"));
+    my_class.Add(method, codegen::AccessModifier::protectedAccess);
     return my_class.Compile();
 }
-} // namespace
+}  // namespace
 
 int main()
 {

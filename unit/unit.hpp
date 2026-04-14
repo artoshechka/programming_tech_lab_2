@@ -5,18 +5,23 @@
 #include <memory>
 #include <string>
 
+namespace codegen
+{
+
 class Unit
 {
-  public:
+   public:
     using flags = unsigned int;
 
-  public:
+   public:
     virtual ~Unit() = default;
-    virtual void Add(const std::shared_ptr<Unit> &, flags);
+    virtual void Add(const std::shared_ptr<Unit>&, flags);
     virtual std::string Compile(unsigned int level = 0) const = 0;
 
-  protected:
+   protected:
     virtual std::string GenerateShift(unsigned int level) const;
 };
+
+}  // namespace codegen
 
 #endif

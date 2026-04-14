@@ -1,8 +1,9 @@
+#include <stdexcept>
 #include <unit.hpp>
 
-#include <stdexcept>
+using codegen::Unit;
 
-void Unit::Add(const std::shared_ptr<Unit> &, flags)
+void Unit::Add(const std::shared_ptr<Unit>&, flags)
 {
     throw std::runtime_error("Not supported");
 }

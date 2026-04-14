@@ -1,6 +1,7 @@
-#include <unit/src/print_operator_unit.hpp>
+#include <src/print_operator_unit.hpp>
 
-PrintOperatorUnit::PrintOperatorUnit(const std::string &text) : text_(text)
+using codegen::PrintOperatorUnit;
+PrintOperatorUnit::PrintOperatorUnit(const std::string& text) : text_(text)
 {
 }
 
