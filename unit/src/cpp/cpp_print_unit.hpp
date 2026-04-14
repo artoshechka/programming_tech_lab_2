@@ -1,8 +1,7 @@
 /// @file
 /// @brief Объявление класса для генерации оператора печати.
-/// @author Artemenko Anton
-#ifndef GUID_8f9f34c0_9d5f_4874_bf16_e50baf617204
-#define GUID_8f9f34c0_9d5f_4874_bf16_e50baf617204
+#ifndef GUID_2cc37e3f_1e21_43f6_87ca_86320db03ddd
+#define GUID_2cc37e3f_1e21_43f6_87ca_86320db03ddd
 
 #include <string>
 #include <unit.hpp>
@@ -14,9 +13,10 @@ namespace codegen
 class PrintStatementUnit : public CodeUnit
 {
    public:
-    /// @brief Конструктор класса генератора оператора печати.
-    /// @param[in] text Текст для печати.
+    /// @brief Конструктор генератора инструкции печати на C++.
+    /// @param[in] text Текст для вывода на печать.
     explicit PrintStatementUnit(const std::string& text);
+
     /// @brief Формирует текст инструкции печати.
     /// @param[in] indentLevel Уровень отступа.
     /// @return Текст инструкции печати.
@@ -28,4 +28,4 @@ class PrintStatementUnit : public CodeUnit
 
 }  // namespace codegen
 
-#endif
+#endif  // GUID_2cc37e3f_1e21_43f6_87ca_86320db03ddd
