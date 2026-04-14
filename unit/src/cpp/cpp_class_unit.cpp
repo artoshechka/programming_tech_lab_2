@@ -1,7 +1,6 @@
 /// @file
 /// @brief Определение класса для генерации кода C++ класса.
-/// @author Artemenko Anton
-#include <src/class_unit.hpp>
+#include <src/cpp/cpp_class_unit.hpp>
 
 using codegen::ClassDeclarationUnit;
 
@@ -12,10 +11,9 @@ ClassDeclarationUnit::ClassDeclarationUnit(const std::string& name) : name_(name
     fields_.resize(accessModifiers_.size());
 }
 
-void ClassDeclarationUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier access_modifier)
+void ClassDeclarationUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier accessModifier)
 {
-    size_t modifierIndex = static_cast<size_t>(access_modifier);
-
+    size_t modifierIndex = static_cast<size_t>(accessModifier);
     if (modifierIndex >= accessModifiers_.size())
     {
         modifierIndex = static_cast<size_t>(AccessModifier::privateAccess);
@@ -45,6 +43,7 @@ std::string ClassDeclarationUnit::Render(unsigned int indentLevel) const
         }
         result += "\n";
     }
+
     result += MakeIndent(indentLevel) + "};\n";
     return result;
 }

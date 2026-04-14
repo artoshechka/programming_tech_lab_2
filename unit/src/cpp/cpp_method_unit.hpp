@@ -1,8 +1,7 @@
 /// @file
 /// @brief Объявление класса для генерации кода метода.
-/// @author Artemenko Anton
-#ifndef GUID_6e60ed6b_94e5_41ea_9be8_6d15d770f0a1
-#define GUID_6e60ed6b_94e5_41ea_9be8_6d15d770f0a1
+#ifndef GUID_55f5a170_8f2a_4112_842f_c0f6af77ff6e
+#define GUID_55f5a170_8f2a_4112_842f_c0f6af77ff6e
 
 #include <codegen_types.hpp>
 #include <string>
@@ -16,15 +15,17 @@ namespace codegen
 class MethodDeclarationUnit : public CodeUnit
 {
    public:
-    /// @brief Конструктор класса генератора объявления метода.
+    /// @brief Конструктор генератора объявления C++ метода.
     /// @param[in] name Имя метода.
     /// @param[in] returnType Тип возвращаемого значения.
-    /// @param[in] flags_value Флаги модификаторов метода.
+    /// @param[in] flagsValue Флаги модификаторов метода.
     MethodDeclarationUnit(const std::string& name, const std::string& returnType, Flags flagsValue);
+
     /// @brief Добавляет вложенный элемент в тело метода.
     /// @param[in] unit Вложенный узел-инструкция.
     /// @param[in] flagsValue Дополнительные флаги (не используются).
-    void Append(const std::shared_ptr<CodeUnit>& unit, Flags /* flagsValue */ = 0) override;
+    void Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue = 0) override;
+
     /// @brief Формирует текст объявления метода.
     /// @param[in] indentLevel Уровень отступа.
     /// @return Текст объявления метода.
@@ -39,4 +40,4 @@ class MethodDeclarationUnit : public CodeUnit
 
 }  // namespace codegen
 
-#endif  // GUID_6e60ed6b_94e5_41ea_9be8_6d15d770f0a1
+#endif  // GUID_55f5a170_8f2a_4112_842f_c0f6af77ff6e
