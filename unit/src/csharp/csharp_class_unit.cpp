@@ -69,7 +69,7 @@ void CSharpClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsV
 std::string CSharpClassUnit::Render(unsigned int indentLevel) const
 {
     std::string result = MakeIndent(indentLevel) + ResolveCSharpClassAccessPrefix(accessFlags_);
-    
+
     // Добавляем модификаторы класса
     if (accessFlags_ & codegen::ToFlags(codegen::ClassModifier::abstractModifier))
     {
@@ -79,7 +79,7 @@ std::string CSharpClassUnit::Render(unsigned int indentLevel) const
     {
         result += "sealed ";  // В C# используется sealed вместо final
     }
-    
+
     result += "class " + name_ + " {\n";
     for (const auto& member : members_)
     {

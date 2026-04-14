@@ -41,8 +41,7 @@ std::string MethodDeclarationUnit::Render(unsigned int indentLevel) const
     if (flags_ & ToFlags(MethodModifier::abstractModifier))
     {
         result += " = 0;\n";
-    }
-    else
+    } else
     {
         result += " {\n";
         for (const auto& statement : body_)

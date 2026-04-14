@@ -30,13 +30,13 @@ void ClassDeclarationUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags f
 std::string ClassDeclarationUnit::Render(unsigned int indentLevel) const
 {
     std::string result = MakeIndent(indentLevel) + "class " + name_;
-    
+
     // Добавляем модификатор final для C++ (C++11 и позже)
     if (classModifiers_ & codegen::ToFlags(codegen::ClassModifier::finalModifier))
     {
         result += " final";
     }
-    
+
     result += " {\n";
 
     for (size_t i = 0; i < accessModifiers_.size(); ++i)

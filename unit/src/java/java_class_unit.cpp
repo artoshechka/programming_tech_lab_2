@@ -29,7 +29,7 @@ void JavaClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsVal
 std::string JavaClassUnit::Render(unsigned int indentLevel) const
 {
     std::string result = MakeIndent(indentLevel);
-    
+
     // Добавляем модификаторы класса
     if (classModifiers_ & codegen::ToFlags(codegen::ClassModifier::abstractModifier))
     {
@@ -39,7 +39,7 @@ std::string JavaClassUnit::Render(unsigned int indentLevel) const
     {
         result += "final ";
     }
-    
+
     result += "class " + name_ + " {\n";
     for (const auto& member : members_)
     {

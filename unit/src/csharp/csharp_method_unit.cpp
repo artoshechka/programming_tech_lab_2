@@ -36,13 +36,12 @@ std::string CSharpMethodUnit::Render(unsigned int indentLevel) const
         result += "sealed ";  // В C# используется sealed вместо final
     }
     result += returnType_ + " " + name_ + "()";
-    
+
     // Abstract методы завершаются точкой с запятой без тела
     if (flags_ & codegen::ToFlags(codegen::MethodModifier::abstractModifier))
     {
         result += ";\n";
-    }
-    else
+    } else
     {
         result += " {\n";
         for (const auto& statement : body_)
@@ -51,7 +50,7 @@ std::string CSharpMethodUnit::Render(unsigned int indentLevel) const
         }
         result += MakeIndent(indentLevel) + "}\n";
     }
-    
+
     return result;
 }
 

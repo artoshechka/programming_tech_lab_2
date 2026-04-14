@@ -33,12 +33,14 @@ std::string GenerateProgram(const codegen::ICodeFactory& factory)
                         static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::protectedInternalAccess));
     }
 
-    const auto printMethod = factory.CreateMethod("printMethod", "void", ToFlags(codegen::MethodModifier::staticModifier));
+    const auto printMethod =
+        factory.CreateMethod("printMethod", "void", ToFlags(codegen::MethodModifier::staticModifier));
     printMethod->Append(factory.CreatePrintStatement("Hello, world!"), 0);
     myClass->Append(printMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
 
     // Пример с final методом
-    const auto finalMethod = factory.CreateMethod("finalMethod", "void", ToFlags(codegen::MethodModifier::finalModifier));
+    const auto finalMethod =
+        factory.CreateMethod("finalMethod", "void", ToFlags(codegen::MethodModifier::finalModifier));
     finalMethod->Append(factory.CreatePrintStatement("This is a final method"), 0);
     myClass->Append(finalMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
 
@@ -66,7 +68,8 @@ std::string GenerateAbstractClass(const codegen::ICodeFactory& factory)
     const auto abstractClass = factory.CreateClass("AbstractClass", ToFlags(codegen::ClassModifier::abstractModifier));
 
     // Добавляем abstract метод
-    const auto abstractMethod = factory.CreateMethod("abstractMethod", "void", ToFlags(codegen::MethodModifier::abstractModifier));
+    const auto abstractMethod =
+        factory.CreateMethod("abstractMethod", "void", ToFlags(codegen::MethodModifier::abstractModifier));
     abstractClass->Append(abstractMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
 
     // Добавляем обычный метод
@@ -76,7 +79,6 @@ std::string GenerateAbstractClass(const codegen::ICodeFactory& factory)
 
     return abstractClass->Render();
 }
-
 
 int main()
 {
