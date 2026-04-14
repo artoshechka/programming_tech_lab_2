@@ -24,12 +24,31 @@ std::string JavaMethodUnit::Render(unsigned int indentLevel) const
     {
         result += "static ";
     }
-    result += returnType_ + " " + name_ + "() {\n";
-    for (const auto& statement : body_)
+    if (flags_ & codegen::ToFlags(codegen::MethodModifier::finalModifier))
     {
-        result += statement->Render(indentLevel + 1);
+        result += "final ";
     }
-    result += MakeIndent(indentLevel) + "}\n";
+    if (flags_ & codegen::ToFlags(codegen::MethodModifier::abstractModifier))
+    {
+        result += "abstract ";
+    }
+    result += returnType_ + " " + name_ + "()";
+    
+    // Abstract методы завершаются точкой с запятой без тела
+    if (flags_ & codegen::ToFlags(codegen::MethodModifier::abstractModifier))
+    {
+        result += ";\n";
+    }
+    else
+    {
+        result += " {\n";
+        for (const auto& statement : body_)
+        {
+            result += statement->Render(indentLevel + 1);
+        }
+        result += MakeIndent(indentLevel) + "}\n";
+    }
+    
     return result;
 }
 

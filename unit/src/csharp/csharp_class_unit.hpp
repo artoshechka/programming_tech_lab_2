@@ -17,8 +17,8 @@ class CSharpClassUnit : public codegen::CodeUnit
    public:
     /// @brief Конструктор генератора объявления C#-класса.
     /// @param[in] name Имя создаваемого класса.
-    /// @param[in] flagsValue Флаги модификаторов доступа C#-класса.
-    explicit CSharpClassUnit(std::string name, Flags flagsValue = 0);
+    /// @param[in] accessFlagsValue Флаги модификаторов доступа C#-класса.
+    explicit CSharpClassUnit(std::string name, Flags accessFlagsValue = 0);
 
     /// @brief Добавляет элемент класса с указанным модификатором доступа.
     /// @param[in] unit Вложенный узел.
@@ -32,7 +32,7 @@ class CSharpClassUnit : public codegen::CodeUnit
 
    private:
     std::string name_;                                         ///< Имя C#-класса.
-    Flags flags_;                                              ///< Флаги модификаторов доступа C#-класса.
+    Flags accessFlags_;                                        ///< Флаги модификаторов доступа C#-класса.
     std::vector<std::shared_ptr<codegen::CodeUnit>> members_;  ///< Элементы (методы, свойства) класса.
 };
 

@@ -28,17 +28,29 @@ std::string MethodDeclarationUnit::Render(unsigned int indentLevel) const
 
     result += returnType_ + " ";
     result += name_ + "()";
+    if (flags_ & ToFlags(MethodModifier::finalModifier))
+    {
+        result += " final";
+    }
     if (flags_ & ToFlags(MethodModifier::constModifier))
     {
         result += " const";
     }
 
-    result += " {\n";
-    for (const auto& statement : body_)
+    // Abstract методы в C++ используют = 0 без тела
+    if (flags_ & ToFlags(MethodModifier::abstractModifier))
     {
-        result += statement->Render(indentLevel + 1);
+        result += " = 0;\n";
     }
-    result += MakeIndent(indentLevel) + "}\n";
+    else
+    {
+        result += " {\n";
+        for (const auto& statement : body_)
+        {
+            result += statement->Render(indentLevel + 1);
+        }
+        result += MakeIndent(indentLevel) + "}\n";
+    }
 
     return result;
 }

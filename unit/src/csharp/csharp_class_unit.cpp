@@ -55,7 +55,8 @@ std::string ResolveCSharpClassAccessPrefix(codegen::CodeUnit::Flags flagsValue)
 
 }  // namespace
 
-CSharpClassUnit::CSharpClassUnit(std::string name, Flags flagsValue) : name_(std::move(name)), flags_(flagsValue)
+CSharpClassUnit::CSharpClassUnit(std::string name, Flags accessFlagsValue)
+    : name_(std::move(name)), accessFlags_(accessFlagsValue)
 {
 }
 
@@ -67,7 +68,19 @@ void CSharpClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsV
 
 std::string CSharpClassUnit::Render(unsigned int indentLevel) const
 {
-    std::string result = MakeIndent(indentLevel) + ResolveCSharpClassAccessPrefix(flags_) + "class " + name_ + " {\n";
+    std::string result = MakeIndent(indentLevel) + ResolveCSharpClassAccessPrefix(accessFlags_);
+    
+    // Добавляем модификаторы класса
+    if (accessFlags_ & codegen::ToFlags(codegen::ClassModifier::abstractModifier))
+    {
+        result += "abstract ";
+    }
+    if (accessFlags_ & codegen::ToFlags(codegen::ClassModifier::finalModifier))
+    {
+        result += "sealed ";  // В C# используется sealed вместо final
+    }
+    
+    result += "class " + name_ + " {\n";
     for (const auto& member : members_)
     {
         result += member->Render(indentLevel + 1);

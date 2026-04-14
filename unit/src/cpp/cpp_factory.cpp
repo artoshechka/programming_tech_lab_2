@@ -11,8 +11,7 @@ namespace codegen::cpp
 std::shared_ptr<codegen::CodeUnit> CppCodeFactory::CreateClass(const std::string& name,
                                                                codegen::CodeUnit::Flags flagsValue) const
 {
-    (void)flagsValue;
-    return std::make_shared<codegen::ClassDeclarationUnit>(name);
+    return std::make_shared<codegen::ClassDeclarationUnit>(name, flagsValue);
 }
 
 std::shared_ptr<codegen::CodeUnit> CppCodeFactory::CreateMethod(const std::string& name, const std::string& returnType,

@@ -17,7 +17,8 @@ class ClassDeclarationUnit : public CodeUnit
    public:
     /// @brief Конструктор генератора объявления C++ класса.
     /// @param[in] name Имя класса.
-    explicit ClassDeclarationUnit(const std::string& name);
+    /// @param[in] classModifiersValue Флаги модификаторов класса (final и т.д.).
+    explicit ClassDeclarationUnit(const std::string& name, Flags classModifiersValue = 0);
 
     /// @brief Добавляет вложенный элемент в указанную секцию доступа.
     /// @param[in] unit Вложенный узел.
@@ -37,6 +38,7 @@ class ClassDeclarationUnit : public CodeUnit
    private:
     static const std::vector<std::string> accessModifiers_;  ///< Имена модификаторов доступа.
     std::string name_;                                       ///< Имя генерируемого класса.
+    Flags classModifiers_;                                   ///< Флаги модификаторов класса (final и т.д.).
     using Fields = std::vector<std::shared_ptr<CodeUnit>>;
     std::vector<Fields> fields_;  ///< Набор секций доступа и их элементов.
 };

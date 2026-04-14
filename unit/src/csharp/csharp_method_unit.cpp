@@ -27,12 +27,31 @@ std::string CSharpMethodUnit::Render(unsigned int indentLevel) const
     {
         result += "virtual ";
     }
-    result += returnType_ + " " + name_ + "() {\n";
-    for (const auto& statement : body_)
+    if (flags_ & codegen::ToFlags(codegen::MethodModifier::abstractModifier))
     {
-        result += statement->Render(indentLevel + 1);
+        result += "abstract ";
     }
-    result += MakeIndent(indentLevel) + "}\n";
+    if (flags_ & codegen::ToFlags(codegen::MethodModifier::finalModifier))
+    {
+        result += "sealed ";  // В C# используется sealed вместо final
+    }
+    result += returnType_ + " " + name_ + "()";
+    
+    // Abstract методы завершаются точкой с запятой без тела
+    if (flags_ & codegen::ToFlags(codegen::MethodModifier::abstractModifier))
+    {
+        result += ";\n";
+    }
+    else
+    {
+        result += " {\n";
+        for (const auto& statement : body_)
+        {
+            result += statement->Render(indentLevel + 1);
+        }
+        result += MakeIndent(indentLevel) + "}\n";
+    }
+    
     return result;
 }
 
