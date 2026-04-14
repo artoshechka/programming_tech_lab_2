@@ -4,15 +4,13 @@
 #ifndef GUID_5b1d3d42_1db0_4fd1_901f_05aa2fd3f31d
 #define GUID_5b1d3d42_1db0_4fd1_901f_05aa2fd3f31d
 
+#include <codegen_types.hpp>
 #include <string>
 #include <unit.hpp>
 #include <vector>
 
 namespace codegen
 {
-
-/// @brief Модификатор доступа секции класса.
-enum class AccessModifier { publicAccess, protectedAccess, privateAccess };
 
 /// @brief Класс, который собирает и формирует объявление C++ класса.
 class ClassDeclarationUnit : public CodeUnit
@@ -44,4 +42,4 @@ class ClassDeclarationUnit : public CodeUnit
 
 }  // namespace codegen
 
-#endif
+#endif  // GUID_5b1d3d42_1db0_4fd1_901f_05aa2fd3f31d

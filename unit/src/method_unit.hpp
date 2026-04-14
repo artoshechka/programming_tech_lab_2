@@ -4,15 +4,13 @@
 #ifndef GUID_6e60ed6b_94e5_41ea_9be8_6d15d770f0a1
 #define GUID_6e60ed6b_94e5_41ea_9be8_6d15d770f0a1
 
+#include <codegen_types.hpp>
 #include <string>
 #include <unit.hpp>
 #include <vector>
 
 namespace codegen
 {
-
-/// @brief Модификаторы объявления метода.
-enum class MethodModifier : CodeUnit::Flags { staticModifier = 1, constModifier = 1 << 1, virtualModifier = 1 << 2 };
 
 /// @brief Класс, который формирует объявление метода C++ класса.
 class MethodDeclarationUnit : public CodeUnit
@@ -41,4 +39,4 @@ class MethodDeclarationUnit : public CodeUnit
 
 }  // namespace codegen
 
-#endif
+#endif  // GUID_6e60ed6b_94e5_41ea_9be8_6d15d770f0a1
