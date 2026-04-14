@@ -10,22 +10,32 @@ namespace
 
 std::string GenerateProgram(const codegen::ICodeFactory& factory)
 {
-    const auto myClass = factory.CreateClass("MyClass");
+    const bool isCSharp = factory.GetLanguageName() == "C#";
 
-    myClass->Append(factory.CreateMethod("testFunc1", "void", 0),
+    const codegen::CodeUnit::Flags classAccess =
+        isCSharp ? static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::fileAccess) : 0;
+    const auto myClass = factory.CreateClass("MyClass", classAccess);
+
+    myClass->Append(factory.CreateMethod("publicMethod", "void", 0),
                     static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
-
-    myClass->Append(factory.CreateMethod("testFunc2", "void", ToFlags(codegen::MethodModifier::staticModifier)),
+    myClass->Append(factory.CreateMethod("privateMethod", "void", 0),
                     static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::privateAccess));
+    myClass->Append(factory.CreateMethod("protectedMethod", "void", 0),
+                    static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::protectedAccess));
 
-    myClass->Append(factory.CreateMethod("testFunc3", "void",
-                                         ToFlags(codegen::MethodModifier::virtualModifier) |
-                                             ToFlags(codegen::MethodModifier::constModifier)),
-                    static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+    if (isCSharp)
+    {
+        myClass->Append(factory.CreateMethod("privateProtectedMethod", "void", 0),
+                        static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::privateProtectedAccess));
+        myClass->Append(factory.CreateMethod("internalMethod", "void", 0),
+                        static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::internalAccess));
+        myClass->Append(factory.CreateMethod("protectedInternalMethod", "void", 0),
+                        static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::protectedInternalAccess));
+    }
 
-    const auto method = factory.CreateMethod("testFunc4", "void", ToFlags(codegen::MethodModifier::staticModifier));
-    method->Append(factory.CreatePrintStatement("Hello, world!"), 0);
-    myClass->Append(method, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::protectedAccess));
+    const auto printMethod = factory.CreateMethod("printMethod", "void", ToFlags(codegen::MethodModifier::staticModifier));
+    printMethod->Append(factory.CreatePrintStatement("Hello, world!"), 0);
+    myClass->Append(printMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
 
     return myClass->Render();
 }

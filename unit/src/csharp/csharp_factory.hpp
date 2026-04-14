@@ -13,8 +13,10 @@ class CSharpCodeFactory final : public codegen::ICodeFactory
    public:
     /// @brief Создает узел объявления C#-класса.
     /// @param[in] name Имя класса.
+    /// @param[in] flagsValue Флаги модификаторов класса.
     /// @return Указатель на узел класса.
-    std::shared_ptr<codegen::CodeUnit> CreateClass(const std::string& name) const override;
+    std::shared_ptr<codegen::CodeUnit> CreateClass(const std::string& name,
+                                                   codegen::CodeUnit::Flags flagsValue) const override;
 
     /// @brief Создает узел объявления C#-метода.
     /// @param[in] name Имя метода.

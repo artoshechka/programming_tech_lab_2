@@ -7,27 +7,67 @@
 namespace codegen::csharp
 {
 
-CSharpClassUnit::CSharpClassUnit(std::string name) : name_(std::move(name))
+namespace
+{
+
+std::string ResolveCSharpMemberAccessKeyword(codegen::CodeUnit::Flags flagsValue)
+{
+    switch (static_cast<codegen::AccessModifier>(flagsValue))
+    {
+        case codegen::AccessModifier::publicAccess:
+            return "public";
+        case codegen::AccessModifier::protectedAccess:
+            return "protected";
+        case codegen::AccessModifier::privateProtectedAccess:
+            return "private protected";
+        case codegen::AccessModifier::internalAccess:
+            return "internal";
+        case codegen::AccessModifier::protectedInternalAccess:
+            return "protected internal";
+        case codegen::AccessModifier::privateAccess:
+        default:
+            return "private";
+    }
+}
+
+std::string ResolveCSharpClassAccessPrefix(codegen::CodeUnit::Flags flagsValue)
+{
+    switch (static_cast<codegen::AccessModifier>(flagsValue))
+    {
+        case codegen::AccessModifier::publicAccess:
+            return "public ";
+        case codegen::AccessModifier::privateAccess:
+            return "private ";
+        case codegen::AccessModifier::protectedAccess:
+            return "protected ";
+        case codegen::AccessModifier::privateProtectedAccess:
+            return "private protected ";
+        case codegen::AccessModifier::internalAccess:
+            return "internal ";
+        case codegen::AccessModifier::protectedInternalAccess:
+            return "protected internal ";
+        case codegen::AccessModifier::fileAccess:
+            return "file ";
+        default:
+            return "";
+    }
+}
+
+}  // namespace
+
+CSharpClassUnit::CSharpClassUnit(std::string name, Flags flagsValue) : name_(std::move(name)), flags_(flagsValue)
 {
 }
 
 void CSharpClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue)
 {
-    std::string accessKeyword = "private";
-    if (flagsValue == static_cast<Flags>(codegen::AccessModifier::publicAccess))
-    {
-        accessKeyword = "public";
-    }
-    if (flagsValue == static_cast<Flags>(codegen::AccessModifier::protectedAccess))
-    {
-        accessKeyword = "protected";
-    }
+    const std::string accessKeyword = ResolveCSharpMemberAccessKeyword(flagsValue);
     members_.push_back(std::make_shared<codegen::detail::AccessControlledUnit>(accessKeyword, unit));
 }
 
 std::string CSharpClassUnit::Render(unsigned int indentLevel) const
 {
-    std::string result = MakeIndent(indentLevel) + "class " + name_ + " {\n";
+    std::string result = MakeIndent(indentLevel) + ResolveCSharpClassAccessPrefix(flags_) + "class " + name_ + " {\n";
     for (const auto& member : members_)
     {
         result += member->Render(indentLevel + 1);

@@ -28,8 +28,10 @@ class ICodeFactory
 
     /// @brief Создаёт узел объявления класса.
     /// @param[in] name Имя создаваемого класса.
+    /// @param[in] flagsValue Битовая маска флагов модификаторов класса.
     /// @return Указатель на созданный узел объявления класса.
-    virtual std::shared_ptr<CodeUnit> CreateClass(const std::string& name) const = 0;
+    virtual std::shared_ptr<CodeUnit> CreateClass(const std::string& name, CodeUnit::Flags flagsValue = 0) const =
+        0;
 
     /// @brief Создаёт узел объявления метода.
     /// @param[in] name Имя создаваемого метода.

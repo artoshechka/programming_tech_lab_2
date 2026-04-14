@@ -8,8 +8,10 @@
 namespace codegen::cpp
 {
 
-std::shared_ptr<codegen::CodeUnit> CppCodeFactory::CreateClass(const std::string& name) const
+std::shared_ptr<codegen::CodeUnit> CppCodeFactory::CreateClass(const std::string& name,
+                                                               codegen::CodeUnit::Flags flagsValue) const
 {
+    (void)flagsValue;
     return std::make_shared<codegen::ClassDeclarationUnit>(name);
 }
 

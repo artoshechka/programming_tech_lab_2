@@ -8,9 +8,10 @@
 namespace codegen::csharp
 {
 
-std::shared_ptr<codegen::CodeUnit> CSharpCodeFactory::CreateClass(const std::string& name) const
+std::shared_ptr<codegen::CodeUnit> CSharpCodeFactory::CreateClass(const std::string& name,
+                                                                  codegen::CodeUnit::Flags flagsValue) const
 {
-    return std::make_shared<CSharpClassUnit>(name);
+    return std::make_shared<CSharpClassUnit>(name, flagsValue);
 }
 
 std::shared_ptr<codegen::CodeUnit> CSharpCodeFactory::CreateMethod(const std::string& name,
