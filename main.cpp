@@ -8,12 +8,16 @@ using codegen::ToFlags;
 namespace
 {
 
-std::string GenerateProgram(const codegen::ICodeFactory& factory)
+std::string GenerateRegularClass(const codegen::ICodeFactory& factory)
 {
-    const bool isCSharp = factory.GetLanguageName() == "C#";
+    const std::string languageName = factory.GetLanguageName();
 
-    const codegen::CodeUnit::Flags classAccess =
-        isCSharp ? static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::fileAccess) : 0;
+    const codegen::CodeUnit::Flags classAccess = [&languageName]() {
+        if (languageName == "C#")
+            return static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::fileAccess);
+        return static_cast<codegen::CodeUnit::Flags>(0);
+    }();
+
     const auto myClass = factory.CreateClass("MyClass", classAccess);
 
     myClass->Append(factory.CreateMethod("publicMethod", "void", 0),
@@ -23,7 +27,7 @@ std::string GenerateProgram(const codegen::ICodeFactory& factory)
     myClass->Append(factory.CreateMethod("protectedMethod", "void", 0),
                     static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::protectedAccess));
 
-    if (isCSharp)
+    if (languageName == "C#")
     {
         myClass->Append(factory.CreateMethod("privateProtectedMethod", "void", 0),
                         static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::privateProtectedAccess));
@@ -33,52 +37,136 @@ std::string GenerateProgram(const codegen::ICodeFactory& factory)
                         static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::protectedInternalAccess));
     }
 
-    const auto printMethod =
-        factory.CreateMethod("printMethod", "void", ToFlags(codegen::MethodModifier::staticModifier));
+    const auto printMethod = factory.CreateMethod("printMethod", "void", ToFlags(codegen::MethodModifier::staticModifier));
     printMethod->Append(factory.CreatePrintStatement("Hello, world!"), 0);
     myClass->Append(printMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
 
-    // Пример с final методом
-    const auto finalMethod =
-        factory.CreateMethod("finalMethod", "void", ToFlags(codegen::MethodModifier::finalModifier));
+    const auto finalMethod = factory.CreateMethod("finalMethod", "void", ToFlags(codegen::MethodModifier::finalModifier));
     finalMethod->Append(factory.CreatePrintStatement("This is a final method"), 0);
     myClass->Append(finalMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
 
     return myClass->Render();
 }
 
-}  // namespace
-
 std::string GenerateFinalClass(const codegen::ICodeFactory& factory)
 {
-    // Создаём final класс
-    const auto finalClass = factory.CreateClass("FinalClass", ToFlags(codegen::ClassModifier::finalModifier));
+    const std::string languageName = factory.GetLanguageName();
 
-    // Добавляем public метод
-    const auto method = factory.CreateMethod("doSomething", "void", 0);
-    method->Append(factory.CreatePrintStatement("Doing something..."), 0);
-    finalClass->Append(method, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+    if (languageName == "Java")
+    {
+        const auto finalClass = factory.CreateClass("ImmutableData", ToFlags(codegen::ClassModifier::finalModifier));
 
-    return finalClass->Render();
+        const auto method = factory.CreateMethod("getValue", "int", 0);
+        method->Append(factory.CreatePrintStatement("Returning immutable value..."), 0);
+        finalClass->Append(method, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+
+        return finalClass->Render();
+    }
+    else if (languageName == "C#")
+    {
+        const auto sealedClass = factory.CreateClass("SealedImpl", ToFlags(codegen::ClassModifier::finalModifier));
+
+        const auto method = factory.CreateMethod("Execute", "void", 0);
+        method->Append(factory.CreatePrintStatement("Sealed class execution..."), 0);
+        sealedClass->Append(method, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+
+        return sealedClass->Render();
+    }
+    else if (languageName == "C++")
+    {
+        const auto finalClass = factory.CreateClass("FinalClass", ToFlags(codegen::ClassModifier::finalModifier));
+
+        const auto method = factory.CreateMethod("doSomething", "void", 0);
+        method->Append(factory.CreatePrintStatement("Final class cannot be derived..."), 0);
+        finalClass->Append(method, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+
+        return finalClass->Render();
+    }
+
+    return "";
 }
 
 std::string GenerateAbstractClass(const codegen::ICodeFactory& factory)
 {
-    // Создаём abstract класс
-    const auto abstractClass = factory.CreateClass("AbstractClass", ToFlags(codegen::ClassModifier::abstractModifier));
+    const std::string languageName = factory.GetLanguageName();
+    const auto abstractClass = factory.CreateClass("InterfaceImpl", ToFlags(codegen::ClassModifier::abstractModifier));
 
-    // Добавляем abstract метод
-    const auto abstractMethod =
-        factory.CreateMethod("abstractMethod", "void", ToFlags(codegen::MethodModifier::abstractModifier));
-    abstractClass->Append(abstractMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+    if (languageName == "Java")
+    {
+        const auto abstractMethod = factory.CreateMethod("processData", "void", ToFlags(codegen::MethodModifier::abstractModifier));
+        abstractClass->Append(abstractMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
 
-    // Добавляем обычный метод
-    const auto regularMethod = factory.CreateMethod("regularMethod", "void", 0);
-    regularMethod->Append(factory.CreatePrintStatement("This is a regular method"), 0);
-    abstractClass->Append(regularMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+        const auto regularMethod = factory.CreateMethod("validateInput", "boolean", 0);
+        regularMethod->Append(factory.CreatePrintStatement("Validating..."), 0);
+        abstractClass->Append(regularMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+    }
+    else if (languageName == "C#")
+    {
+        const auto abstractMethod = factory.CreateMethod("Execute", "void", ToFlags(codegen::MethodModifier::abstractModifier));
+        abstractClass->Append(abstractMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+
+        const auto virtualMethod = factory.CreateMethod("Configure", "void", ToFlags(codegen::MethodModifier::virtualModifier));
+        virtualMethod->Append(factory.CreatePrintStatement("Configuring..."), 0);
+        abstractClass->Append(virtualMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+    }
+    else if (languageName == "C++")
+    {
+        const auto pureVirtual = factory.CreateMethod("process", "void", ToFlags(codegen::MethodModifier::virtualModifier) | ToFlags(codegen::MethodModifier::abstractModifier));
+        abstractClass->Append(pureVirtual, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+
+        const auto virtualMethod = factory.CreateMethod("cleanup", "void", ToFlags(codegen::MethodModifier::virtualModifier));
+        virtualMethod->Append(factory.CreatePrintStatement("Cleaning up..."), 0);
+        abstractClass->Append(virtualMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+    }
 
     return abstractClass->Render();
 }
+
+std::string GenerateStaticExample(const codegen::ICodeFactory& factory)
+{
+    const std::string languageName = factory.GetLanguageName();
+    
+    if (languageName == "Java")
+    {
+        const auto utilClass = factory.CreateClass("MathUtils", 0);
+
+        const auto staticMethod = factory.CreateMethod("sqrt", "double", ToFlags(codegen::MethodModifier::staticModifier));
+        staticMethod->Append(factory.CreatePrintStatement("Computing square root..."), 0);
+        utilClass->Append(staticMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+
+        const auto finalStaticMethod = factory.CreateMethod("PI_VALUE", "double", ToFlags(codegen::MethodModifier::staticModifier) | ToFlags(codegen::MethodModifier::finalModifier));
+        utilClass->Append(finalStaticMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+
+        return utilClass->Render();
+    }
+    else if (languageName == "C#")
+    {
+        const auto utilClass = factory.CreateClass("Calculator", 0);
+
+        const auto staticMethod = factory.CreateMethod("Add", "int", ToFlags(codegen::MethodModifier::staticModifier));
+        staticMethod->Append(factory.CreatePrintStatement("Adding numbers..."), 0);
+        utilClass->Append(staticMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+
+        const auto sealedStatic = factory.CreateMethod("Version", "string", ToFlags(codegen::MethodModifier::staticModifier) | ToFlags(codegen::MethodModifier::finalModifier));
+        utilClass->Append(sealedStatic, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+
+        return utilClass->Render();
+    }
+    else if (languageName == "C++")
+    {
+        const auto utilClass = factory.CreateClass("Utils", 0);
+
+        const auto staticMethod = factory.CreateMethod("calculate", "int", ToFlags(codegen::MethodModifier::staticModifier));
+        staticMethod->Append(factory.CreatePrintStatement("Calculating..."), 0);
+        utilClass->Append(staticMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+
+        return utilClass->Render();
+    }
+
+    return "";
+}
+
+}  // namespace
 
 int main()
 {
@@ -91,14 +179,21 @@ int main()
     for (const auto language : languages)
     {
         const auto factory = codegen::CreateFactory(language);
-        std::cout << "\n===== " << factory->GetLanguageName() << " - Regular Class =====\n";
-        std::cout << GenerateProgram(*factory);
+        const std::string languageName = factory->GetLanguageName();
 
-        std::cout << "\n===== " << factory->GetLanguageName() << " - Final Class =====\n";
+        std::cout << "\n" << languageName << " Code Examples\n";
+
+        std::cout << "\nRegular Class with Access Modifiers:\n";
+        std::cout << GenerateRegularClass(*factory);
+
+        std::cout << "\nFinal Class:\n";
         std::cout << GenerateFinalClass(*factory);
 
-        std::cout << "\n===== " << factory->GetLanguageName() << " - Abstract Class =====\n";
-        std::cout << GenerateAbstractClass(*factory) << std::endl;
+        std::cout << "\nAbstract Class:\n";
+        std::cout << GenerateAbstractClass(*factory);
+
+        std::cout << "\nStatic Methods:\n";
+        std::cout << GenerateStaticExample(*factory);
     }
 
     return 0;
