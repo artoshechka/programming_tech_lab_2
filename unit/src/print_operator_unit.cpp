@@ -1,3 +1,6 @@
+/// @file
+/// @brief Определение класса для генерации оператора печати.
+/// @author Artemenko Anton
 #include <src/print_operator_unit.hpp>
 
 using codegen::PrintStatementUnit;
@@ -5,7 +8,7 @@ PrintStatementUnit::PrintStatementUnit(const std::string& text) : text_(text)
 {
 }
 
-std::string PrintStatementUnit::Render(unsigned int indent_level) const
+std::string PrintStatementUnit::Render(unsigned int indentLevel) const
 {
-    return MakeIndent(indent_level) + "printf( \"" + text_ + "\" );\n";
+    return MakeIndent(indentLevel) + "printf( \"" + text_ + "\" );\n";
 }

@@ -1,8 +1,10 @@
+/// @file
+/// @brief Определение класса для генерации кода C++ класса.
+/// @author Artemenko Anton
 #include <src/class_unit.hpp>
 
-using codegen::AccessModifier;
 using codegen::ClassDeclarationUnit;
-using codegen::CodeUnit;
+
 const std::vector<std::string> ClassDeclarationUnit::accessModifiers_ = {"public", "protected", "private"};
 
 ClassDeclarationUnit::ClassDeclarationUnit(const std::string& name) : name_(name)
@@ -12,23 +14,23 @@ ClassDeclarationUnit::ClassDeclarationUnit(const std::string& name) : name_(name
 
 void ClassDeclarationUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier access_modifier)
 {
-    size_t modifier_index = static_cast<size_t>(access_modifier);
+    size_t modifierIndex = static_cast<size_t>(access_modifier);
 
-    if (modifier_index >= accessModifiers_.size())
+    if (modifierIndex >= accessModifiers_.size())
     {
-        modifier_index = static_cast<size_t>(AccessModifier::privateAccess);
+        modifierIndex = static_cast<size_t>(AccessModifier::privateAccess);
     }
-    fields_[modifier_index].push_back(unit);
+    fields_[modifierIndex].push_back(unit);
 }
 
-void ClassDeclarationUnit::Append(const std::shared_ptr<CodeUnit>& unit, flags flags_value)
+void ClassDeclarationUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue)
 {
-    Append(unit, static_cast<AccessModifier>(flags_value));
+    Append(unit, static_cast<AccessModifier>(flagsValue));
 }
 
-std::string ClassDeclarationUnit::Render(unsigned int indent_level) const
+std::string ClassDeclarationUnit::Render(unsigned int indentLevel) const
 {
-    std::string result = MakeIndent(indent_level) + "class " + name_ + " {\n";
+    std::string result = MakeIndent(indentLevel) + "class " + name_ + " {\n";
 
     for (size_t i = 0; i < accessModifiers_.size(); ++i)
     {
@@ -39,10 +41,10 @@ std::string ClassDeclarationUnit::Render(unsigned int indent_level) const
         result += accessModifiers_[i] + ":\n";
         for (const auto& field : fields_[i])
         {
-            result += field->Render(indent_level + 1);
+            result += field->Render(indentLevel + 1);
         }
         result += "\n";
     }
-    result += MakeIndent(indent_level) + "};\n";
+    result += MakeIndent(indentLevel) + "};\n";
     return result;
 }
