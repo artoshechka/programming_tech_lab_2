@@ -13,8 +13,10 @@ class JavaCodeFactory final : public codegen::ICodeFactory
    public:
     /// @brief Создает узел объявления Java-класса.
     /// @param[in] name Имя класса.
+    /// @param[in] flagsValue Флаги модификаторов класса (final, abstract и т.д.).
     /// @return Указатель на узел класса.
-    std::shared_ptr<codegen::CodeUnit> CreateClass(const std::string& name) const override;
+    std::shared_ptr<codegen::CodeUnit> CreateClass(const std::string& name,
+                                                   codegen::CodeUnit::Flags flagsValue) const override;
 
     /// @brief Создает узел объявления Java-метода.
     /// @param[in] name Имя метода.

@@ -15,8 +15,10 @@ class CppCodeFactory final : public codegen::ICodeFactory
    public:
     /// @brief Создаёт узел объявления C++-класса.
     /// @param[in] name Имя создаваемого класса.
+    /// @param[in] flagsValue Флаги модификаторов класса (в C++-реализации не используются).
     /// @return Указатель на объект ClassDeclarationUnit.
-    std::shared_ptr<codegen::CodeUnit> CreateClass(const std::string& name) const override;
+    std::shared_ptr<codegen::CodeUnit> CreateClass(const std::string& name,
+                                                   codegen::CodeUnit::Flags flagsValue) const override;
 
     /// @brief Создаёт узел объявления C++-метода.
     /// @param[in] name Имя создаваемого метода.

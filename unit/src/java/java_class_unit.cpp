@@ -7,7 +7,8 @@
 namespace codegen::java
 {
 
-JavaClassUnit::JavaClassUnit(std::string name) : name_(std::move(name))
+JavaClassUnit::JavaClassUnit(std::string name, Flags classModifiersValue)
+    : name_(std::move(name)), classModifiers_(classModifiersValue)
 {
 }
 
@@ -27,7 +28,19 @@ void JavaClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsVal
 
 std::string JavaClassUnit::Render(unsigned int indentLevel) const
 {
-    std::string result = MakeIndent(indentLevel) + "class " + name_ + " {\n";
+    std::string result = MakeIndent(indentLevel);
+
+    // Добавляем модификаторы класса
+    if (classModifiers_ & codegen::ToFlags(codegen::ClassModifier::abstractModifier))
+    {
+        result += "abstract ";
+    }
+    if (classModifiers_ & codegen::ToFlags(codegen::ClassModifier::finalModifier))
+    {
+        result += "final ";
+    }
+
+    result += "class " + name_ + " {\n";
     for (const auto& member : members_)
     {
         result += member->Render(indentLevel + 1);
