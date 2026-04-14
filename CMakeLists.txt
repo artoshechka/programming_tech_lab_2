@@ -4,6 +4,10 @@ project(programming_tech_lab_2 LANGUAGES CXX)
 
 add_executable(${PROJECT_NAME}
 	main.cpp
+	unit/src/unit.cpp
+	unit/src/class_unit.cpp
+	unit/src/method_unit.cpp
+	unit/src/print_operator_unit.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
