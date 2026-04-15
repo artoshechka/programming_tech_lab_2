@@ -30,6 +30,7 @@ https://disk.yandex.ru/i/dtd6RCsC1FCtcg
 
 ### UML-диаграмма классов
 ```mermaid
+%%{init: {'flowchart': {'nodeSpacing': 120, 'rankSpacing': 120}}}%%
 classDiagram
     namespace core {
         class CodeUnit {
@@ -48,38 +49,6 @@ classDiagram
             +GetLanguageName() string
         }
 
-        class Language {
-            <<enumeration>>
-            cppLanguage
-            javaLanguage
-            csharpLanguage
-        }
-
-        class AccessModifier {
-            <<enumeration>>
-            publicAccess
-            protectedAccess
-            privateAccess
-            privateProtectedAccess
-            internalAccess
-            protectedInternalAccess
-            fileAccess
-        }
-
-        class MethodModifier {
-            <<enumeration>>
-            staticModifier
-            constModifier
-            virtualModifier
-            finalModifier
-            abstractModifier
-        }
-
-        class ClassModifier {
-            <<enumeration>>
-            finalModifier
-            abstractModifier
-        }
     }
 
     namespace cpp {
@@ -175,7 +144,6 @@ classDiagram
     CodeUnit <|-- CSharpPrintUnit
 
     CodeUnit <|-- AccessControlledUnit
-    AccessControlledUnit o--> CodeUnit
 
     CppCodeFactory ..> ClassDeclarationUnit
     CppCodeFactory ..> MethodDeclarationUnit
@@ -189,21 +157,8 @@ classDiagram
     CSharpCodeFactory ..> CSharpMethodUnit
     CSharpCodeFactory ..> CSharpPrintUnit
 
-    ClassDeclarationUnit ..> AccessModifier
-    JavaClassUnit ..> AccessModifier
-    CSharpClassUnit ..> AccessModifier
-
-    MethodDeclarationUnit ..> MethodModifier
-    JavaMethodUnit ..> MethodModifier
-    CSharpMethodUnit ..> MethodModifier
-
-    CppCodeFactory ..> Language
-    JavaCodeFactory ..> Language
-    CSharpCodeFactory ..> Language
-
-    ClassDeclarationUnit ..> ClassModifier
-    JavaClassUnit ..> ClassModifier
-    CSharpClassUnit ..> ClassModifier
+    AccessControlledUnit <.. CSharpClassUnit
+    AccessControlledUnit <.. JavaClassUnit
 ```
 
 ### Архитектура решения
