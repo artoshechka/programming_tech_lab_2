@@ -6,13 +6,13 @@
 namespace codegen::java
 {
 
-JavaPrintUnit::JavaPrintUnit(std::string text) : text_(std::move(text))
+JavaPrintUnit::JavaPrintUnit(std::string text) : codegen::detail::AbstractPrintUnit(std::move(text))
 {
 }
 
-std::string JavaPrintUnit::Render(unsigned int indentLevel) const
+std::string JavaPrintUnit::RenderPrintExpression(const std::string& text) const
 {
-    return MakeIndent(indentLevel) + "System.out.println(\"" + text_ + "\");\n";
+    return "System.out.println(\"" + text + "\");";
 }
 
 }  // namespace codegen::java

@@ -7,7 +7,7 @@ using codegen::ClassDeclarationUnit;
 const std::vector<std::string> ClassDeclarationUnit::accessModifiers_ = {"public", "protected", "private"};
 
 ClassDeclarationUnit::ClassDeclarationUnit(const std::string& name, Flags classModifiersValue)
-    : name_(name), classModifiers_(classModifiersValue)
+    : codegen::detail::AbstractClassUnit(name, classModifiersValue)
 {
     fields_.resize(accessModifiers_.size());
 }
@@ -29,10 +29,10 @@ void ClassDeclarationUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags f
 
 std::string ClassDeclarationUnit::Render(unsigned int indentLevel) const
 {
-    std::string result = MakeIndent(indentLevel) + "class " + name_;
+    std::string result = MakeIndent(indentLevel) + "class " + GetClassName();
 
     // Добавляем модификатор final для C++ (C++11 и позже)
-    if (classModifiers_ & codegen::ToFlags(codegen::ClassModifier::finalModifier))
+    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::finalModifier))
     {
         result += " final";
     }

@@ -4,15 +4,14 @@
 #define GUID_f36b12fb_4799_4ec2_8c8d_c664f24efbe9
 
 #include <codegen_types.hpp>
+#include <src/common/abstract_method_unit.hpp>
 #include <string>
-#include <unit.hpp>
-#include <vector>
 
 namespace codegen::java
 {
 
 /// @brief Класс для генерации объявления Java-метода.
-class JavaMethodUnit : public codegen::CodeUnit
+class JavaMethodUnit : public codegen::detail::AbstractMethodUnit
 {
    public:
     /// @brief Конструктор генератора объявления Java-метода.
@@ -21,21 +20,18 @@ class JavaMethodUnit : public codegen::CodeUnit
     /// @param[in] flagsValue Флаги модификаторов.
     JavaMethodUnit(std::string name, std::string returnType, Flags flagsValue);
 
-    /// @brief Добавляет выражение/инструкцию в тело метода.
-    /// @param[in] unit Вложенный узел.
-    /// @param[in] flagsValue Дополнительные флаги (не используются).
-    void Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue) override;
+   protected:
+    /// @brief Формирует модификаторы Java перед типом метода.
+    /// @return Префикс модификаторов.
+    std::string RenderPrefixModifiers() const override;
 
-    /// @brief Формирует текст Java-метода.
-    /// @param[in] indentLevel Уровень отступа.
-    /// @return Текст объявления метода.
-    std::string Render(unsigned int indentLevel) const override;
+    /// @brief Проверяет, является ли Java-метод абстрактным.
+    /// @return true, если метод abstract.
+    bool IsAbstractMethod() const override;
 
-   private:
-    std::string name_;                                      ///< Имя Java-метода.
-    std::string returnType_;                                ///< Тип возвращаемого значения.
-    Flags flags_;                                           ///< Флаги модификаторов метода.
-    std::vector<std::shared_ptr<codegen::CodeUnit>> body_;  ///< Инструкции в теле метода.
+    /// @brief Возвращает окончание для abstract Java-метода.
+    /// @return Строка ";\n".
+    std::string RenderAbstractTerminator() const override;
 };
 
 }  // namespace codegen::java

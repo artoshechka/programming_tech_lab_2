@@ -4,11 +4,11 @@
 
 using codegen::PrintStatementUnit;
 
-PrintStatementUnit::PrintStatementUnit(const std::string& text) : text_(text)
+PrintStatementUnit::PrintStatementUnit(const std::string& text) : codegen::detail::AbstractPrintUnit(text)
 {
 }
 
-std::string PrintStatementUnit::Render(unsigned int indentLevel) const
+std::string PrintStatementUnit::RenderPrintExpression(const std::string& text) const
 {
-    return MakeIndent(indentLevel) + "printf( \"" + text_ + "\" );\n";
+    return "printf( \"" + text + "\" );";
 }

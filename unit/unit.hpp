@@ -21,9 +21,11 @@ class CodeUnit
    public:
     /// @brief Виртуальный деструктор базового класса.
     virtual ~CodeUnit() = default;
+    
     /// @brief Добавляет вложенный узел.
     /// @param[in] unit Вложенный узел.
     /// @param[in] flagsValue Дополнительные флаги добавления.
+
     virtual void Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue);
     /// @brief Формирует текстовое представление узла.
     /// @param[in] indentLevel Уровень отступа.
