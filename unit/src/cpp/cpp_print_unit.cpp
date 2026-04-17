@@ -2,13 +2,13 @@
 /// @brief Определение класса для генерации оператора печати.
 #include <src/cpp/cpp_print_unit.hpp>
 
-using codegen::PrintStatementUnit;
+using codegen::CppPrintUnit;
 
-PrintStatementUnit::PrintStatementUnit(const std::string& text) : text_(text)
+CppPrintUnit::CppPrintUnit(const std::string& text) : codegen::detail::AbstractPrintUnit(text)
 {
 }
 
-std::string PrintStatementUnit::Render(unsigned int indentLevel) const
+std::string CppPrintUnit::RenderPrintExpression(const std::string& text) const
 {
-    return MakeIndent(indentLevel) + "printf( \"" + text_ + "\" );\n";
+    return "printf( \"" + text + "\" );";
 }

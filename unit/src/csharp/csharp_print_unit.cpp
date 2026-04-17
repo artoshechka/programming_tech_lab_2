@@ -6,13 +6,13 @@
 namespace codegen::csharp
 {
 
-CSharpPrintUnit::CSharpPrintUnit(std::string text) : text_(std::move(text))
+CSharpPrintUnit::CSharpPrintUnit(std::string text) : codegen::detail::AbstractPrintUnit(std::move(text))
 {
 }
 
-std::string CSharpPrintUnit::Render(unsigned int indentLevel) const
+std::string CSharpPrintUnit::RenderPrintExpression(const std::string& text) const
 {
-    return MakeIndent(indentLevel) + "Console.WriteLine(\"" + text_ + "\");\n";
+    return "Console.WriteLine(\"" + text + "\");";
 }
 
 }  // namespace codegen::csharp

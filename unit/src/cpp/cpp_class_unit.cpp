@@ -2,17 +2,17 @@
 /// @brief Определение класса для генерации кода C++ класса.
 #include <src/cpp/cpp_class_unit.hpp>
 
-using codegen::ClassDeclarationUnit;
+using codegen::CppClassUnit;
 
-const std::vector<std::string> ClassDeclarationUnit::accessModifiers_ = {"public", "protected", "private"};
+const std::vector<std::string> CppClassUnit::accessModifiers_ = {"public", "protected", "private"};
 
-ClassDeclarationUnit::ClassDeclarationUnit(const std::string& name, Flags classModifiersValue)
-    : name_(name), classModifiers_(classModifiersValue)
+CppClassUnit::CppClassUnit(const std::string& name, Flags classModifiersValue)
+    : codegen::detail::AbstractClassUnit(name, classModifiersValue)
 {
     fields_.resize(accessModifiers_.size());
 }
 
-void ClassDeclarationUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier accessModifier)
+void CppClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier accessModifier)
 {
     size_t modifierIndex = static_cast<size_t>(accessModifier);
     if (modifierIndex >= accessModifiers_.size())
@@ -22,17 +22,17 @@ void ClassDeclarationUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessM
     fields_[modifierIndex].push_back(unit);
 }
 
-void ClassDeclarationUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue)
+void CppClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue)
 {
     Append(unit, static_cast<AccessModifier>(flagsValue));
 }
 
-std::string ClassDeclarationUnit::Render(unsigned int indentLevel) const
+std::string CppClassUnit::Render(unsigned int indentLevel) const
 {
-    std::string result = MakeIndent(indentLevel) + "class " + name_;
+    std::string result = MakeIndent(indentLevel) + "class " + GetClassName();
 
     // Добавляем модификатор final для C++ (C++11 и позже)
-    if (classModifiers_ & codegen::ToFlags(codegen::ClassModifier::finalModifier))
+    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::finalModifier))
     {
         result += " final";
     }

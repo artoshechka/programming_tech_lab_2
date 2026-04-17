@@ -32,133 +32,174 @@ https://disk.yandex.ru/i/dtd6RCsC1FCtcg
 ```mermaid
 %%{init: {'flowchart': {'nodeSpacing': 120, 'rankSpacing': 120}}}%%
 classDiagram
-    namespace core {
-        class CodeUnit {
-            <<abstract>>
-            +Flags
-            +Append(unit, flagsValue)
-            +Render(indentLevel) string
-            #MakeIndent(indentLevel) string
-        }
-
-        class ICodeFactory {
-            <<interface>>
-            +CreateClass(name, flagsValue) CodeUnit
-            +CreateMethod(name, returnType, flagsValue) CodeUnit
-            +CreatePrintStatement(text) CodeUnit
-            +GetLanguageName() string
-        }
-
+    class CodeUnit {
+        <<abstract>>
+        +Flags
+        +Append(unit, flagsValue)
+        +Render(indentLevel) string
+        #MakeIndent(indentLevel) string
     }
 
-    namespace cpp {
-        class CppCodeFactory {
-            +CreateClass(name, flagsValue) CodeUnit
-            +CreateMethod(name, returnType, flagsValue) CodeUnit
-            +CreatePrintStatement(text) CodeUnit
-            +GetLanguageName() string
-        }
-
-        class ClassDeclarationUnit {
-            +Append(unit, accessModifier)
-            +Append(unit, flagsValue)
-            +Render(indentLevel) string
-        }
-
-        class MethodDeclarationUnit {
-            +Append(unit, flagsValue)
-            +Render(indentLevel) string
-        }
-
-        class PrintStatementUnit {
-            +Render(indentLevel) string
-        }
+    class ICodeFactory {
+        <<interface>>
+        +CreateClass(name, flagsValue) CodeUnit
+        +CreateMethod(name, returnType, flagsValue) CodeUnit
+        +CreateField(name, type, flagsValue) CodeUnit
+        +CreatePrintStatement(text) CodeUnit
+        +GetLanguageName() string
     }
 
-    namespace java {
-        class JavaCodeFactory {
-            +CreateClass(name, flagsValue) CodeUnit
-            +CreateMethod(name, returnType, flagsValue) CodeUnit
-            +CreatePrintStatement(text) CodeUnit
-            +GetLanguageName() string
-        }
-
-        class JavaClassUnit {
-            +Append(unit, flagsValue)
-            +Render(indentLevel) string
-        }
-
-        class JavaMethodUnit {
-            +Append(unit, flagsValue)
-            +Render(indentLevel) string
-        }
-
-        class JavaPrintUnit {
-            +Render(indentLevel) string
-        }
+    class CppCodeFactory {
+        +CreateClass(name, flagsValue) CodeUnit
+        +CreateMethod(name, returnType, flagsValue) CodeUnit
+        +CreateField(name, type, flagsValue) CodeUnit
+        +CreatePrintStatement(text) CodeUnit
+        +GetLanguageName() string
     }
 
-    namespace csharp {
-        class CSharpCodeFactory {
-            +CreateClass(name, flagsValue) CodeUnit
-            +CreateMethod(name, returnType, flagsValue) CodeUnit
-            +CreatePrintStatement(text) CodeUnit
-            +GetLanguageName() string
-        }
-
-        class CSharpClassUnit {
-            +Append(unit, flagsValue)
-            +Render(indentLevel) string
-        }
-
-        class CSharpMethodUnit {
-            +Append(unit, flagsValue)
-            +Render(indentLevel) string
-        }
-
-        class CSharpPrintUnit {
-            +Render(indentLevel) string
-        }
+    class CppClassUnit {
+        +Append(unit, flagsValue)
+        +Render(indentLevel) string
     }
 
-    namespace common {
-        class AccessControlledUnit {
-            +Render(indentLevel) string
-        }
+    class CppMethodUnit {
+        +RenderPrefixModifiers() string
+        +RenderSuffixModifiers() string
+        +IsAbstractMethod() bool
+        +RenderAbstractTerminator() string
+    }
+
+    class CppPrintUnit {
+        +RenderPrintExpression(text) string
+    }
+
+    class CppFieldUnit {
+        +RenderPrefixModifiers() string
+    }
+
+    class JavaCodeFactory {
+        +CreateClass(name, flagsValue) CodeUnit
+        +CreateMethod(name, returnType, flagsValue) CodeUnit
+        +CreateField(name, type, flagsValue) CodeUnit
+        +CreatePrintStatement(text) CodeUnit
+        +GetLanguageName() string
+    }
+
+    class JavaClassUnit {
+        +Append(unit, flagsValue)
+        +Render(indentLevel) string
+    }
+
+    class JavaMethodUnit {
+        +RenderPrefixModifiers() string
+        +IsAbstractMethod() bool
+        +RenderAbstractTerminator() string
+    }
+
+    class JavaPrintUnit {
+        +RenderPrintExpression(text) string
+    }
+
+    class JavaFieldUnit {
+        +RenderPrefixModifiers() string
+    }
+
+    class CSharpCodeFactory {
+        +CreateClass(name, flagsValue) CodeUnit
+        +CreateMethod(name, returnType, flagsValue) CodeUnit
+        +CreateField(name, type, flagsValue) CodeUnit
+        +CreatePrintStatement(text) CodeUnit
+        +GetLanguageName() string
+    }
+
+    class CSharpClassUnit {
+        +Append(unit, flagsValue)
+        +Render(indentLevel) string
+    }
+
+    class CSharpMethodUnit {
+        +RenderPrefixModifiers() string
+        +IsAbstractMethod() bool
+        +RenderAbstractTerminator() string
+    }
+
+    class CSharpPrintUnit {
+        +RenderPrintExpression(text) string
+    }
+
+    class CSharpFieldUnit {
+        +RenderPrefixModifiers() string
+    }
+
+    class AbstractClassUnit {
+        <<abstract>>
+        +GetClassName() string
+        +GetClassFlags() Flags
+    }
+
+    class AbstractMethodUnit {
+        <<abstract>>
+        +Append(unit, flagsValue)
+        +Render(indentLevel) string
+        +GetMethodFlags() Flags
+    }
+
+    class AbstractPrintUnit {
+        <<abstract>>
+        +Render(indentLevel) string
+        +GetPrintText() string
+    }
+
+    class AbstractFieldUnit {
+        <<abstract>>
+        +Render(indentLevel) string
+        +GetFieldFlags() Flags
+    }
+
+    class AccessControlledUnit {
+        +Render(indentLevel) string
     }
 
     ICodeFactory <|.. CppCodeFactory
     ICodeFactory <|.. JavaCodeFactory
     ICodeFactory <|.. CSharpCodeFactory
 
-    CodeUnit <|-- ClassDeclarationUnit
-    CodeUnit <|-- MethodDeclarationUnit
-    CodeUnit <|-- PrintStatementUnit
+    CodeUnit <|-- AbstractClassUnit
+    CodeUnit <|-- AbstractMethodUnit
+    CodeUnit <|-- AbstractPrintUnit
+    CodeUnit <|-- AbstractFieldUnit
 
-    CodeUnit <|-- JavaClassUnit
-    CodeUnit <|-- JavaMethodUnit
-    CodeUnit <|-- JavaPrintUnit
+    AbstractClassUnit <|-- CppClassUnit
+    AbstractMethodUnit <|-- CppMethodUnit
+    AbstractPrintUnit <|-- CppPrintUnit
+    AbstractFieldUnit <|-- CppFieldUnit
 
-    CodeUnit <|-- CSharpClassUnit
-    CodeUnit <|-- CSharpMethodUnit
-    CodeUnit <|-- CSharpPrintUnit
+    AbstractClassUnit <|-- JavaClassUnit
+    AbstractMethodUnit <|-- JavaMethodUnit
+    AbstractPrintUnit <|-- JavaPrintUnit
+    AbstractFieldUnit <|-- JavaFieldUnit
+
+    AbstractClassUnit <|-- CSharpClassUnit
+    AbstractMethodUnit <|-- CSharpMethodUnit
+    AbstractPrintUnit <|-- CSharpPrintUnit
+    AbstractFieldUnit <|-- CSharpFieldUnit
 
     CodeUnit <|-- AccessControlledUnit
 
-    CppCodeFactory ..> ClassDeclarationUnit
-    CppCodeFactory ..> MethodDeclarationUnit
-    CppCodeFactory ..> PrintStatementUnit
+    CSharpCodeFactory --> CSharpClassUnit
+    CSharpCodeFactory --> CSharpMethodUnit
+    CSharpCodeFactory --> CSharpFieldUnit
+    CSharpCodeFactory --> CSharpPrintUnit
 
-    JavaCodeFactory ..> JavaClassUnit
-    JavaCodeFactory ..> JavaMethodUnit
-    JavaCodeFactory ..> JavaPrintUnit
+    CppCodeFactory --> CppClassUnit
+    CppCodeFactory --> CppMethodUnit
+    CppCodeFactory --> CppFieldUnit
+    CppCodeFactory --> CppPrintUnit
 
-    CSharpCodeFactory ..> CSharpClassUnit
-    CSharpCodeFactory ..> CSharpMethodUnit
-    CSharpCodeFactory ..> CSharpPrintUnit
-
-    AccessControlledUnit <.. CSharpClassUnit
-    AccessControlledUnit <.. JavaClassUnit
+    JavaCodeFactory --> JavaClassUnit
+    JavaCodeFactory --> JavaMethodUnit
+    JavaCodeFactory --> JavaFieldUnit
+    JavaCodeFactory --> JavaPrintUnit
 ```
 
 ### Архитектура решения
@@ -172,7 +213,7 @@ classDiagram
     - конкретные узлы классов, методов и печати для каждого языка.
 - **unit/src/cpp** — C++-реализация генерации:
     - **CppCodeFactory**;
-    - **ClassDeclarationUnit**, **MethodDeclarationUnit**, **PrintStatementUnit**.
+    - **CppClassUnit**, **CppMethodUnit**, **CppPrintUnit**, **CppFieldUnit**.
 - **unit/src/java** — Java-реализация генерации:
     - **JavaCodeFactory**;
     - **JavaClassUnit**, **JavaMethodUnit**, **JavaPrintUnit**.

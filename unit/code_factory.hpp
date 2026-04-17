@@ -40,6 +40,14 @@ class ICodeFactory
     virtual std::shared_ptr<CodeUnit> CreateMethod(const std::string& name, const std::string& returnType,
                                                    CodeUnit::Flags flagsValue) const = 0;
 
+    /// @brief Создаёт узел объявления поля.
+    /// @param[in] name Имя поля.
+    /// @param[in] type Тип поля.
+    /// @param[in] flagsValue Битовая маска модификаторов поля (static, const/final).
+    /// @return Указатель на созданный узел объявления поля.
+    virtual std::shared_ptr<CodeUnit> CreateField(const std::string& name, const std::string& type,
+                                                  CodeUnit::Flags flagsValue) const = 0;
+
     /// @brief Создаёт узел инструкции вывода на печать.
     /// @param[in] text Текст для печати.
     /// @return Указатель на созданный узел инструкции печати.

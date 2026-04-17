@@ -26,6 +26,14 @@ class JavaCodeFactory final : public codegen::ICodeFactory
     std::shared_ptr<codegen::CodeUnit> CreateMethod(const std::string& name, const std::string& returnType,
                                                     codegen::CodeUnit::Flags flagsValue) const override;
 
+    /// @brief Создает узел объявления поля Java.
+    /// @param[in] name Имя поля.
+    /// @param[in] type Тип поля.
+    /// @param[in] flagsValue Флаги модификаторов (static, final).
+    /// @return Указатель на узел поля.
+    std::shared_ptr<codegen::CodeUnit> CreateField(const std::string& name, const std::string& type,
+                                                   codegen::CodeUnit::Flags flagsValue) const override;
+
     /// @brief Создает инструкцию печати Java.
     /// @param[in] text Текст для вывода.
     /// @return Указатель на узел печати.

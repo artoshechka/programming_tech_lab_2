@@ -7,48 +7,36 @@ namespace codegen::java
 {
 
 JavaMethodUnit::JavaMethodUnit(std::string name, std::string returnType, Flags flagsValue)
-    : name_(std::move(name)), returnType_(std::move(returnType)), flags_(flagsValue)
+    : codegen::detail::AbstractMethodUnit(std::move(name), std::move(returnType), flagsValue)
 {
 }
 
-void JavaMethodUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue)
+std::string JavaMethodUnit::RenderPrefixModifiers() const
 {
-    (void)flagsValue;
-    body_.push_back(unit);
-}
-
-std::string JavaMethodUnit::Render(unsigned int indentLevel) const
-{
-    std::string result = MakeIndent(indentLevel);
-    if (flags_ & codegen::ToFlags(codegen::MethodModifier::staticModifier))
+    std::string result;
+    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::staticModifier))
     {
         result += "static ";
     }
-    if (flags_ & codegen::ToFlags(codegen::MethodModifier::finalModifier))
+    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::finalModifier))
     {
         result += "final ";
     }
-    if (flags_ & codegen::ToFlags(codegen::MethodModifier::abstractModifier))
+    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::abstractModifier))
     {
         result += "abstract ";
     }
-    result += returnType_ + " " + name_ + "()";
-
-    // Abstract методы завершаются точкой с запятой без тела
-    if (flags_ & codegen::ToFlags(codegen::MethodModifier::abstractModifier))
-    {
-        result += ";\n";
-    } else
-    {
-        result += " {\n";
-        for (const auto& statement : body_)
-        {
-            result += statement->Render(indentLevel + 1);
-        }
-        result += MakeIndent(indentLevel) + "}\n";
-    }
-
     return result;
+}
+
+bool JavaMethodUnit::IsAbstractMethod() const
+{
+    return (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::abstractModifier)) != 0;
+}
+
+std::string JavaMethodUnit::RenderAbstractTerminator() const
+{
+    return ";\n";
 }
 
 }  // namespace codegen::java

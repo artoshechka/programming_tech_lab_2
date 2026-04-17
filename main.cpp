@@ -20,6 +20,25 @@ std::string GenerateRegularClass(const codegen::ICodeFactory& factory)
 
     const auto myClass = factory.CreateClass("MyClass", classAccess);
 
+    const std::string fieldType = [&languageName]() {
+        if (languageName == "Java")
+            return std::string("String");
+        if (languageName == "C#")
+            return std::string("string");
+        return std::string("std::string");
+    }();
+
+    const codegen::CodeUnit::Flags immutableFieldFlags = [&languageName]() {
+        if (languageName == "C++")
+            return ToFlags(codegen::MethodModifier::constModifier);
+        return ToFlags(codegen::MethodModifier::finalModifier);
+    }();
+
+    myClass->Append(factory.CreateField("name_", fieldType, immutableFieldFlags),
+                    static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::privateAccess));
+    myClass->Append(factory.CreateField("instanceCount_", "int", ToFlags(codegen::MethodModifier::staticModifier)),
+                    static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::privateAccess));
+
     myClass->Append(factory.CreateMethod("publicMethod", "void", 0),
                     static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
     myClass->Append(factory.CreateMethod("privateMethod", "void", 0),
@@ -130,6 +149,10 @@ std::string GenerateStaticExample(const codegen::ICodeFactory& factory)
     {
         const auto utilClass = factory.CreateClass("MathUtils", 0);
 
+        utilClass->Append(factory.CreateField("PI", "double", ToFlags(codegen::MethodModifier::staticModifier) |
+                                                               ToFlags(codegen::MethodModifier::finalModifier)),
+                          static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+
         const auto staticMethod = factory.CreateMethod("sqrt", "double", ToFlags(codegen::MethodModifier::staticModifier));
         staticMethod->Append(factory.CreatePrintStatement("Computing square root..."), 0);
         utilClass->Append(staticMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
@@ -143,6 +166,10 @@ std::string GenerateStaticExample(const codegen::ICodeFactory& factory)
     {
         const auto utilClass = factory.CreateClass("Calculator", 0);
 
+        utilClass->Append(factory.CreateField("Version_", "string", ToFlags(codegen::MethodModifier::staticModifier) |
+                                                                      ToFlags(codegen::MethodModifier::finalModifier)),
+                          static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
+
         const auto staticMethod = factory.CreateMethod("Add", "int", ToFlags(codegen::MethodModifier::staticModifier));
         staticMethod->Append(factory.CreatePrintStatement("Adding numbers..."), 0);
         utilClass->Append(staticMethod, static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
@@ -155,6 +182,10 @@ std::string GenerateStaticExample(const codegen::ICodeFactory& factory)
     else if (languageName == "C++")
     {
         const auto utilClass = factory.CreateClass("Utils", 0);
+
+        utilClass->Append(factory.CreateField("kVersion_", "const char*", ToFlags(codegen::MethodModifier::staticModifier) |
+                                                                      ToFlags(codegen::MethodModifier::constModifier)),
+                          static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::publicAccess));
 
         const auto staticMethod = factory.CreateMethod("calculate", "int", ToFlags(codegen::MethodModifier::staticModifier));
         staticMethod->Append(factory.CreatePrintStatement("Calculating..."), 0);
