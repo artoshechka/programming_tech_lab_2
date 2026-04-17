@@ -4,15 +4,15 @@
 #define GUID_08df7ef8_351b_45a5_bec3_f4bd7307ef66
 
 #include <codegen_types.hpp>
+#include <src/common/abstract_class_unit.hpp>
 #include <string>
-#include <unit.hpp>
 #include <vector>
 
 namespace codegen::csharp
 {
 
 /// @brief Класс для генерации объявления C#-класса.
-class CSharpClassUnit : public codegen::CodeUnit
+class CSharpClassUnit : public codegen::detail::AbstractClassUnit
 {
    public:
     /// @brief Конструктор генератора объявления C#-класса.
@@ -31,8 +31,6 @@ class CSharpClassUnit : public codegen::CodeUnit
     std::string Render(unsigned int indentLevel) const override;
 
    private:
-    std::string name_;                                         ///< Имя C#-класса.
-    Flags accessFlags_;                                        ///< Флаги модификаторов доступа C#-класса.
     std::vector<std::shared_ptr<codegen::CodeUnit>> members_;  ///< Элементы (методы, свойства) класса.
 };
 

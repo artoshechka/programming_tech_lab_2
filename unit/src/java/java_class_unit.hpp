@@ -4,15 +4,15 @@
 #define GUID_b43697fd_9a67_4798_81db_38149df2f4b0
 
 #include <codegen_types.hpp>
+#include <src/common/abstract_class_unit.hpp>
 #include <string>
-#include <unit.hpp>
 #include <vector>
 
 namespace codegen::java
 {
 
 /// @brief Класс для генерации объявления Java-класса.
-class JavaClassUnit : public codegen::CodeUnit
+class JavaClassUnit : public codegen::detail::AbstractClassUnit
 {
    public:
     /// @brief Конструктор генератора объявления Java-класса.
@@ -31,8 +31,6 @@ class JavaClassUnit : public codegen::CodeUnit
     std::string Render(unsigned int indentLevel) const override;
 
    private:
-    std::string name_;                                         ///< Имя Java-класса.
-    Flags classModifiers_;                                     ///< Флаги модификаторов класса (final, abstract).
     std::vector<std::shared_ptr<codegen::CodeUnit>> members_;  ///< Элементы (методы, поля) класса.
 };
 

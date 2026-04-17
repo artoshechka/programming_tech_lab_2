@@ -4,15 +4,14 @@
 #define GUID_95f18fd5_30c3_4295_8698_60bf56494d12
 
 #include <codegen_types.hpp>
+#include <src/common/abstract_method_unit.hpp>
 #include <string>
-#include <unit.hpp>
-#include <vector>
 
 namespace codegen::csharp
 {
 
 /// @brief Класс для генерации объявления C#-метода.
-class CSharpMethodUnit : public codegen::CodeUnit
+class CSharpMethodUnit : public codegen::detail::AbstractMethodUnit
 {
    public:
     /// @brief Конструктор генератора объявления C#-метода.
@@ -21,21 +20,18 @@ class CSharpMethodUnit : public codegen::CodeUnit
     /// @param[in] flagsValue Флаги модификаторов.
     CSharpMethodUnit(std::string name, std::string returnType, Flags flagsValue);
 
-    /// @brief Добавляет выражение/инструкцию в тело метода.
-    /// @param[in] unit Вложенный узел.
-    /// @param[in] flagsValue Дополнительные флаги (не используются).
-    void Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue) override;
+   protected:
+    /// @brief Формирует модификаторы C# перед типом метода.
+    /// @return Префикс модификаторов.
+    std::string RenderPrefixModifiers() const override;
 
-    /// @brief Формирует текст C#-метода.
-    /// @param[in] indentLevel Уровень отступа.
-    /// @return Текст объявления метода.
-    std::string Render(unsigned int indentLevel) const override;
+    /// @brief Проверяет, является ли C#-метод абстрактным.
+    /// @return true, если метод abstract.
+    bool IsAbstractMethod() const override;
 
-   private:
-    std::string name_;                                      ///< Имя C#-метода.
-    std::string returnType_;                                ///< Тип возвращаемого значения.
-    Flags flags_;                                           ///< Флаги модификаторов метода.
-    std::vector<std::shared_ptr<codegen::CodeUnit>> body_;  ///< Инструкции в теле метода.
+    /// @brief Возвращает окончание для abstract C#-метода.
+    /// @return Строка ";\n".
+    std::string RenderAbstractTerminator() const override;
 };
 
 }  // namespace codegen::csharp
