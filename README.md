@@ -185,6 +185,20 @@ classDiagram
 
     CodeUnit <|-- AccessControlledUnit
 
+    CSharpCodeFactory --> CSharpClassUnit
+    CSharpCodeFactory --> CSharpMethodUnit
+    CSharpCodeFactory --> CSharpFieldUnit
+    CSharpCodeFactory --> CSharpPrintUnit
+
+    CppCodeFactory --> CppClassUnit
+    CppCodeFactory --> CppMethodUnit
+    CppCodeFactory --> CppFieldUnit
+    CppCodeFactory --> CppPrintUnit
+
+    JavaCodeFactory --> JavaClassUnit
+    JavaCodeFactory --> JavaMethodUnit
+    JavaCodeFactory --> JavaFieldUnit
+    JavaCodeFactory --> JavaPrintUnit
 ```
 
 ### Архитектура решения
