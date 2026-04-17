@@ -11,14 +11,14 @@ namespace codegen
 {
 
 /// @brief Класс для генерации объявления поля C++.
-class FieldDeclarationUnit : public codegen::detail::AbstractFieldUnit
+class CppFieldUnit : public codegen::detail::AbstractFieldUnit
 {
    public:
     /// @brief Конструктор генератора поля C++.
     /// @param[in] name Имя поля.
     /// @param[in] type Тип поля.
     /// @param[in] flagsValue Флаги модификаторов.
-    FieldDeclarationUnit(const std::string& name, const std::string& type, Flags flagsValue);
+    CppFieldUnit(const std::string& name, const std::string& type, Flags flagsValue);
 
    protected:
     /// @brief Формирует префикс модификаторов поля C++.

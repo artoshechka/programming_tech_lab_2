@@ -10,12 +10,12 @@ namespace codegen
 {
 
 /// @brief Класс, который формирует оператор печати.
-class PrintStatementUnit : public codegen::detail::AbstractPrintUnit
+class CppPrintUnit : public codegen::detail::AbstractPrintUnit
 {
    public:
     /// @brief Конструктор генератора инструкции печати на C++.
     /// @param[in] text Текст для вывода на печать.
-    explicit PrintStatementUnit(const std::string& text);
+    explicit CppPrintUnit(const std::string& text);
 
    protected:
     /// @brief Формирует C++-инструкцию печати без отступа.

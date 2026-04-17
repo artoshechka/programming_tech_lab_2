@@ -2,14 +2,14 @@
 /// @brief Реализация генератора поля C++.
 #include <src/cpp/cpp_field_unit.hpp>
 
-using codegen::FieldDeclarationUnit;
+using codegen::CppFieldUnit;
 
-FieldDeclarationUnit::FieldDeclarationUnit(const std::string& name, const std::string& type, Flags flagsValue)
+CppFieldUnit::CppFieldUnit(const std::string& name, const std::string& type, Flags flagsValue)
     : codegen::detail::AbstractFieldUnit(name, type, flagsValue)
 {
 }
 
-std::string FieldDeclarationUnit::RenderPrefixModifiers() const
+std::string CppFieldUnit::RenderPrefixModifiers() const
 {
     std::string result;
     if (GetFieldFlags() & ToFlags(MethodModifier::staticModifier))

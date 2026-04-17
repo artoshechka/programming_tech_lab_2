@@ -56,23 +56,23 @@ classDiagram
         +GetLanguageName() string
     }
 
-    class ClassDeclarationUnit {
+    class CppClassUnit {
         +Append(unit, flagsValue)
         +Render(indentLevel) string
     }
 
-    class MethodDeclarationUnit {
+    class CppMethodUnit {
         +RenderPrefixModifiers() string
         +RenderSuffixModifiers() string
         +IsAbstractMethod() bool
         +RenderAbstractTerminator() string
     }
 
-    class PrintStatementUnit {
+    class CppPrintUnit {
         +RenderPrintExpression(text) string
     }
 
-    class FieldDeclarationUnit {
+    class CppFieldUnit {
         +RenderPrefixModifiers() string
     }
 
@@ -168,10 +168,10 @@ classDiagram
     CodeUnit <|-- AbstractPrintUnit
     CodeUnit <|-- AbstractFieldUnit
 
-    AbstractClassUnit <|-- ClassDeclarationUnit
-    AbstractMethodUnit <|-- MethodDeclarationUnit
-    AbstractPrintUnit <|-- PrintStatementUnit
-    AbstractFieldUnit <|-- FieldDeclarationUnit
+    AbstractClassUnit <|-- CppClassUnit
+    AbstractMethodUnit <|-- CppMethodUnit
+    AbstractPrintUnit <|-- CppPrintUnit
+    AbstractFieldUnit <|-- CppFieldUnit
 
     AbstractClassUnit <|-- JavaClassUnit
     AbstractMethodUnit <|-- JavaMethodUnit
@@ -184,22 +184,6 @@ classDiagram
     AbstractFieldUnit <|-- CSharpFieldUnit
 
     CodeUnit <|-- AccessControlledUnit
-    AccessControlledUnit o--> CodeUnit
-
-    CppCodeFactory ..> ClassDeclarationUnit
-    CppCodeFactory ..> MethodDeclarationUnit
-    CppCodeFactory ..> PrintStatementUnit
-    CppCodeFactory ..> FieldDeclarationUnit
-
-    JavaCodeFactory ..> JavaClassUnit
-    JavaCodeFactory ..> JavaMethodUnit
-    JavaCodeFactory ..> JavaPrintUnit
-    JavaCodeFactory ..> JavaFieldUnit
-
-    CSharpCodeFactory ..> CSharpClassUnit
-    CSharpCodeFactory ..> CSharpMethodUnit
-    CSharpCodeFactory ..> CSharpPrintUnit
-    CSharpCodeFactory ..> CSharpFieldUnit
 
 ```
 
@@ -214,7 +198,7 @@ classDiagram
     - конкретные узлы классов, методов и печати для каждого языка.
 - **unit/src/cpp** — C++-реализация генерации:
     - **CppCodeFactory**;
-    - **ClassDeclarationUnit**, **MethodDeclarationUnit**, **PrintStatementUnit**.
+    - **CppClassUnit**, **CppMethodUnit**, **CppPrintUnit**, **CppFieldUnit**.
 - **unit/src/java** — Java-реализация генерации:
     - **JavaCodeFactory**;
     - **JavaClassUnit**, **JavaMethodUnit**, **JavaPrintUnit**.

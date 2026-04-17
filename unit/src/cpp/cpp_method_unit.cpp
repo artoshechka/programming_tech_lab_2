@@ -2,14 +2,14 @@
 /// @brief Определение класса для генерации кода метода.
 #include <src/cpp/cpp_method_unit.hpp>
 
-using codegen::MethodDeclarationUnit;
+using codegen::CppMethodUnit;
 
-MethodDeclarationUnit::MethodDeclarationUnit(const std::string& name, const std::string& returnType, Flags flagsValue)
+CppMethodUnit::CppMethodUnit(const std::string& name, const std::string& returnType, Flags flagsValue)
     : codegen::detail::AbstractMethodUnit(name, returnType, flagsValue)
 {
 }
 
-std::string MethodDeclarationUnit::RenderPrefixModifiers() const
+std::string CppMethodUnit::RenderPrefixModifiers() const
 {
     std::string result;
     if (GetMethodFlags() & ToFlags(MethodModifier::staticModifier))
@@ -22,7 +22,7 @@ std::string MethodDeclarationUnit::RenderPrefixModifiers() const
     return result;
 }
 
-std::string MethodDeclarationUnit::RenderSuffixModifiers() const
+std::string CppMethodUnit::RenderSuffixModifiers() const
 {
     std::string result;
     if (GetMethodFlags() & ToFlags(MethodModifier::finalModifier))
@@ -36,12 +36,12 @@ std::string MethodDeclarationUnit::RenderSuffixModifiers() const
     return result;
 }
 
-bool MethodDeclarationUnit::IsAbstractMethod() const
+bool CppMethodUnit::IsAbstractMethod() const
 {
     return (GetMethodFlags() & ToFlags(MethodModifier::abstractModifier)) != 0;
 }
 
-std::string MethodDeclarationUnit::RenderAbstractTerminator() const
+std::string CppMethodUnit::RenderAbstractTerminator() const
 {
     return " = 0;\n";
 }

@@ -2,13 +2,13 @@
 /// @brief Определение класса для генерации оператора печати.
 #include <src/cpp/cpp_print_unit.hpp>
 
-using codegen::PrintStatementUnit;
+using codegen::CppPrintUnit;
 
-PrintStatementUnit::PrintStatementUnit(const std::string& text) : codegen::detail::AbstractPrintUnit(text)
+CppPrintUnit::CppPrintUnit(const std::string& text) : codegen::detail::AbstractPrintUnit(text)
 {
 }
 
-std::string PrintStatementUnit::RenderPrintExpression(const std::string& text) const
+std::string CppPrintUnit::RenderPrintExpression(const std::string& text) const
 {
     return "printf( \"" + text + "\" );";
 }

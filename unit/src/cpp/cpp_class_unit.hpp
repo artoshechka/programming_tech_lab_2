@@ -12,13 +12,13 @@ namespace codegen
 {
 
 /// @brief Класс, который собирает и формирует объявление C++ класса.
-class ClassDeclarationUnit : public codegen::detail::AbstractClassUnit
+class CppClassUnit : public codegen::detail::AbstractClassUnit
 {
    public:
     /// @brief Конструктор генератора объявления C++ класса.
     /// @param[in] name Имя класса.
     /// @param[in] classModifiersValue Флаги модификаторов класса (final и т.д.).
-    explicit ClassDeclarationUnit(const std::string& name, Flags classModifiersValue = 0);
+    explicit CppClassUnit(const std::string& name, Flags classModifiersValue = 0);
 
     /// @brief Добавляет вложенный элемент в указанную секцию доступа.
     /// @param[in] unit Вложенный узел.

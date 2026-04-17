@@ -12,24 +12,24 @@ namespace codegen::cpp
 std::shared_ptr<codegen::CodeUnit> CppCodeFactory::CreateClass(const std::string& name,
                                                                codegen::CodeUnit::Flags flagsValue) const
 {
-    return std::make_shared<codegen::ClassDeclarationUnit>(name, flagsValue);
+    return std::make_shared<codegen::CppClassUnit>(name, flagsValue);
 }
 
 std::shared_ptr<codegen::CodeUnit> CppCodeFactory::CreateMethod(const std::string& name, const std::string& returnType,
                                                                 codegen::CodeUnit::Flags flagsValue) const
 {
-    return std::make_shared<codegen::MethodDeclarationUnit>(name, returnType, flagsValue);
+    return std::make_shared<codegen::CppMethodUnit>(name, returnType, flagsValue);
 }
 
 std::shared_ptr<codegen::CodeUnit> CppCodeFactory::CreateField(const std::string& name, const std::string& type,
                                                                codegen::CodeUnit::Flags flagsValue) const
 {
-    return std::make_shared<codegen::FieldDeclarationUnit>(name, type, flagsValue);
+    return std::make_shared<codegen::CppFieldUnit>(name, type, flagsValue);
 }
 
 std::shared_ptr<codegen::CodeUnit> CppCodeFactory::CreatePrintStatement(const std::string& text) const
 {
-    return std::make_shared<codegen::PrintStatementUnit>(text);
+    return std::make_shared<codegen::CppPrintUnit>(text);
 }
 
 std::string CppCodeFactory::GetLanguageName() const

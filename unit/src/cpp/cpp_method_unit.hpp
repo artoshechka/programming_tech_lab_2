@@ -11,14 +11,14 @@ namespace codegen
 {
 
 /// @brief Класс, который формирует объявление метода C++ класса.
-class MethodDeclarationUnit : public codegen::detail::AbstractMethodUnit
+class CppMethodUnit : public codegen::detail::AbstractMethodUnit
 {
    public:
     /// @brief Конструктор генератора объявления C++ метода.
     /// @param[in] name Имя метода.
     /// @param[in] returnType Тип возвращаемого значения.
     /// @param[in] flagsValue Флаги модификаторов метода.
-    MethodDeclarationUnit(const std::string& name, const std::string& returnType, Flags flagsValue);
+    CppMethodUnit(const std::string& name, const std::string& returnType, Flags flagsValue);
 
    protected:
     /// @brief Формирует модификаторы C++ перед типом метода.
