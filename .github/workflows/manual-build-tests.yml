@@ -98,5 +98,5 @@ jobs:
         with:
           name: coverage-report
           path: |
-            build-coverage/coverage_cpp.html
+            build-coverage/coverage_cpp*
             build-coverage/coverage_summary.txt
