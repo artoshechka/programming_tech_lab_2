@@ -269,6 +269,75 @@ cmake --build .
 
 </details>
 
+### Unit-тесты (GoogleTest)
+
+Сборка и запуск unit-тестов:
+
+```bash
+cmake -S . -B build -DPROGRAM_GENERATOR_BUILD_TESTS=ON
+cmake --build build --target build_tests --parallel
+ctest --test-dir build --output-on-failure
+```
+
+### Генерация отчета о покрытии
+
+Ниже последовательность полного цикла: чистая coverage-сборка, сборка приложения и тестов,
+прогон тестов и генерация HTML-отчета покрытия только по исходникам `.cpp` проекта.
+
+```bash
+rm -rf build-coverage
+cmake -S . -B build-coverage -DPROGRAM_GENERATOR_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="--coverage -O0 -g"
+cmake --build build-coverage --target program_generator build_tests --parallel
+find build-coverage -name '*.gcda' -delete
+ctest --test-dir build-coverage --output-on-failure
+
+if command -v llvm-cov >/dev/null 2>&1; then
+    GCOV_EXEC="$(command -v llvm-cov) gcov"
+elif command -v xcrun >/dev/null 2>&1 && xcrun --find llvm-cov >/dev/null 2>&1; then
+    GCOV_EXEC="$(xcrun --find llvm-cov) gcov"
+else
+    GCOV_EXEC="gcov"
+fi
+
+cd build-coverage
+rm -f coverage_cpp*
+find . -name '*.gcov' -delete
+gcovr -r .. \
+    --gcov-executable "$GCOV_EXEC" \
+    --filter ".*/unit/src/.*\.cpp$" \
+    --exclude ".*/main\.cpp$" \
+    --exclude ".*/tests/.*" \
+    --exclude ".*/CMakeFiles/.*" \
+    --exclude ".*/build-coverage/.*" \
+    --exclude ".*CMakeCXXCompilerId\.cpp$" \
+    --exclude ".*\.hpp$" \
+    --exclude-unreachable-branches \
+    --exclude-throw-branches \
+    --decisions \
+    --html-details coverage_cpp.html
+
+gcovr -r .. \
+    --gcov-executable "$GCOV_EXEC" \
+    --filter ".*/unit/src/.*\.cpp$" \
+    --exclude ".*/main\.cpp$" \
+    --exclude ".*/tests/.*" \
+    --exclude ".*/CMakeFiles/.*" \
+    --exclude ".*/build-coverage/.*" \
+    --exclude ".*CMakeCXXCompilerId\.cpp$" \
+    --exclude ".*\.hpp$" \
+    --exclude-unreachable-branches \
+    --exclude-throw-branches \
+    --decisions \
+    --txt \
+    --txt-metric decision \
+    --print-summary
+```
+Открыть отчет:
+
+```bash
+open build-coverage/coverage_cpp.html
+```
+
 ### Форматирование кода
 
 Для автоматического форматирования всех исходных файлов используйте команду:

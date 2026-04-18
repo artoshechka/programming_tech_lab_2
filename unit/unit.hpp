@@ -21,7 +21,7 @@ class CodeUnit
    public:
     /// @brief Виртуальный деструктор базового класса.
     virtual ~CodeUnit() = default;
-    
+
     /// @brief Добавляет вложенный узел.
     /// @param[in] unit Вложенный узел.
     /// @param[in] flagsValue Дополнительные флаги добавления.

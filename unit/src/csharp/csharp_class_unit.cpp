@@ -2,6 +2,7 @@
 /// @brief Реализация генератора C#-класса.
 #include <src/common/access_controlled_unit.hpp>
 #include <src/csharp/csharp_class_unit.hpp>
+#include <stdexcept>
 #include <utility>
 
 namespace codegen::csharp
@@ -62,6 +63,11 @@ CSharpClassUnit::CSharpClassUnit(std::string name, Flags accessFlagsValue)
 
 void CSharpClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue)
 {
+    if (!unit)
+    {
+        throw std::invalid_argument("Class member must not be null");
+    }
+
     const std::string accessKeyword = ResolveCSharpMemberAccessKeyword(flagsValue);
     members_.push_back(std::make_shared<codegen::detail::AccessControlledUnit>(accessKeyword, unit));
 }
