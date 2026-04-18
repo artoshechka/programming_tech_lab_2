@@ -1,6 +1,7 @@
 /// @file
 /// @brief Определение класса для генерации кода C++ класса.
 #include <src/cpp/cpp_class_unit.hpp>
+#include <stdexcept>
 
 using codegen::CppClassUnit;
 
@@ -14,6 +15,11 @@ CppClassUnit::CppClassUnit(const std::string& name, Flags classModifiersValue)
 
 void CppClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier accessModifier)
 {
+    if (!unit)
+    {
+        throw std::invalid_argument("Class member must not be null");
+    }
+
     size_t modifierIndex = static_cast<size_t>(accessModifier);
     if (modifierIndex >= accessModifiers_.size())
     {

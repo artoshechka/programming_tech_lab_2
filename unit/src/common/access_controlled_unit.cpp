@@ -1,6 +1,7 @@
 /// @file
 /// @brief Реализация вспомогательного узла для префиксирования доступа.
 #include <src/common/access_controlled_unit.hpp>
+#include <stdexcept>
 #include <utility>
 
 namespace codegen::detail
@@ -13,6 +14,15 @@ AccessControlledUnit::AccessControlledUnit(std::string accessKeyword, std::share
 
 std::string AccessControlledUnit::Render(unsigned int indentLevel) const
 {
+    if (accessKeyword_.empty())
+    {
+        throw std::runtime_error("Access keyword must not be empty");
+    }
+    if (!unit_)
+    {
+        throw std::runtime_error("Wrapped code unit must not be null");
+    }
+
     std::string rendered = unit_->Render(indentLevel);
     const std::string indent = MakeIndent(indentLevel);
 
