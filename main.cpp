@@ -1,5 +1,6 @@
 #include <code_factory.hpp>
 #include <codegen_types.hpp>
+#include <exception>
 #include <iostream>
 #include <vector>
 
@@ -215,31 +216,42 @@ std::string GenerateStaticExample(const codegen::ICodeFactory& factory)
 
 int main()
 {
-    const std::vector<codegen::Language> languages = {
-        codegen::Language::cppLanguage,
-        codegen::Language::javaLanguage,
-        codegen::Language::csharpLanguage,
-    };
-
-    for (const auto language : languages)
+    try
     {
-        const auto factory = codegen::CreateFactory(language);
-        const std::string languageName = factory->GetLanguageName();
+        const std::vector<codegen::Language> languages = {
+            codegen::Language::cppLanguage,
+            codegen::Language::javaLanguage,
+            codegen::Language::csharpLanguage,
+        };
 
-        std::cout << "\n" << languageName << " Code Examples\n";
+        for (const auto language : languages)
+        {
+            const auto factory = codegen::CreateFactory(language);
+            const std::string languageName = factory->GetLanguageName();
 
-        std::cout << "\nRegular Class with Access Modifiers:\n";
-        std::cout << GenerateRegularClass(*factory);
+            std::cout << "\n" << languageName << " Code Examples\n";
 
-        std::cout << "\nFinal Class:\n";
-        std::cout << GenerateFinalClass(*factory);
+            std::cout << "\nRegular Class with Access Modifiers:\n";
+            std::cout << GenerateRegularClass(*factory);
 
-        std::cout << "\nAbstract Class:\n";
-        std::cout << GenerateAbstractClass(*factory);
+            std::cout << "\nFinal Class:\n";
+            std::cout << GenerateFinalClass(*factory);
 
-        std::cout << "\nStatic Methods:\n";
-        std::cout << GenerateStaticExample(*factory);
+            std::cout << "\nAbstract Class:\n";
+            std::cout << GenerateAbstractClass(*factory);
+
+            std::cout << "\nStatic Methods:\n";
+            std::cout << GenerateStaticExample(*factory);
+        }
+
+        return 0;
+    } catch (const std::exception& error)
+    {
+        std::cerr << "Error: " << error.what() << "\n";
+    } catch (...)
+    {
+        std::cerr << "Error: unknown exception\n";
     }
 
-    return 0;
+    return 1;
 }

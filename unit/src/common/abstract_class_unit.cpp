@@ -1,6 +1,7 @@
 /// @file
 /// @brief Реализация базового абстрактного класса для объявления класса.
 #include <src/common/abstract_class_unit.hpp>
+#include <stdexcept>
 #include <utility>
 
 namespace codegen::detail
@@ -13,6 +14,10 @@ AbstractClassUnit::AbstractClassUnit(std::string name, Flags classFlagsValue)
 
 const std::string& AbstractClassUnit::GetClassName() const
 {
+    if (className_.empty())
+    {
+        throw std::runtime_error("Class name must not be empty");
+    }
     return className_;
 }
 

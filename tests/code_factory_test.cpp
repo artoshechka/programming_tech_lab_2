@@ -97,6 +97,117 @@ TEST(BaseCodeUnitTest, AppendOnLeafFieldThrowsNotSupported)
     EXPECT_THROW(field->Append(factory->CreatePrintStatement("x"), 0), std::runtime_error);
 }
 
+// Кейс: Класс с пустым именем создается, но ошибка фиксируется при Render().
+TEST(ExceptionHandlingTest, CreateClassTracksEmptyNameOnRender)
+{
+    const std::array<codegen::Language, 3> languages = {
+        codegen::Language::cppLanguage,
+        codegen::Language::javaLanguage,
+        codegen::Language::csharpLanguage,
+    };
+
+    for (const auto language : languages)
+    {
+        const auto factory = codegen::CreateFactory(language);
+        ASSERT_NE(factory, nullptr);
+
+        std::shared_ptr<codegen::CodeUnit> classUnit;
+        EXPECT_NO_THROW(classUnit = factory->CreateClass("", 0));
+        ASSERT_NE(classUnit, nullptr);
+        EXPECT_THROW(classUnit->Render(), std::runtime_error);
+    }
+}
+
+// Кейс: Метод с пустым именем/типом создается, но ошибка фиксируется при Render().
+TEST(ExceptionHandlingTest, CreateMethodTracksEmptyNameOrTypeOnRender)
+{
+    const auto factory = codegen::CreateFactory(codegen::Language::cppLanguage);
+
+    ASSERT_NE(factory, nullptr);
+
+    std::shared_ptr<codegen::CodeUnit> emptyNameMethod;
+    EXPECT_NO_THROW(emptyNameMethod = factory->CreateMethod("", "void", 0));
+    ASSERT_NE(emptyNameMethod, nullptr);
+    EXPECT_THROW(emptyNameMethod->Render(), std::runtime_error);
+
+    std::shared_ptr<codegen::CodeUnit> emptyTypeMethod;
+    EXPECT_NO_THROW(emptyTypeMethod = factory->CreateMethod("Run", "", 0));
+    ASSERT_NE(emptyTypeMethod, nullptr);
+    EXPECT_THROW(emptyTypeMethod->Render(), std::runtime_error);
+}
+
+// Кейс: Поле с пустым именем/типом создается, но ошибка фиксируется при Render().
+TEST(ExceptionHandlingTest, CreateFieldTracksEmptyNameOrTypeOnRender)
+{
+    const auto factory = codegen::CreateFactory(codegen::Language::cppLanguage);
+
+    ASSERT_NE(factory, nullptr);
+
+    std::shared_ptr<codegen::CodeUnit> emptyNameField;
+    EXPECT_NO_THROW(emptyNameField = factory->CreateField("", "int", 0));
+    ASSERT_NE(emptyNameField, nullptr);
+    EXPECT_THROW(emptyNameField->Render(), std::runtime_error);
+
+    std::shared_ptr<codegen::CodeUnit> emptyTypeField;
+    EXPECT_NO_THROW(emptyTypeField = factory->CreateField("value_", "", 0));
+    ASSERT_NE(emptyTypeField, nullptr);
+    EXPECT_THROW(emptyTypeField->Render(), std::runtime_error);
+}
+
+// Кейс: Print-юнит с пустым текстом создается, но ошибка фиксируется при Render().
+TEST(ExceptionHandlingTest, CreatePrintTracksEmptyTextOnRender)
+{
+    const auto factory = codegen::CreateFactory(codegen::Language::cppLanguage);
+
+    ASSERT_NE(factory, nullptr);
+
+    std::shared_ptr<codegen::CodeUnit> printUnit;
+    EXPECT_NO_THROW(printUnit = factory->CreatePrintStatement(""));
+    ASSERT_NE(printUnit, nullptr);
+    EXPECT_THROW(printUnit->Render(), std::runtime_error);
+}
+
+// Кейс: Append(nullptr) в класс выбрасывает invalid_argument для всех языков.
+TEST(ExceptionHandlingTest, ClassAppendThrowsForNullMember)
+{
+    const std::array<codegen::Language, 3> languages = {
+        codegen::Language::cppLanguage,
+        codegen::Language::javaLanguage,
+        codegen::Language::csharpLanguage,
+    };
+
+    for (const auto language : languages)
+    {
+        const auto factory = codegen::CreateFactory(language);
+        ASSERT_NE(factory, nullptr);
+
+        const auto classUnit = factory->CreateClass("Container", 0);
+        ASSERT_NE(classUnit, nullptr);
+        EXPECT_THROW(classUnit->Append(nullptr, 0), std::invalid_argument);
+    }
+}
+
+// Кейс: Append(nullptr) в тело метода выбрасывает invalid_argument.
+TEST(ExceptionHandlingTest, MethodAppendThrowsForNullStatement)
+{
+    const auto factory = codegen::CreateFactory(codegen::Language::cppLanguage);
+    ASSERT_NE(factory, nullptr);
+
+    const auto method = factory->CreateMethod("Run", "void", 0);
+    ASSERT_NE(method, nullptr);
+    EXPECT_THROW(method->Append(nullptr, 0), std::invalid_argument);
+}
+
+// Кейс: AccessControlledUnit создается всегда, но некорректные аргументы выявляются при Render().
+TEST(ExceptionHandlingTest, AccessControlledUnitThrowsForInvalidArguments)
+{
+    const codegen::detail::AccessControlledUnit emptyKeywordUnit("", std::make_shared<RawLineUnit>());
+    EXPECT_THROW(emptyKeywordUnit.Render(0), std::runtime_error);
+
+    const codegen::detail::AccessControlledUnit nullWrappedUnit("public", std::shared_ptr<codegen::CodeUnit>());
+    EXPECT_THROW(nullWrappedUnit.Render(0), std::runtime_error);
+}
+
 // Кейс: Абстрактный print-юнит хранит текст и рендерит его через реализацию потомка.
 TEST(AbstractPrintUnitTest, ExposesStoredTextAndRenderExpression)
 {

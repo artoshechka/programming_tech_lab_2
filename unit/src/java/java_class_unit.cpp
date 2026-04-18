@@ -2,6 +2,7 @@
 /// @brief Реализация генератора Java-класса.
 #include <src/common/access_controlled_unit.hpp>
 #include <src/java/java_class_unit.hpp>
+#include <stdexcept>
 #include <utility>
 
 namespace codegen::java
@@ -14,6 +15,11 @@ JavaClassUnit::JavaClassUnit(std::string name, Flags classModifiersValue)
 
 void JavaClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue)
 {
+    if (!unit)
+    {
+        throw std::invalid_argument("Class member must not be null");
+    }
+
     std::string accessKeyword = "private";
     if (flagsValue == static_cast<Flags>(codegen::AccessModifier::publicAccess))
     {
