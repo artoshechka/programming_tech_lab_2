@@ -41,9 +41,9 @@ class AbstractFieldUnit : public codegen::CodeUnit
     Flags GetFieldFlags() const;
 
    private:
-    std::string name_;   ///< Имя поля.
-    std::string type_;   ///< Тип поля.
-    Flags flags_;        ///< Флаги модификаторов поля.
+    std::string name_;  ///< Имя поля.
+    std::string type_;  ///< Тип поля.
+    Flags flags_;       ///< Флаги модификаторов поля.
 };
 
 }  // namespace codegen::detail

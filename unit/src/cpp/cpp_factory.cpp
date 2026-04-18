@@ -1,8 +1,8 @@
 /// @file
 /// @brief Реализация фабрики генерации кода на C++.
 #include <src/cpp/cpp_class_unit.hpp>
-#include <src/cpp/cpp_field_unit.hpp>
 #include <src/cpp/cpp_factory.hpp>
+#include <src/cpp/cpp_field_unit.hpp>
 #include <src/cpp/cpp_method_unit.hpp>
 #include <src/cpp/cpp_print_unit.hpp>
 

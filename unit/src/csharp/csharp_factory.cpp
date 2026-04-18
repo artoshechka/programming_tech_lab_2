@@ -1,8 +1,8 @@
 /// @file
 /// @brief Реализация фабрики генерации кода на C#.
 #include <src/csharp/csharp_class_unit.hpp>
-#include <src/csharp/csharp_field_unit.hpp>
 #include <src/csharp/csharp_factory.hpp>
+#include <src/csharp/csharp_field_unit.hpp>
 #include <src/csharp/csharp_method_unit.hpp>
 #include <src/csharp/csharp_print_unit.hpp>
 

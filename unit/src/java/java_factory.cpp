@@ -1,8 +1,8 @@
 /// @file
 /// @brief Реализация фабрики генерации кода на Java.
 #include <src/java/java_class_unit.hpp>
-#include <src/java/java_field_unit.hpp>
 #include <src/java/java_factory.hpp>
+#include <src/java/java_field_unit.hpp>
 #include <src/java/java_method_unit.hpp>
 #include <src/java/java_print_unit.hpp>
 
