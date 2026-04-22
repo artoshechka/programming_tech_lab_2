@@ -10,9 +10,9 @@ const std::vector<std::string> CppClassUnit::accessModifiers_ = {"public", "prot
 namespace
 {
 
-size_t ResolveAccessSectionIndex(codegen::AccessModifier accessModifier)
+size_t ResolveAccessSectionIndex(codegen::CodeUnit::Flags accessFlags)
 {
-    switch (accessModifier)
+    switch (codegen::ToAccessModifierMask(accessFlags))
     {
         case codegen::AccessModifier::PublicAccess:
             return 0;
@@ -27,11 +27,11 @@ size_t ResolveAccessSectionIndex(codegen::AccessModifier accessModifier)
 
 std::string RenderCppClassModifierSuffix(codegen::CodeUnit::Flags classFlags)
 {
-    switch (classFlags & codegen::ToFlags(codegen::ClassModifier::FinalModifier))
+    switch (codegen::ToClassModifierMask(classFlags & codegen::ClassModifier::FinalModifier))
     {
-        case 0:
+        case codegen::ClassModifier::Unknown:
             return "";
-        case codegen::ToFlags(codegen::ClassModifier::FinalModifier):
+        case codegen::ClassModifier::FinalModifier:
             return " final";
         default:
             throw std::invalid_argument("Unsupported C++ class modifier");
@@ -53,13 +53,19 @@ void CppClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier 
         throw std::invalid_argument("Class member must not be null");
     }
 
-    const size_t modifierIndex = ResolveAccessSectionIndex(accessModifier);
+    const size_t modifierIndex = ResolveAccessSectionIndex(accessModifier | AccessModifier::Unknown);
     fields_[modifierIndex].push_back(unit);
 }
 
 void CppClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue)
 {
-    Append(unit, static_cast<AccessModifier>(flagsValue));
+    if (!unit)
+    {
+        throw std::invalid_argument("Class member must not be null");
+    }
+
+    const size_t modifierIndex = ResolveAccessSectionIndex(flagsValue);
+    fields_[modifierIndex].push_back(unit);
 }
 
 std::string CppClassUnit::Render(unsigned int indentLevel) const

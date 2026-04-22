@@ -11,28 +11,23 @@ namespace
 
 std::string RenderJavaMethodPrefixModifiers(codegen::CodeUnit::Flags methodFlags)
 {
-    switch (methodFlags)
+    switch (codegen::ToMethodModifierMask(methodFlags))
     {
-        case 0:
+        case codegen::MethodModifier::Unknown:
             return "";
-        case codegen::ToFlags(codegen::MethodModifier::StaticModifier):
+        case codegen::MethodModifier::StaticModifier:
             return "static ";
-        case codegen::ToFlags(codegen::MethodModifier::FinalModifier):
+        case codegen::MethodModifier::FinalModifier:
             return "final ";
-        case codegen::ToFlags(codegen::MethodModifier::AbstractModifier):
+        case codegen::MethodModifier::AbstractModifier:
             return "abstract ";
-        case codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-             codegen::ToFlags(codegen::MethodModifier::FinalModifier):
+        case codegen::MethodModifier::StaticFinalModifier:
             return "static final ";
-        case codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-             codegen::ToFlags(codegen::MethodModifier::AbstractModifier):
+        case codegen::MethodModifier::StaticAbstractModifier:
             return "static abstract ";
-        case codegen::ToFlags(codegen::MethodModifier::FinalModifier) |
-             codegen::ToFlags(codegen::MethodModifier::AbstractModifier):
+        case codegen::MethodModifier::FinalAbstractModifier:
             return "final abstract ";
-        case codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-             codegen::ToFlags(codegen::MethodModifier::FinalModifier) |
-             codegen::ToFlags(codegen::MethodModifier::AbstractModifier):
+        case codegen::MethodModifier::StaticFinalAbstractModifier:
             return "static final abstract ";
         default:
             throw std::invalid_argument("Unsupported Java method modifier");
@@ -53,7 +48,7 @@ std::string JavaMethodUnit::RenderPrefixModifiers() const
 
 bool JavaMethodUnit::IsAbstractMethod() const
 {
-    return (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::AbstractModifier)) != 0;
+    return (GetMethodFlags() & codegen::MethodModifier::AbstractModifier) != 0;
 }
 
 std::string JavaMethodUnit::RenderAbstractTerminator() const

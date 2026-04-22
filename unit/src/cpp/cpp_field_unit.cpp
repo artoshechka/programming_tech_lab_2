@@ -10,16 +10,15 @@ namespace
 
 std::string RenderCppFieldPrefixModifiers(codegen::CodeUnit::Flags fieldFlags)
 {
-    switch (fieldFlags)
+    switch (codegen::ToMethodModifierMask(fieldFlags))
     {
-        case 0:
+        case codegen::MethodModifier::Unknown:
             return "";
-        case codegen::ToFlags(codegen::MethodModifier::StaticModifier):
+        case codegen::MethodModifier::StaticModifier:
             return "static ";
-        case codegen::ToFlags(codegen::MethodModifier::ConstModifier):
+        case codegen::MethodModifier::ConstModifier:
             return "const ";
-        case codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-             codegen::ToFlags(codegen::MethodModifier::ConstModifier):
+        case codegen::MethodModifier::StaticConstModifier:
             return "static const ";
         default:
             throw std::invalid_argument("Unsupported C++ field modifier");

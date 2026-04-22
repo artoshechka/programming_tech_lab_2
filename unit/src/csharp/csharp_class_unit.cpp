@@ -13,7 +13,7 @@ namespace
 
 std::string ResolveCSharpMemberAccessKeyword(codegen::CodeUnit::Flags flagsValue)
 {
-    switch (static_cast<codegen::AccessModifier>(flagsValue))
+    switch (codegen::ToAccessModifierMask(flagsValue))
     {
         case codegen::AccessModifier::PublicAccess:
             return "public";
@@ -35,14 +35,12 @@ std::string ResolveCSharpMemberAccessKeyword(codegen::CodeUnit::Flags flagsValue
 
 std::string ResolveCSharpClassAccessPrefix(codegen::CodeUnit::Flags flagsValue)
 {
-    const auto accessMask = static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::PublicAccess) |
-                            static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::ProtectedAccess) |
-                            static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::PrivateAccess) |
-                            static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::InternalAccess) |
-                            static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::FileAccess);
+    const auto accessMask = codegen::AccessModifier::PublicAccess | codegen::AccessModifier::ProtectedAccess |
+                            codegen::AccessModifier::PrivateAccess | codegen::AccessModifier::InternalAccess |
+                            codegen::AccessModifier::FileAccess;
     const auto accessFlags = flagsValue & accessMask;
 
-    switch (static_cast<codegen::AccessModifier>(accessFlags))
+    switch (codegen::ToAccessModifierMask(accessFlags))
     {
         case codegen::AccessModifier::Unknown:
             return "";
@@ -67,18 +65,16 @@ std::string ResolveCSharpClassAccessPrefix(codegen::CodeUnit::Flags flagsValue)
 
 std::string RenderCSharpClassModifiers(codegen::CodeUnit::Flags classFlags)
 {
-    switch (classFlags &
-            (codegen::ToFlags(codegen::ClassModifier::AbstractModifier) |
-             codegen::ToFlags(codegen::ClassModifier::FinalModifier)))
+    switch (codegen::ToClassModifierMask(
+        classFlags & (codegen::ClassModifier::AbstractModifier | codegen::ClassModifier::FinalModifier)))
     {
-        case 0:
+        case codegen::ClassModifier::Unknown:
             return "";
-        case codegen::ToFlags(codegen::ClassModifier::AbstractModifier):
+        case codegen::ClassModifier::AbstractModifier:
             return "abstract ";
-        case codegen::ToFlags(codegen::ClassModifier::FinalModifier):
+        case codegen::ClassModifier::FinalModifier:
             return "sealed ";  // В C# используется sealed вместо final
-        case codegen::ToFlags(codegen::ClassModifier::AbstractModifier) |
-             codegen::ToFlags(codegen::ClassModifier::FinalModifier):
+        case codegen::ClassModifier::AbstractFinalModifier:
             return "abstract sealed ";
         default:
             throw std::invalid_argument("Unsupported C# class modifier");

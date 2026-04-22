@@ -12,18 +12,16 @@ namespace
 
 std::string RenderCSharpFieldPrefixModifiers(codegen::CodeUnit::Flags fieldFlags)
 {
-    switch (fieldFlags &
-            (codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-             codegen::ToFlags(codegen::MethodModifier::FinalModifier)))
+    switch (codegen::ToMethodModifierMask(
+        fieldFlags & (codegen::MethodModifier::StaticModifier | codegen::MethodModifier::FinalModifier)))
     {
-        case 0:
+        case codegen::MethodModifier::Unknown:
             return "";
-        case codegen::ToFlags(codegen::MethodModifier::StaticModifier):
+        case codegen::MethodModifier::StaticModifier:
             return "static ";
-        case codegen::ToFlags(codegen::MethodModifier::FinalModifier):
+        case codegen::MethodModifier::FinalModifier:
             return "readonly ";
-        case codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-             codegen::ToFlags(codegen::MethodModifier::FinalModifier):
+        case codegen::MethodModifier::StaticFinalModifier:
             return "static readonly ";
         default:
             throw std::invalid_argument("Unsupported C# field modifier");

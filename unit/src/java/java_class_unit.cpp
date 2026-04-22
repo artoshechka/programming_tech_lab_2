@@ -13,7 +13,7 @@ namespace
 
 std::string ResolveJavaClassAccessKeyword(codegen::CodeUnit::Flags flagsValue)
 {
-    switch (static_cast<codegen::AccessModifier>(flagsValue))
+    switch (codegen::ToAccessModifierMask(flagsValue))
     {
         case codegen::AccessModifier::PublicAccess:
             return "public";
@@ -29,16 +29,15 @@ std::string ResolveJavaClassAccessKeyword(codegen::CodeUnit::Flags flagsValue)
 
 std::string RenderJavaClassModifiers(codegen::CodeUnit::Flags classFlags)
 {
-    switch (classFlags)
+    switch (codegen::ToClassModifierMask(classFlags))
     {
-        case 0:
+        case codegen::ClassModifier::Unknown:
             return "";
-        case codegen::ToFlags(codegen::ClassModifier::AbstractModifier):
+        case codegen::ClassModifier::AbstractModifier:
             return "abstract ";
-        case codegen::ToFlags(codegen::ClassModifier::FinalModifier):
+        case codegen::ClassModifier::FinalModifier:
             return "final ";
-        case codegen::ToFlags(codegen::ClassModifier::AbstractModifier) |
-             codegen::ToFlags(codegen::ClassModifier::FinalModifier):
+        case codegen::ClassModifier::AbstractFinalModifier:
             return "abstract final ";
         default:
             throw std::invalid_argument("Unsupported Java class modifier");

@@ -10,18 +10,16 @@ namespace
 
 std::string RenderCppMethodPrefixModifiers(codegen::CodeUnit::Flags methodFlags)
 {
-    switch (methodFlags &
-            (codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-             codegen::ToFlags(codegen::MethodModifier::VirtualModifier)))
+    switch (codegen::ToMethodModifierMask(
+        methodFlags & (codegen::MethodModifier::StaticModifier | codegen::MethodModifier::VirtualModifier)))
     {
-        case 0:
+        case codegen::MethodModifier::Unknown:
             return "";
-        case codegen::ToFlags(codegen::MethodModifier::StaticModifier):
+        case codegen::MethodModifier::StaticModifier:
             return "static ";
-        case codegen::ToFlags(codegen::MethodModifier::VirtualModifier):
+        case codegen::MethodModifier::VirtualModifier:
             return "virtual ";
-        case codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-             codegen::ToFlags(codegen::MethodModifier::VirtualModifier):
+        case codegen::MethodModifier::StaticVirtualModifier:
             return "static ";
         default:
             throw std::invalid_argument("Unsupported C++ method modifier");
@@ -30,18 +28,16 @@ std::string RenderCppMethodPrefixModifiers(codegen::CodeUnit::Flags methodFlags)
 
 std::string RenderCppMethodSuffixModifiers(codegen::CodeUnit::Flags methodFlags)
 {
-    switch (methodFlags &
-            (codegen::ToFlags(codegen::MethodModifier::FinalModifier) |
-             codegen::ToFlags(codegen::MethodModifier::ConstModifier)))
+    switch (codegen::ToMethodModifierMask(
+        methodFlags & (codegen::MethodModifier::FinalModifier | codegen::MethodModifier::ConstModifier)))
     {
-        case 0:
+        case codegen::MethodModifier::Unknown:
             return "";
-        case codegen::ToFlags(codegen::MethodModifier::FinalModifier):
+        case codegen::MethodModifier::FinalModifier:
             return " final";
-        case codegen::ToFlags(codegen::MethodModifier::ConstModifier):
+        case codegen::MethodModifier::ConstModifier:
             return " const";
-        case codegen::ToFlags(codegen::MethodModifier::FinalModifier) |
-            codegen::ToFlags(codegen::MethodModifier::ConstModifier):
+        case codegen::MethodModifier::FinalConstModifier:
             return " final const";
         default:
             throw std::invalid_argument("Unsupported C++ method modifier");
@@ -67,7 +63,7 @@ std::string CppMethodUnit::RenderSuffixModifiers() const
 
 bool CppMethodUnit::IsAbstractMethod() const
 {
-    return (GetMethodFlags() & ToFlags(MethodModifier::AbstractModifier)) != 0;
+    return (GetMethodFlags() & MethodModifier::AbstractModifier) != 0;
 }
 
 std::string CppMethodUnit::RenderAbstractTerminator() const

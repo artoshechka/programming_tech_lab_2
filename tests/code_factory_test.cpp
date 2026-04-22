@@ -15,7 +15,7 @@ namespace
 
 codegen::CodeUnit::Flags ToAccessFlags(codegen::AccessModifier access)
 {
-    return static_cast<codegen::CodeUnit::Flags>(access);
+    return access | codegen::AccessModifier::Unknown;
 }
 
 bool Contains(const std::string& source, const std::string& fragment)
@@ -236,19 +236,17 @@ TEST(CppRenderTest, ClassThrowsForUnsupportedAccess)
     const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
     const auto classUnit = factory->CreateClass("FallbackDemo", 0);
 
-    EXPECT_THROW(classUnit->Append(factory->CreateField("value_", "int", 0),
-                                   ToAccessFlags(codegen::AccessModifier::FileAccess)),
-                 std::invalid_argument);
+    EXPECT_THROW(
+        classUnit->Append(factory->CreateField("value_", "int", 0), ToAccessFlags(codegen::AccessModifier::FileAccess)),
+        std::invalid_argument);
 }
 
 // Кейс: C++ метод отдает приоритет static над virtual и рендерит суффиксы final/const.
 TEST(CppRenderTest, MethodPrefersStaticOverVirtualAndRendersSuffixes)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
-    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::VirtualModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::FinalModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::ConstModifier);
+    const auto methodFlags = codegen::MethodModifier::StaticModifier | codegen::MethodModifier::VirtualModifier |
+                             codegen::MethodModifier::FinalModifier | codegen::MethodModifier::ConstModifier;
     const auto methodUnit = factory->CreateMethod("Compute", "int", methodFlags);
     methodUnit->Append(factory->CreatePrintStatement("run"), 0);
 
@@ -263,8 +261,7 @@ TEST(CppRenderTest, MethodPrefersStaticOverVirtualAndRendersSuffixes)
 TEST(CppRenderTest, AbstractMethodUsesPureVirtualTerminator)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
-    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::VirtualModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::AbstractModifier);
+    const auto methodFlags = codegen::MethodModifier::VirtualModifier | codegen::MethodModifier::AbstractModifier;
     const auto methodUnit = factory->CreateMethod("Process", "void", methodFlags);
 
     const std::string rendered = methodUnit->Render(1);
@@ -277,8 +274,7 @@ TEST(CppRenderTest, AbstractMethodUsesPureVirtualTerminator)
 TEST(CppRenderTest, FieldAndPrintStatementsRenderExpectedSyntax)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
-    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-                            codegen::ToFlags(codegen::MethodModifier::ConstModifier);
+    const auto fieldFlags = codegen::MethodModifier::StaticModifier | codegen::MethodModifier::ConstModifier;
     const auto fieldUnit = factory->CreateField("cache_", "int", fieldFlags);
     const auto printUnit = factory->CreatePrintStatement("Hello");
 
@@ -290,10 +286,9 @@ TEST(CppRenderTest, FieldAndPrintStatementsRenderExpectedSyntax)
 TEST(CodeRenderTest, CppRendersFinalClassWithPureVirtualMethod)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
-    const auto classUnit = factory->CreateClass("Worker", codegen::ToFlags(codegen::ClassModifier::FinalModifier));
+    const auto classUnit = factory->CreateClass("Worker", codegen::ClassModifier::FinalModifier);
 
-    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::VirtualModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::AbstractModifier);
+    const auto methodFlags = codegen::MethodModifier::VirtualModifier | codegen::MethodModifier::AbstractModifier;
     classUnit->Append(factory->CreateMethod("Process", "void", methodFlags),
                       ToAccessFlags(codegen::AccessModifier::PublicAccess));
 
@@ -308,8 +303,7 @@ TEST(CodeRenderTest, CppRendersFinalClassWithPureVirtualMethod)
 TEST(JavaRenderTest, ClassRendersModifiersAndThrowsForUnsupportedAccess)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
-    const auto classFlags = codegen::ToFlags(codegen::ClassModifier::AbstractModifier) |
-                            codegen::ToFlags(codegen::ClassModifier::FinalModifier);
+    const auto classFlags = codegen::ClassModifier::AbstractModifier | codegen::ClassModifier::FinalModifier;
     const auto classUnit = factory->CreateClass("JavaDemo", classFlags);
 
     EXPECT_THROW(classUnit->Append(factory->CreateMethod("Run", "void", 0),
@@ -338,9 +332,8 @@ TEST(JavaRenderTest, ClassWithoutModifiersRendersPlainHeader)
 TEST(JavaRenderTest, AbstractMethodUsesSemicolonWithoutBody)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
-    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::FinalModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::AbstractModifier);
+    const auto methodFlags = codegen::MethodModifier::StaticModifier | codegen::MethodModifier::FinalModifier |
+                             codegen::MethodModifier::AbstractModifier;
     const auto methodUnit = factory->CreateMethod("Process", "void", methodFlags);
 
     const std::string rendered = methodUnit->Render(1);
@@ -366,8 +359,7 @@ TEST(JavaRenderTest, ConcreteMethodRendersBody)
 TEST(JavaRenderTest, FieldAndPrintStatementsRenderExpectedSyntax)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
-    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-                            codegen::ToFlags(codegen::MethodModifier::FinalModifier);
+    const auto fieldFlags = codegen::MethodModifier::StaticModifier | codegen::MethodModifier::FinalModifier;
     const auto fieldUnit = factory->CreateField("VERSION", "String", fieldFlags);
     const auto printUnit = factory->CreatePrintStatement("ok");
 
@@ -388,16 +380,13 @@ TEST(JavaRenderTest, FieldWithoutModifiersRendersPlainDeclaration)
 TEST(CodeRenderTest, JavaRendersAbstractClassAndStaticFinalField)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
-    const auto classUnit =
-        factory->CreateClass("MathUtils", codegen::ToFlags(codegen::ClassModifier::AbstractModifier));
+    const auto classUnit = factory->CreateClass("MathUtils", codegen::ClassModifier::AbstractModifier);
 
-    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-                            codegen::ToFlags(codegen::MethodModifier::FinalModifier);
+    const auto fieldFlags = codegen::MethodModifier::StaticModifier | codegen::MethodModifier::FinalModifier;
     classUnit->Append(factory->CreateField("VERSION", "String", fieldFlags),
                       ToAccessFlags(codegen::AccessModifier::PublicAccess));
 
-    const auto methodUnit =
-        factory->CreateMethod("Execute", "void", codegen::ToFlags(codegen::MethodModifier::AbstractModifier));
+    const auto methodUnit = factory->CreateMethod("Execute", "void", codegen::MethodModifier::AbstractModifier);
     classUnit->Append(methodUnit, ToAccessFlags(codegen::AccessModifier::ProtectedAccess));
 
     const std::string rendered = classUnit->Render();
@@ -474,8 +463,7 @@ TEST(CSharpRenderTest, MemberAccessKeywordsIncludeAllSupportedVariants)
 TEST(CSharpRenderTest, MethodRendersVirtualWhenStaticAbsent)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
-    const auto methodUnit =
-        factory->CreateMethod("VirtualOp", "void", codegen::ToFlags(codegen::MethodModifier::VirtualModifier));
+    const auto methodUnit = factory->CreateMethod("VirtualOp", "void", codegen::MethodModifier::VirtualModifier);
 
     const std::string rendered = methodUnit->Render(1);
 
@@ -487,9 +475,8 @@ TEST(CSharpRenderTest, MethodRendersVirtualWhenStaticAbsent)
 TEST(CSharpRenderTest, MethodPrefersStaticOverVirtualAndSupportsSealed)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
-    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::VirtualModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::FinalModifier);
+    const auto methodFlags = codegen::MethodModifier::StaticModifier | codegen::MethodModifier::VirtualModifier |
+                             codegen::MethodModifier::FinalModifier;
     const auto methodUnit = factory->CreateMethod("Compute", "void", methodFlags);
     methodUnit->Append(factory->CreatePrintStatement("run"), 0);
 
@@ -504,8 +491,7 @@ TEST(CSharpRenderTest, MethodPrefersStaticOverVirtualAndSupportsSealed)
 TEST(CSharpRenderTest, AbstractMethodUsesSemicolonWithoutBody)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
-    const auto methodUnit =
-        factory->CreateMethod("Execute", "void", codegen::ToFlags(codegen::MethodModifier::AbstractModifier));
+    const auto methodUnit = factory->CreateMethod("Execute", "void", codegen::MethodModifier::AbstractModifier);
 
     const std::string rendered = methodUnit->Render(1);
 
@@ -517,8 +503,7 @@ TEST(CSharpRenderTest, AbstractMethodUsesSemicolonWithoutBody)
 TEST(CSharpRenderTest, FieldAndPrintStatementsRenderExpectedSyntax)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
-    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-                            codegen::ToFlags(codegen::MethodModifier::FinalModifier);
+    const auto fieldFlags = codegen::MethodModifier::StaticModifier | codegen::MethodModifier::FinalModifier;
     const auto fieldUnit = factory->CreateField("Version_", "string", fieldFlags);
     const auto printUnit = factory->CreatePrintStatement("ok");
 
@@ -539,10 +524,8 @@ TEST(CSharpRenderTest, FieldWithoutModifiersRendersPlainDeclaration)
 TEST(CSharpRenderTest, ClassModifiersRenderAbstractAndSealed)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
-    const auto abstractClass =
-        factory->CreateClass("AbstractType", codegen::ToFlags(codegen::ClassModifier::AbstractModifier));
-    const auto sealedClass =
-        factory->CreateClass("SealedType", codegen::ToFlags(codegen::ClassModifier::FinalModifier));
+    const auto abstractClass = factory->CreateClass("AbstractType", codegen::ClassModifier::AbstractModifier);
+    const auto sealedClass = factory->CreateClass("SealedType", codegen::ClassModifier::FinalModifier);
 
     EXPECT_TRUE(Contains(abstractClass->Render(), "abstract class AbstractType"));
     EXPECT_TRUE(Contains(sealedClass->Render(), "sealed class SealedType"));
@@ -552,16 +535,14 @@ TEST(CSharpRenderTest, ClassModifiersRenderAbstractAndSealed)
 TEST(CodeRenderTest, CSharpRendersFileScopedSealedClass)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
-    const auto classFlags = codegen::ToFlags(codegen::ClassModifier::FinalModifier);
+    const auto classFlags = codegen::ClassModifier::FinalModifier;
     const auto classUnit = factory->CreateClass("Service", classFlags);
 
-    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-                            codegen::ToFlags(codegen::MethodModifier::FinalModifier);
+    const auto fieldFlags = codegen::MethodModifier::StaticModifier | codegen::MethodModifier::FinalModifier;
     classUnit->Append(factory->CreateField("Version_", "string", fieldFlags),
                       ToAccessFlags(codegen::AccessModifier::InternalAccess));
 
-    const auto methodUnit =
-        factory->CreateMethod("Log", "void", codegen::ToFlags(codegen::MethodModifier::StaticModifier));
+    const auto methodUnit = factory->CreateMethod("Log", "void", codegen::MethodModifier::StaticModifier);
     methodUnit->Append(factory->CreatePrintStatement("ok"), 0);
     classUnit->Append(methodUnit, ToAccessFlags(codegen::AccessModifier::ProtectedInternalAccess));
 

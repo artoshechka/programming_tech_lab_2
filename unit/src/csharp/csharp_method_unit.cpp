@@ -12,18 +12,16 @@ namespace
 
 std::string RenderCSharpMethodPrimaryPrefix(codegen::CodeUnit::Flags methodFlags)
 {
-    switch (methodFlags &
-            (codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-             codegen::ToFlags(codegen::MethodModifier::VirtualModifier)))
+    switch (codegen::ToMethodModifierMask(
+        methodFlags & (codegen::MethodModifier::StaticModifier | codegen::MethodModifier::VirtualModifier)))
     {
-        case 0:
+        case codegen::MethodModifier::Unknown:
             return "";
-        case codegen::ToFlags(codegen::MethodModifier::StaticModifier):
+        case codegen::MethodModifier::StaticModifier:
             return "static ";
-        case codegen::ToFlags(codegen::MethodModifier::VirtualModifier):
+        case codegen::MethodModifier::VirtualModifier:
             return "virtual ";
-        case codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-             codegen::ToFlags(codegen::MethodModifier::VirtualModifier):
+        case codegen::MethodModifier::StaticVirtualModifier:
             return "static ";
         default:
             throw std::invalid_argument("Unsupported C# method prefix modifier");
@@ -32,18 +30,16 @@ std::string RenderCSharpMethodPrimaryPrefix(codegen::CodeUnit::Flags methodFlags
 
 std::string RenderCSharpMethodSecondaryPrefix(codegen::CodeUnit::Flags methodFlags)
 {
-    switch (methodFlags &
-            (codegen::ToFlags(codegen::MethodModifier::AbstractModifier) |
-             codegen::ToFlags(codegen::MethodModifier::FinalModifier)))
+    switch (codegen::ToMethodModifierMask(
+        methodFlags & (codegen::MethodModifier::AbstractModifier | codegen::MethodModifier::FinalModifier)))
     {
-        case 0:
+        case codegen::MethodModifier::Unknown:
             return "";
-        case codegen::ToFlags(codegen::MethodModifier::AbstractModifier):
+        case codegen::MethodModifier::AbstractModifier:
             return "abstract ";
-        case codegen::ToFlags(codegen::MethodModifier::FinalModifier):
+        case codegen::MethodModifier::FinalModifier:
             return "sealed ";  // В C# используется sealed вместо final
-        case codegen::ToFlags(codegen::MethodModifier::AbstractModifier) |
-             codegen::ToFlags(codegen::MethodModifier::FinalModifier):
+        case codegen::MethodModifier::FinalAbstractModifier:
             return "abstract sealed ";
         default:
             throw std::invalid_argument("Unsupported C# method suffix modifier");
@@ -59,13 +55,12 @@ CSharpMethodUnit::CSharpMethodUnit(std::string name, std::string returnType, Fla
 
 std::string CSharpMethodUnit::RenderPrefixModifiers() const
 {
-    return RenderCSharpMethodPrimaryPrefix(GetMethodFlags()) +
-           RenderCSharpMethodSecondaryPrefix(GetMethodFlags());
+    return RenderCSharpMethodPrimaryPrefix(GetMethodFlags()) + RenderCSharpMethodSecondaryPrefix(GetMethodFlags());
 }
 
 bool CSharpMethodUnit::IsAbstractMethod() const
 {
-    return (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::AbstractModifier)) != 0;
+    return (GetMethodFlags() & codegen::MethodModifier::AbstractModifier) != 0;
 }
 
 std::string CSharpMethodUnit::RenderAbstractTerminator() const

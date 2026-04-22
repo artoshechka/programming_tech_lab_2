@@ -11,16 +11,15 @@ namespace
 
 std::string RenderJavaFieldPrefixModifiers(codegen::CodeUnit::Flags fieldFlags)
 {
-    switch (fieldFlags)
+    switch (codegen::ToMethodModifierMask(fieldFlags))
     {
-        case 0:
+        case codegen::MethodModifier::Unknown:
             return "";
-        case codegen::ToFlags(codegen::MethodModifier::StaticModifier):
+        case codegen::MethodModifier::StaticModifier:
             return "static ";
-        case codegen::ToFlags(codegen::MethodModifier::FinalModifier):
+        case codegen::MethodModifier::FinalModifier:
             return "final ";
-        case codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
-             codegen::ToFlags(codegen::MethodModifier::FinalModifier):
+        case codegen::MethodModifier::StaticFinalModifier:
             return "static final ";
         default:
             throw std::invalid_argument("Unsupported Java field modifier");
