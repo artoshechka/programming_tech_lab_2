@@ -21,7 +21,20 @@ size_t ResolveAccessSectionIndex(codegen::AccessModifier accessModifier)
         case codegen::AccessModifier::PrivateAccess:
             return 2;
         default:
-            return 2;
+            throw std::invalid_argument("Unsupported C++ class access modifier");
+    }
+}
+
+std::string RenderCppClassModifierSuffix(codegen::CodeUnit::Flags classFlags)
+{
+    switch (classFlags & codegen::ToFlags(codegen::ClassModifier::FinalModifier))
+    {
+        case 0:
+            return "";
+        case codegen::ToFlags(codegen::ClassModifier::FinalModifier):
+            return " final";
+        default:
+            throw std::invalid_argument("Unsupported C++ class modifier");
     }
 }
 
@@ -52,12 +65,7 @@ void CppClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValu
 std::string CppClassUnit::Render(unsigned int indentLevel) const
 {
     std::string result = MakeIndent(indentLevel) + "class " + GetClassName();
-
-    // Добавляем модификатор final для C++ (C++11 и позже)
-    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::FinalModifier))
-    {
-        result += " final";
-    }
+    result += RenderCppClassModifierSuffix(GetClassFlags());
 
     result += " {\n";
 

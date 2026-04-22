@@ -8,6 +8,45 @@
 namespace codegen::java
 {
 
+namespace
+{
+
+std::string ResolveJavaClassAccessKeyword(codegen::CodeUnit::Flags flagsValue)
+{
+    switch (static_cast<codegen::AccessModifier>(flagsValue))
+    {
+        case codegen::AccessModifier::PublicAccess:
+            return "public";
+        case codegen::AccessModifier::ProtectedAccess:
+            return "protected";
+        case codegen::AccessModifier::PrivateAccess:
+            return "private";
+        case codegen::AccessModifier::Unknown:
+        default:
+            throw std::invalid_argument("Unsupported Java class access modifier");
+    }
+}
+
+std::string RenderJavaClassModifiers(codegen::CodeUnit::Flags classFlags)
+{
+    switch (classFlags)
+    {
+        case 0:
+            return "";
+        case codegen::ToFlags(codegen::ClassModifier::AbstractModifier):
+            return "abstract ";
+        case codegen::ToFlags(codegen::ClassModifier::FinalModifier):
+            return "final ";
+        case codegen::ToFlags(codegen::ClassModifier::AbstractModifier) |
+             codegen::ToFlags(codegen::ClassModifier::FinalModifier):
+            return "abstract final ";
+        default:
+            throw std::invalid_argument("Unsupported Java class modifier");
+    }
+}
+
+}  // namespace
+
 JavaClassUnit::JavaClassUnit(std::string name, Flags classModifiersValue)
     : codegen::detail::AbstractClassUnit(std::move(name), classModifiersValue)
 {
@@ -20,31 +59,13 @@ void JavaClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsVal
         throw std::invalid_argument("Class member must not be null");
     }
 
-    std::string accessKeyword = "private";
-    if (flagsValue == static_cast<Flags>(codegen::AccessModifier::PublicAccess))
-    {
-        accessKeyword = "public";
-    }
-    if (flagsValue == static_cast<Flags>(codegen::AccessModifier::ProtectedAccess))
-    {
-        accessKeyword = "protected";
-    }
+    const std::string accessKeyword = ResolveJavaClassAccessKeyword(flagsValue);
     members_.push_back(std::make_shared<codegen::detail::AccessControlledUnit>(accessKeyword, unit));
 }
 
 std::string JavaClassUnit::Render(unsigned int indentLevel) const
 {
-    std::string result = MakeIndent(indentLevel);
-
-    // Добавляем модификаторы класса
-    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::AbstractModifier))
-    {
-        result += "abstract ";
-    }
-    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::FinalModifier))
-    {
-        result += "final ";
-    }
+    std::string result = MakeIndent(indentLevel) + RenderJavaClassModifiers(GetClassFlags());
 
     result += "class " + GetClassName() + " {\n";
     for (const auto& member : members_)

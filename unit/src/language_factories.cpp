@@ -12,7 +12,7 @@ namespace codegen
 /// Является точкой входа для получения конкретной реализации ICodeFactory.
 /// @param[in] language Целевой язык программирования.
 /// @return Указатель на создаваемую фабрику для выбранного языка.
-/// @note По умолчанию возвращает C++-фабрику при некорректном значении параметра.
+/// @throw std::invalid_argument Если передан неизвестный язык.
 std::shared_ptr<ICodeFactory> CreateFactory(Language language)
 {
     switch (language)
@@ -24,7 +24,7 @@ std::shared_ptr<ICodeFactory> CreateFactory(Language language)
         case Language::CSharpLanguage:
             return std::make_shared<csharp::CSharpCodeFactory>();
         default:
-            return std::make_shared<cpp::CppCodeFactory>();
+            throw std::invalid_argument("Unsupported language");
     }
 }
 

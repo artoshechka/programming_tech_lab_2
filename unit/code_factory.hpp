@@ -62,7 +62,7 @@ class ICodeFactory
 /// @brief Глобальная фабрика, создающая языковую фабрику по выбранному языку.
 /// @param[in] language Выбранный язык программирования (Language::CppLanguage, JavaLanguage, CSharpLanguage).
 /// @return Указатель на создаваемую конкретную фабрику для выбранного языка.
-/// @note При некорректном значению языка возвращается фабрика для C++ как языка по умолчанию.
+/// @throw std::invalid_argument Если передан неизвестный язык.
 std::shared_ptr<ICodeFactory> CreateFactory(Language language);
 
 }  // namespace codegen

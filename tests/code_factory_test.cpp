@@ -78,14 +78,11 @@ TEST(CreateFactoryTest, ReturnsExpectedLanguageName)
     EXPECT_EQ(csharpFactory->GetLanguageName(), "C#");
 }
 
-// Кейс: CreateFactory переключается на C++ при неизвестном значении enum языка.
-TEST(CreateFactoryTest, UnknownLanguageFallsBackToCpp)
+// Кейс: CreateFactory выбрасывает исключение при неизвестном значении enum языка.
+TEST(CreateFactoryTest, UnknownLanguageThrows)
 {
     const auto invalidLanguage = static_cast<codegen::Language>(999);
-    const auto factory = codegen::CreateFactory(invalidLanguage);
-
-    ASSERT_NE(factory, nullptr);
-    EXPECT_EQ(factory->GetLanguageName(), "C++");
+    EXPECT_THROW(codegen::CreateFactory(invalidLanguage), std::invalid_argument);
 }
 
 // Кейс: Листовые юниты отклоняют Append() и выбрасывают ожидаемый runtime_error.
@@ -233,18 +230,15 @@ TEST(AccessControlledUnitTest, KeepsRenderedLineWithoutIndentPrefix)
     EXPECT_EQ(wrapped.Render(3), "payload;\n");
 }
 
-// Кейс: C++ класс использует секцию private по умолчанию для неподдерживаемого модификатора доступа.
-TEST(CppRenderTest, ClassFallsBackToPrivateSectionForUnsupportedAccess)
+// Кейс: C++ класс выбрасывает исключение для неподдерживаемого модификатора доступа.
+TEST(CppRenderTest, ClassThrowsForUnsupportedAccess)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
     const auto classUnit = factory->CreateClass("FallbackDemo", 0);
 
-    classUnit->Append(factory->CreateField("value_", "int", 0), ToAccessFlags(codegen::AccessModifier::FileAccess));
-
-    const std::string rendered = classUnit->Render();
-
-    EXPECT_TRUE(Contains(rendered, "private:"));
-    EXPECT_TRUE(Contains(rendered, "int value_;"));
+    EXPECT_THROW(classUnit->Append(factory->CreateField("value_", "int", 0),
+                                   ToAccessFlags(codegen::AccessModifier::FileAccess)),
+                 std::invalid_argument);
 }
 
 // Кейс: C++ метод отдает приоритет static над virtual и рендерит суффиксы final/const.
@@ -310,19 +304,21 @@ TEST(CodeRenderTest, CppRendersFinalClassWithPureVirtualMethod)
     EXPECT_TRUE(Contains(rendered, "virtual void Process() = 0;"));
 }
 
-// Кейс: Java класс рендерит комбинированные модификаторы и использует private для неподдерживаемого доступа.
-TEST(JavaRenderTest, ClassRendersModifiersAndDefaultsUnsupportedAccessToPrivate)
+// Кейс: Java класс рендерит комбинированные модификаторы и выбрасывает исключение для неподдерживаемого доступа.
+TEST(JavaRenderTest, ClassRendersModifiersAndThrowsForUnsupportedAccess)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
     const auto classFlags = codegen::ToFlags(codegen::ClassModifier::AbstractModifier) |
                             codegen::ToFlags(codegen::ClassModifier::FinalModifier);
     const auto classUnit = factory->CreateClass("JavaDemo", classFlags);
-    classUnit->Append(factory->CreateMethod("Run", "void", 0), ToAccessFlags(codegen::AccessModifier::InternalAccess));
+
+    EXPECT_THROW(classUnit->Append(factory->CreateMethod("Run", "void", 0),
+                                   ToAccessFlags(codegen::AccessModifier::InternalAccess)),
+                 std::invalid_argument);
 
     const std::string rendered = classUnit->Render();
 
     EXPECT_TRUE(Contains(rendered, "abstract final class JavaDemo"));
-    EXPECT_TRUE(Contains(rendered, "private void Run()"));
 }
 
 // Кейс: Java класс без флагов рендерит обычный заголовок без abstract/final.
@@ -442,7 +438,7 @@ TEST(CSharpRenderTest, ClassAccessKeywordsAreRendered)
     }
 }
 
-// Кейс: Для членов C# поддержаны все варианты доступа и fallback в private.
+// Кейс: Для членов C# поддержаны все варианты доступа, а невалидный доступ вызывает исключение.
 TEST(CSharpRenderTest, MemberAccessKeywordsIncludeAllSupportedVariants)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
@@ -460,7 +456,9 @@ TEST(CSharpRenderTest, MemberAccessKeywordsIncludeAllSupportedVariants)
                       ToAccessFlags(codegen::AccessModifier::InternalAccess));
     classUnit->Append(factory->CreateMethod("ProtectedInternalMethod", "void", 0),
                       ToAccessFlags(codegen::AccessModifier::ProtectedInternalAccess));
-    classUnit->Append(factory->CreateMethod("FallbackMethod", "void", 0), static_cast<codegen::CodeUnit::Flags>(999));
+    EXPECT_THROW(classUnit->Append(factory->CreateMethod("FallbackMethod", "void", 0),
+                                   static_cast<codegen::CodeUnit::Flags>(999)),
+                 std::invalid_argument);
 
     const std::string rendered = classUnit->Render();
 
@@ -470,7 +468,6 @@ TEST(CSharpRenderTest, MemberAccessKeywordsIncludeAllSupportedVariants)
     EXPECT_TRUE(Contains(rendered, "private protected void PrivateProtectedMethod()"));
     EXPECT_TRUE(Contains(rendered, "internal void InternalMethod()"));
     EXPECT_TRUE(Contains(rendered, "protected internal void ProtectedInternalMethod()"));
-    EXPECT_TRUE(Contains(rendered, "private void FallbackMethod()"));
 }
 
 // Кейс: C# метод рендерит префикс virtual, когда флаг static отсутствует.

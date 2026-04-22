@@ -34,8 +34,8 @@ enum class MethodModifier : CodeUnit::Flags {
 /// @brief Модификаторы объявления класса.
 enum class ClassModifier : CodeUnit::Flags {
     Unknown = 0,               ///< Неизвестный модификатор класса.
-    FinalModifier = 1 << 5,    ///< Final класс в Java/C# (бит 5, значение 32).
-    AbstractModifier = 1 << 6  ///< Abstract класс в Java/C# (бит 6, значение 64).
+    FinalModifier = 1 << 7,    ///< Final класс в Java/C# (бит 7, значение 128).
+    AbstractModifier = 1 << 8  ///< Abstract класс в Java/C# (бит 8, значение 256).
 };
 
 /// @brief Вспомогательная функция для преобразования MethodModifier в CodeUnit::Flags.
