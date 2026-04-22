@@ -14,11 +14,11 @@ JavaFieldUnit::JavaFieldUnit(std::string name, std::string type, Flags flagsValu
 std::string JavaFieldUnit::RenderPrefixModifiers() const
 {
     std::string result;
-    if (GetFieldFlags() & codegen::ToFlags(codegen::MethodModifier::staticModifier))
+    if (GetFieldFlags() & codegen::ToFlags(codegen::MethodModifier::StaticModifier))
     {
         result += "static ";
     }
-    if (GetFieldFlags() & codegen::ToFlags(codegen::MethodModifier::finalModifier))
+    if (GetFieldFlags() & codegen::ToFlags(codegen::MethodModifier::FinalModifier))
     {
         result += "final ";
     }

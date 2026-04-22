@@ -14,18 +14,18 @@ CSharpMethodUnit::CSharpMethodUnit(std::string name, std::string returnType, Fla
 std::string CSharpMethodUnit::RenderPrefixModifiers() const
 {
     std::string result;
-    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::staticModifier))
+    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::StaticModifier))
     {
         result += "static ";
-    } else if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::virtualModifier))
+    } else if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::VirtualModifier))
     {
         result += "virtual ";
     }
-    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::abstractModifier))
+    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::AbstractModifier))
     {
         result += "abstract ";
     }
-    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::finalModifier))
+    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::FinalModifier))
     {
         result += "sealed ";  // В C# используется sealed вместо final
     }
@@ -34,7 +34,7 @@ std::string CSharpMethodUnit::RenderPrefixModifiers() const
 
 bool CSharpMethodUnit::IsAbstractMethod() const
 {
-    return (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::abstractModifier)) != 0;
+    return (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::AbstractModifier)) != 0;
 }
 
 std::string CSharpMethodUnit::RenderAbstractTerminator() const

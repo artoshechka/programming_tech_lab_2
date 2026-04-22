@@ -13,9 +13,10 @@ namespace codegen
 
 /// @brief Поддерживаемые фабрикой языки.
 enum class Language : unsigned int {
-    cppLanguage = 0,  ///< C++ язык программирования.
-    javaLanguage,     ///< Java язык программирования.
-    csharpLanguage    ///< C# язык программирования.
+    Unknown = 0,    ///< Неизвестный язык.
+    CppLanguage,    ///< C++ язык программирования.
+    JavaLanguage,   ///< Java язык программирования.
+    CSharpLanguage  ///< C# язык программирования.
 };
 
 /// @brief Интерфейс абстрактной фабрики элементов кода.
@@ -59,7 +60,7 @@ class ICodeFactory
 };
 
 /// @brief Глобальная фабрика, создающая языковую фабрику по выбранному языку.
-/// @param[in] language Выбранный язык программирования (Language::cppLanguage, javaLanguage, csharpLanguage).
+/// @param[in] language Выбранный язык программирования (Language::CppLanguage, JavaLanguage, CSharpLanguage).
 /// @return Указатель на создаваемую конкретную фабрику для выбранного языка.
 /// @note При некорректном значению языка возвращается фабрика для C++ как языка по умолчанию.
 std::shared_ptr<ICodeFactory> CreateFactory(Language language);

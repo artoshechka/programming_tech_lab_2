@@ -14,11 +14,11 @@ CSharpFieldUnit::CSharpFieldUnit(std::string name, std::string type, Flags flags
 std::string CSharpFieldUnit::RenderPrefixModifiers() const
 {
     std::string result;
-    if (GetFieldFlags() & codegen::ToFlags(codegen::MethodModifier::staticModifier))
+    if (GetFieldFlags() & codegen::ToFlags(codegen::MethodModifier::StaticModifier))
     {
         result += "static ";
     }
-    if (GetFieldFlags() & codegen::ToFlags(codegen::MethodModifier::finalModifier))
+    if (GetFieldFlags() & codegen::ToFlags(codegen::MethodModifier::FinalModifier))
     {
         result += "readonly ";
     }

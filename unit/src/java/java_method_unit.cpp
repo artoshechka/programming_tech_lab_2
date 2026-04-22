@@ -14,15 +14,15 @@ JavaMethodUnit::JavaMethodUnit(std::string name, std::string returnType, Flags f
 std::string JavaMethodUnit::RenderPrefixModifiers() const
 {
     std::string result;
-    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::staticModifier))
+    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::StaticModifier))
     {
         result += "static ";
     }
-    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::finalModifier))
+    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::FinalModifier))
     {
         result += "final ";
     }
-    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::abstractModifier))
+    if (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::AbstractModifier))
     {
         result += "abstract ";
     }
@@ -31,7 +31,7 @@ std::string JavaMethodUnit::RenderPrefixModifiers() const
 
 bool JavaMethodUnit::IsAbstractMethod() const
 {
-    return (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::abstractModifier)) != 0;
+    return (GetMethodFlags() & codegen::ToFlags(codegen::MethodModifier::AbstractModifier)) != 0;
 }
 
 std::string JavaMethodUnit::RenderAbstractTerminator() const

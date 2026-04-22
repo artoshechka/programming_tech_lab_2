@@ -17,11 +17,11 @@ std::shared_ptr<ICodeFactory> CreateFactory(Language language)
 {
     switch (language)
     {
-        case Language::cppLanguage:
+        case Language::CppLanguage:
             return std::make_shared<cpp::CppCodeFactory>();
-        case Language::javaLanguage:
+        case Language::JavaLanguage:
             return std::make_shared<java::JavaCodeFactory>();
-        case Language::csharpLanguage:
+        case Language::CSharpLanguage:
             return std::make_shared<csharp::CSharpCodeFactory>();
         default:
             return std::make_shared<cpp::CppCodeFactory>();

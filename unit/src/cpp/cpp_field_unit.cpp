@@ -12,11 +12,11 @@ CppFieldUnit::CppFieldUnit(const std::string& name, const std::string& type, Fla
 std::string CppFieldUnit::RenderPrefixModifiers() const
 {
     std::string result;
-    if (GetFieldFlags() & ToFlags(MethodModifier::staticModifier))
+    if (GetFieldFlags() & ToFlags(MethodModifier::StaticModifier))
     {
         result += "static ";
     }
-    if (GetFieldFlags() & ToFlags(MethodModifier::constModifier))
+    if (GetFieldFlags() & ToFlags(MethodModifier::ConstModifier))
     {
         result += "const ";
     }

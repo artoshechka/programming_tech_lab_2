@@ -10,28 +10,32 @@ namespace codegen
 
 /// @brief Модификаторы доступа для класса/структуры и членов.
 enum class AccessModifier : CodeUnit::Flags {
-    publicAccess,             ///< Публичный модификатор доступа.
-    protectedAccess,          ///< Защищённый модификатор доступа.
-    privateAccess,            ///< Приватный модификатор доступа.
-    privateProtectedAccess,   ///< Доступ из своего класса и наследников в той же сборке (C#).
-    internalAccess,           ///< Доступ из текущей сборки (C#).
-    protectedInternalAccess,  ///< Доступ из текущей сборки или из наследников (C#).
-    fileAccess                ///< Доступ только в пределах файла для типа (C# 11).
+    Unknown = 0,               ///< Неизвестный модификатор доступа.
+    PublicAccess = 1 << 0,     ///< Публичный модификатор доступа.
+    ProtectedAccess = 1 << 1,  ///< Защищённый модификатор доступа.
+    PrivateAccess = 1 << 2,    ///< Приватный модификатор доступа.
+    PrivateProtectedAccess =
+        PrivateAccess | ProtectedAccess,  ///< Доступ из своего класса и наследников в той же сборке (C#).
+    InternalAccess = 1 << 4,              ///< Доступ из текущей сборки (C#).
+    ProtectedInternalAccess = ProtectedAccess | InternalAccess,  ///< Доступ из текущей сборки или из наследников (C#).
+    FileAccess = 1 << 6                                          ///< Доступ только в пределах файла для типа (C# 11).
 };
 
 /// @brief Модификаторы объявления метода.
 enum class MethodModifier : CodeUnit::Flags {
-    staticModifier = 1,        ///< Статический метод (бит 0, значение 1).
-    constModifier = 1 << 1,    ///< Const метод (бит 1, значение 2).
-    virtualModifier = 1 << 2,  ///< Виртуальный метод (бит 2, значение 4).
-    finalModifier = 1 << 3,    ///< Final метод в Java/C# (бит 3, значение 8).
-    abstractModifier = 1 << 4  ///< Abstract метод в Java/C# (бит 4, значение 16).
+    Unknown = 0,               ///< Неизвестный модификатор метода.
+    StaticModifier = 1 << 0,   ///< Статический метод (бит 0, значение 1).
+    ConstModifier = 1 << 1,    ///< Const метод (бит 1, значение 2).
+    VirtualModifier = 1 << 2,  ///< Виртуальный метод (бит 2, значение 4).
+    FinalModifier = 1 << 3,    ///< Final метод в Java/C# (бит 3, значение 8).
+    AbstractModifier = 1 << 4  ///< Abstract метод в Java/C# (бит 4, значение 16).
 };
 
 /// @brief Модификаторы объявления класса.
 enum class ClassModifier : CodeUnit::Flags {
-    finalModifier = 1 << 5,    ///< Final класс в Java/C# (бит 5, значение 32).
-    abstractModifier = 1 << 6  ///< Abstract класс в Java/C# (бит 6, значение 64).
+    Unknown = 0,               ///< Неизвестный модификатор класса.
+    FinalModifier = 1 << 5,    ///< Final класс в Java/C# (бит 5, значение 32).
+    AbstractModifier = 1 << 6  ///< Abstract класс в Java/C# (бит 6, значение 64).
 };
 
 /// @brief Вспомогательная функция для преобразования MethodModifier в CodeUnit::Flags.

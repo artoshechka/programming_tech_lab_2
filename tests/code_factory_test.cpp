@@ -65,9 +65,9 @@ class ProbePrintUnit final : public codegen::detail::AbstractPrintUnit
 // Кейс: CreateFactory возвращает корректные имена для всех поддерживаемых языков.
 TEST(CreateFactoryTest, ReturnsExpectedLanguageName)
 {
-    const auto cppFactory = codegen::CreateFactory(codegen::Language::cppLanguage);
-    const auto javaFactory = codegen::CreateFactory(codegen::Language::javaLanguage);
-    const auto csharpFactory = codegen::CreateFactory(codegen::Language::csharpLanguage);
+    const auto cppFactory = codegen::CreateFactory(codegen::Language::CppLanguage);
+    const auto javaFactory = codegen::CreateFactory(codegen::Language::JavaLanguage);
+    const auto csharpFactory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
 
     ASSERT_NE(cppFactory, nullptr);
     ASSERT_NE(javaFactory, nullptr);
@@ -91,7 +91,7 @@ TEST(CreateFactoryTest, UnknownLanguageFallsBackToCpp)
 // Кейс: Листовые юниты отклоняют Append() и выбрасывают ожидаемый runtime_error.
 TEST(BaseCodeUnitTest, AppendOnLeafFieldThrowsNotSupported)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::cppLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
     const auto field = factory->CreateField("value_", "int", 0);
 
     EXPECT_THROW(field->Append(factory->CreatePrintStatement("x"), 0), std::runtime_error);
@@ -101,9 +101,9 @@ TEST(BaseCodeUnitTest, AppendOnLeafFieldThrowsNotSupported)
 TEST(ExceptionHandlingTest, CreateClassTracksEmptyNameOnRender)
 {
     const std::array<codegen::Language, 3> languages = {
-        codegen::Language::cppLanguage,
-        codegen::Language::javaLanguage,
-        codegen::Language::csharpLanguage,
+        codegen::Language::CppLanguage,
+        codegen::Language::JavaLanguage,
+        codegen::Language::CSharpLanguage,
     };
 
     for (const auto language : languages)
@@ -121,7 +121,7 @@ TEST(ExceptionHandlingTest, CreateClassTracksEmptyNameOnRender)
 // Кейс: Метод с пустым именем/типом создается, но ошибка фиксируется при Render().
 TEST(ExceptionHandlingTest, CreateMethodTracksEmptyNameOrTypeOnRender)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::cppLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
 
     ASSERT_NE(factory, nullptr);
 
@@ -139,7 +139,7 @@ TEST(ExceptionHandlingTest, CreateMethodTracksEmptyNameOrTypeOnRender)
 // Кейс: Поле с пустым именем/типом создается, но ошибка фиксируется при Render().
 TEST(ExceptionHandlingTest, CreateFieldTracksEmptyNameOrTypeOnRender)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::cppLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
 
     ASSERT_NE(factory, nullptr);
 
@@ -157,7 +157,7 @@ TEST(ExceptionHandlingTest, CreateFieldTracksEmptyNameOrTypeOnRender)
 // Кейс: Print-юнит с пустым текстом создается, но ошибка фиксируется при Render().
 TEST(ExceptionHandlingTest, CreatePrintTracksEmptyTextOnRender)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::cppLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
 
     ASSERT_NE(factory, nullptr);
 
@@ -171,9 +171,9 @@ TEST(ExceptionHandlingTest, CreatePrintTracksEmptyTextOnRender)
 TEST(ExceptionHandlingTest, ClassAppendThrowsForNullMember)
 {
     const std::array<codegen::Language, 3> languages = {
-        codegen::Language::cppLanguage,
-        codegen::Language::javaLanguage,
-        codegen::Language::csharpLanguage,
+        codegen::Language::CppLanguage,
+        codegen::Language::JavaLanguage,
+        codegen::Language::CSharpLanguage,
     };
 
     for (const auto language : languages)
@@ -190,7 +190,7 @@ TEST(ExceptionHandlingTest, ClassAppendThrowsForNullMember)
 // Кейс: Append(nullptr) в тело метода выбрасывает invalid_argument.
 TEST(ExceptionHandlingTest, MethodAppendThrowsForNullStatement)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::cppLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
     ASSERT_NE(factory, nullptr);
 
     const auto method = factory->CreateMethod("Run", "void", 0);
@@ -236,10 +236,10 @@ TEST(AccessControlledUnitTest, KeepsRenderedLineWithoutIndentPrefix)
 // Кейс: C++ класс использует секцию private по умолчанию для неподдерживаемого модификатора доступа.
 TEST(CppRenderTest, ClassFallsBackToPrivateSectionForUnsupportedAccess)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::cppLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
     const auto classUnit = factory->CreateClass("FallbackDemo", 0);
 
-    classUnit->Append(factory->CreateField("value_", "int", 0), ToAccessFlags(codegen::AccessModifier::fileAccess));
+    classUnit->Append(factory->CreateField("value_", "int", 0), ToAccessFlags(codegen::AccessModifier::FileAccess));
 
     const std::string rendered = classUnit->Render();
 
@@ -250,11 +250,11 @@ TEST(CppRenderTest, ClassFallsBackToPrivateSectionForUnsupportedAccess)
 // Кейс: C++ метод отдает приоритет static над virtual и рендерит суффиксы final/const.
 TEST(CppRenderTest, MethodPrefersStaticOverVirtualAndRendersSuffixes)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::cppLanguage);
-    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::staticModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::virtualModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::finalModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::constModifier);
+    const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
+    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
+                             codegen::ToFlags(codegen::MethodModifier::VirtualModifier) |
+                             codegen::ToFlags(codegen::MethodModifier::FinalModifier) |
+                             codegen::ToFlags(codegen::MethodModifier::ConstModifier);
     const auto methodUnit = factory->CreateMethod("Compute", "int", methodFlags);
     methodUnit->Append(factory->CreatePrintStatement("run"), 0);
 
@@ -268,9 +268,9 @@ TEST(CppRenderTest, MethodPrefersStaticOverVirtualAndRendersSuffixes)
 // Кейс: C++ абстрактный метод рендерится как pure virtual без тела.
 TEST(CppRenderTest, AbstractMethodUsesPureVirtualTerminator)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::cppLanguage);
-    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::virtualModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::abstractModifier);
+    const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
+    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::VirtualModifier) |
+                             codegen::ToFlags(codegen::MethodModifier::AbstractModifier);
     const auto methodUnit = factory->CreateMethod("Process", "void", methodFlags);
 
     const std::string rendered = methodUnit->Render(1);
@@ -282,9 +282,9 @@ TEST(CppRenderTest, AbstractMethodUsesPureVirtualTerminator)
 // Кейс: C++ юниты поля и печати рендерят ожидаемый синтаксис языка.
 TEST(CppRenderTest, FieldAndPrintStatementsRenderExpectedSyntax)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::cppLanguage);
-    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::staticModifier) |
-                            codegen::ToFlags(codegen::MethodModifier::constModifier);
+    const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
+    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
+                            codegen::ToFlags(codegen::MethodModifier::ConstModifier);
     const auto fieldUnit = factory->CreateField("cache_", "int", fieldFlags);
     const auto printUnit = factory->CreatePrintStatement("Hello");
 
@@ -295,13 +295,13 @@ TEST(CppRenderTest, FieldAndPrintStatementsRenderExpectedSyntax)
 // Кейс: Рендер C++ класса включает модификатор final и pure virtual метод.
 TEST(CodeRenderTest, CppRendersFinalClassWithPureVirtualMethod)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::cppLanguage);
-    const auto classUnit = factory->CreateClass("Worker", codegen::ToFlags(codegen::ClassModifier::finalModifier));
+    const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
+    const auto classUnit = factory->CreateClass("Worker", codegen::ToFlags(codegen::ClassModifier::FinalModifier));
 
-    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::virtualModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::abstractModifier);
+    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::VirtualModifier) |
+                             codegen::ToFlags(codegen::MethodModifier::AbstractModifier);
     classUnit->Append(factory->CreateMethod("Process", "void", methodFlags),
-                      ToAccessFlags(codegen::AccessModifier::publicAccess));
+                      ToAccessFlags(codegen::AccessModifier::PublicAccess));
 
     const std::string rendered = classUnit->Render();
 
@@ -313,11 +313,11 @@ TEST(CodeRenderTest, CppRendersFinalClassWithPureVirtualMethod)
 // Кейс: Java класс рендерит комбинированные модификаторы и использует private для неподдерживаемого доступа.
 TEST(JavaRenderTest, ClassRendersModifiersAndDefaultsUnsupportedAccessToPrivate)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::javaLanguage);
-    const auto classFlags = codegen::ToFlags(codegen::ClassModifier::abstractModifier) |
-                            codegen::ToFlags(codegen::ClassModifier::finalModifier);
+    const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
+    const auto classFlags = codegen::ToFlags(codegen::ClassModifier::AbstractModifier) |
+                            codegen::ToFlags(codegen::ClassModifier::FinalModifier);
     const auto classUnit = factory->CreateClass("JavaDemo", classFlags);
-    classUnit->Append(factory->CreateMethod("Run", "void", 0), ToAccessFlags(codegen::AccessModifier::internalAccess));
+    classUnit->Append(factory->CreateMethod("Run", "void", 0), ToAccessFlags(codegen::AccessModifier::InternalAccess));
 
     const std::string rendered = classUnit->Render();
 
@@ -328,7 +328,7 @@ TEST(JavaRenderTest, ClassRendersModifiersAndDefaultsUnsupportedAccessToPrivate)
 // Кейс: Java класс без флагов рендерит обычный заголовок без abstract/final.
 TEST(JavaRenderTest, ClassWithoutModifiersRendersPlainHeader)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::javaLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
     const auto classUnit = factory->CreateClass("PlainJava", 0);
 
     const std::string rendered = classUnit->Render();
@@ -341,10 +341,10 @@ TEST(JavaRenderTest, ClassWithoutModifiersRendersPlainHeader)
 // Кейс: Java абстрактный метод завершается точкой с запятой и не содержит тела.
 TEST(JavaRenderTest, AbstractMethodUsesSemicolonWithoutBody)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::javaLanguage);
-    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::staticModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::finalModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::abstractModifier);
+    const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
+    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
+                             codegen::ToFlags(codegen::MethodModifier::FinalModifier) |
+                             codegen::ToFlags(codegen::MethodModifier::AbstractModifier);
     const auto methodUnit = factory->CreateMethod("Process", "void", methodFlags);
 
     const std::string rendered = methodUnit->Render(1);
@@ -356,7 +356,7 @@ TEST(JavaRenderTest, AbstractMethodUsesSemicolonWithoutBody)
 // Кейс: Java конкретный метод рендерит тело и инструкцию печати.
 TEST(JavaRenderTest, ConcreteMethodRendersBody)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::javaLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
     const auto methodUnit = factory->CreateMethod("Print", "void", 0);
     methodUnit->Append(factory->CreatePrintStatement("ok"), 0);
 
@@ -369,9 +369,9 @@ TEST(JavaRenderTest, ConcreteMethodRendersBody)
 // Кейс: Java юниты поля и печати рендерят ожидаемый синтаксис языка.
 TEST(JavaRenderTest, FieldAndPrintStatementsRenderExpectedSyntax)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::javaLanguage);
-    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::staticModifier) |
-                            codegen::ToFlags(codegen::MethodModifier::finalModifier);
+    const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
+    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
+                            codegen::ToFlags(codegen::MethodModifier::FinalModifier);
     const auto fieldUnit = factory->CreateField("VERSION", "String", fieldFlags);
     const auto printUnit = factory->CreatePrintStatement("ok");
 
@@ -382,7 +382,7 @@ TEST(JavaRenderTest, FieldAndPrintStatementsRenderExpectedSyntax)
 // Кейс: Java поле без флагов рендерится как объявление без модификаторов.
 TEST(JavaRenderTest, FieldWithoutModifiersRendersPlainDeclaration)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::javaLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
     const auto fieldUnit = factory->CreateField("value", "int", 0);
 
     EXPECT_EQ(fieldUnit->Render(1), " int value;\n");
@@ -391,18 +391,18 @@ TEST(JavaRenderTest, FieldWithoutModifiersRendersPlainDeclaration)
 // Кейс: Рендер Java класса включает абстрактный метод и static final поле.
 TEST(CodeRenderTest, JavaRendersAbstractClassAndStaticFinalField)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::javaLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
     const auto classUnit =
-        factory->CreateClass("MathUtils", codegen::ToFlags(codegen::ClassModifier::abstractModifier));
+        factory->CreateClass("MathUtils", codegen::ToFlags(codegen::ClassModifier::AbstractModifier));
 
-    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::staticModifier) |
-                            codegen::ToFlags(codegen::MethodModifier::finalModifier);
+    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
+                            codegen::ToFlags(codegen::MethodModifier::FinalModifier);
     classUnit->Append(factory->CreateField("VERSION", "String", fieldFlags),
-                      ToAccessFlags(codegen::AccessModifier::publicAccess));
+                      ToAccessFlags(codegen::AccessModifier::PublicAccess));
 
     const auto methodUnit =
-        factory->CreateMethod("Execute", "void", codegen::ToFlags(codegen::MethodModifier::abstractModifier));
-    classUnit->Append(methodUnit, ToAccessFlags(codegen::AccessModifier::protectedAccess));
+        factory->CreateMethod("Execute", "void", codegen::ToFlags(codegen::MethodModifier::AbstractModifier));
+    classUnit->Append(methodUnit, ToAccessFlags(codegen::AccessModifier::ProtectedAccess));
 
     const std::string rendered = classUnit->Render();
 
@@ -414,7 +414,7 @@ TEST(CodeRenderTest, JavaRendersAbstractClassAndStaticFinalField)
 // Кейс: Для C# класса корректно рендерятся префиксы всех поддерживаемых модификаторов доступа.
 TEST(CSharpRenderTest, ClassAccessKeywordsAreRendered)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::csharpLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
     struct AccessCase
     {
         codegen::AccessModifier access;
@@ -422,13 +422,13 @@ TEST(CSharpRenderTest, ClassAccessKeywordsAreRendered)
     };
 
     const std::array<AccessCase, 7> accessCases = {
-        AccessCase{codegen::AccessModifier::publicAccess, "public"},
-        AccessCase{codegen::AccessModifier::protectedAccess, "protected"},
-        AccessCase{codegen::AccessModifier::privateAccess, "private"},
-        AccessCase{codegen::AccessModifier::privateProtectedAccess, "private protected"},
-        AccessCase{codegen::AccessModifier::internalAccess, "internal"},
-        AccessCase{codegen::AccessModifier::protectedInternalAccess, "protected internal"},
-        AccessCase{codegen::AccessModifier::fileAccess, "file"},
+        AccessCase{codegen::AccessModifier::PublicAccess, "public"},
+        AccessCase{codegen::AccessModifier::ProtectedAccess, "protected"},
+        AccessCase{codegen::AccessModifier::PrivateAccess, "private"},
+        AccessCase{codegen::AccessModifier::PrivateProtectedAccess, "private protected"},
+        AccessCase{codegen::AccessModifier::InternalAccess, "internal"},
+        AccessCase{codegen::AccessModifier::ProtectedInternalAccess, "protected internal"},
+        AccessCase{codegen::AccessModifier::FileAccess, "file"},
     };
 
     for (const auto& accessCase : accessCases)
@@ -445,21 +445,21 @@ TEST(CSharpRenderTest, ClassAccessKeywordsAreRendered)
 // Кейс: Для членов C# поддержаны все варианты доступа и fallback в private.
 TEST(CSharpRenderTest, MemberAccessKeywordsIncludeAllSupportedVariants)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::csharpLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
     const auto classUnit = factory->CreateClass("Service", 0);
 
     classUnit->Append(factory->CreateMethod("PublicMethod", "void", 0),
-                      ToAccessFlags(codegen::AccessModifier::publicAccess));
+                      ToAccessFlags(codegen::AccessModifier::PublicAccess));
     classUnit->Append(factory->CreateMethod("ProtectedMethod", "void", 0),
-                      ToAccessFlags(codegen::AccessModifier::protectedAccess));
+                      ToAccessFlags(codegen::AccessModifier::ProtectedAccess));
     classUnit->Append(factory->CreateMethod("PrivateMethod", "void", 0),
-                      ToAccessFlags(codegen::AccessModifier::privateAccess));
+                      ToAccessFlags(codegen::AccessModifier::PrivateAccess));
     classUnit->Append(factory->CreateMethod("PrivateProtectedMethod", "void", 0),
-                      ToAccessFlags(codegen::AccessModifier::privateProtectedAccess));
+                      ToAccessFlags(codegen::AccessModifier::PrivateProtectedAccess));
     classUnit->Append(factory->CreateMethod("InternalMethod", "void", 0),
-                      ToAccessFlags(codegen::AccessModifier::internalAccess));
+                      ToAccessFlags(codegen::AccessModifier::InternalAccess));
     classUnit->Append(factory->CreateMethod("ProtectedInternalMethod", "void", 0),
-                      ToAccessFlags(codegen::AccessModifier::protectedInternalAccess));
+                      ToAccessFlags(codegen::AccessModifier::ProtectedInternalAccess));
     classUnit->Append(factory->CreateMethod("FallbackMethod", "void", 0), static_cast<codegen::CodeUnit::Flags>(999));
 
     const std::string rendered = classUnit->Render();
@@ -476,9 +476,9 @@ TEST(CSharpRenderTest, MemberAccessKeywordsIncludeAllSupportedVariants)
 // Кейс: C# метод рендерит префикс virtual, когда флаг static отсутствует.
 TEST(CSharpRenderTest, MethodRendersVirtualWhenStaticAbsent)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::csharpLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
     const auto methodUnit =
-        factory->CreateMethod("VirtualOp", "void", codegen::ToFlags(codegen::MethodModifier::virtualModifier));
+        factory->CreateMethod("VirtualOp", "void", codegen::ToFlags(codegen::MethodModifier::VirtualModifier));
 
     const std::string rendered = methodUnit->Render(1);
 
@@ -489,10 +489,10 @@ TEST(CSharpRenderTest, MethodRendersVirtualWhenStaticAbsent)
 // Кейс: C# метод отдает приоритет static над virtual и добавляет ключевое слово sealed.
 TEST(CSharpRenderTest, MethodPrefersStaticOverVirtualAndSupportsSealed)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::csharpLanguage);
-    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::staticModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::virtualModifier) |
-                             codegen::ToFlags(codegen::MethodModifier::finalModifier);
+    const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
+    const auto methodFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
+                             codegen::ToFlags(codegen::MethodModifier::VirtualModifier) |
+                             codegen::ToFlags(codegen::MethodModifier::FinalModifier);
     const auto methodUnit = factory->CreateMethod("Compute", "void", methodFlags);
     methodUnit->Append(factory->CreatePrintStatement("run"), 0);
 
@@ -506,9 +506,9 @@ TEST(CSharpRenderTest, MethodPrefersStaticOverVirtualAndSupportsSealed)
 // Кейс: C# абстрактный метод завершается точкой с запятой и не содержит тела.
 TEST(CSharpRenderTest, AbstractMethodUsesSemicolonWithoutBody)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::csharpLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
     const auto methodUnit =
-        factory->CreateMethod("Execute", "void", codegen::ToFlags(codegen::MethodModifier::abstractModifier));
+        factory->CreateMethod("Execute", "void", codegen::ToFlags(codegen::MethodModifier::AbstractModifier));
 
     const std::string rendered = methodUnit->Render(1);
 
@@ -519,9 +519,9 @@ TEST(CSharpRenderTest, AbstractMethodUsesSemicolonWithoutBody)
 // Кейс: C# юниты поля и печати рендерят ожидаемый синтаксис языка.
 TEST(CSharpRenderTest, FieldAndPrintStatementsRenderExpectedSyntax)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::csharpLanguage);
-    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::staticModifier) |
-                            codegen::ToFlags(codegen::MethodModifier::finalModifier);
+    const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
+    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
+                            codegen::ToFlags(codegen::MethodModifier::FinalModifier);
     const auto fieldUnit = factory->CreateField("Version_", "string", fieldFlags);
     const auto printUnit = factory->CreatePrintStatement("ok");
 
@@ -532,7 +532,7 @@ TEST(CSharpRenderTest, FieldAndPrintStatementsRenderExpectedSyntax)
 // Кейс: C# поле без флагов рендерится как объявление без модификаторов.
 TEST(CSharpRenderTest, FieldWithoutModifiersRendersPlainDeclaration)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::csharpLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
     const auto fieldUnit = factory->CreateField("count_", "int", 0);
 
     EXPECT_EQ(fieldUnit->Render(1), " int count_;\n");
@@ -541,11 +541,11 @@ TEST(CSharpRenderTest, FieldWithoutModifiersRendersPlainDeclaration)
 // Кейс: Модификаторы C# класса корректно рендерят варианты abstract и sealed.
 TEST(CSharpRenderTest, ClassModifiersRenderAbstractAndSealed)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::csharpLanguage);
+    const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
     const auto abstractClass =
-        factory->CreateClass("AbstractType", codegen::ToFlags(codegen::ClassModifier::abstractModifier));
+        factory->CreateClass("AbstractType", codegen::ToFlags(codegen::ClassModifier::AbstractModifier));
     const auto sealedClass =
-        factory->CreateClass("SealedType", codegen::ToFlags(codegen::ClassModifier::finalModifier));
+        factory->CreateClass("SealedType", codegen::ToFlags(codegen::ClassModifier::FinalModifier));
 
     EXPECT_TRUE(Contains(abstractClass->Render(), "abstract class AbstractType"));
     EXPECT_TRUE(Contains(sealedClass->Render(), "sealed class SealedType"));
@@ -554,19 +554,19 @@ TEST(CSharpRenderTest, ClassModifiersRenderAbstractAndSealed)
 // Кейс: Рендер C# класса включает sealed класс, internal поле и protected internal метод.
 TEST(CodeRenderTest, CSharpRendersFileScopedSealedClass)
 {
-    const auto factory = codegen::CreateFactory(codegen::Language::csharpLanguage);
-    const auto classFlags = codegen::ToFlags(codegen::ClassModifier::finalModifier);
+    const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
+    const auto classFlags = codegen::ToFlags(codegen::ClassModifier::FinalModifier);
     const auto classUnit = factory->CreateClass("Service", classFlags);
 
-    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::staticModifier) |
-                            codegen::ToFlags(codegen::MethodModifier::finalModifier);
+    const auto fieldFlags = codegen::ToFlags(codegen::MethodModifier::StaticModifier) |
+                            codegen::ToFlags(codegen::MethodModifier::FinalModifier);
     classUnit->Append(factory->CreateField("Version_", "string", fieldFlags),
-                      ToAccessFlags(codegen::AccessModifier::internalAccess));
+                      ToAccessFlags(codegen::AccessModifier::InternalAccess));
 
     const auto methodUnit =
-        factory->CreateMethod("Log", "void", codegen::ToFlags(codegen::MethodModifier::staticModifier));
+        factory->CreateMethod("Log", "void", codegen::ToFlags(codegen::MethodModifier::StaticModifier));
     methodUnit->Append(factory->CreatePrintStatement("ok"), 0);
-    classUnit->Append(methodUnit, ToAccessFlags(codegen::AccessModifier::protectedInternalAccess));
+    classUnit->Append(methodUnit, ToAccessFlags(codegen::AccessModifier::ProtectedInternalAccess));
 
     const std::string rendered = classUnit->Render();
 

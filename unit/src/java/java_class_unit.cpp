@@ -21,11 +21,11 @@ void JavaClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsVal
     }
 
     std::string accessKeyword = "private";
-    if (flagsValue == static_cast<Flags>(codegen::AccessModifier::publicAccess))
+    if (flagsValue == static_cast<Flags>(codegen::AccessModifier::PublicAccess))
     {
         accessKeyword = "public";
     }
-    if (flagsValue == static_cast<Flags>(codegen::AccessModifier::protectedAccess))
+    if (flagsValue == static_cast<Flags>(codegen::AccessModifier::ProtectedAccess))
     {
         accessKeyword = "protected";
     }
@@ -37,11 +37,11 @@ std::string JavaClassUnit::Render(unsigned int indentLevel) const
     std::string result = MakeIndent(indentLevel);
 
     // Добавляем модификаторы класса
-    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::abstractModifier))
+    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::AbstractModifier))
     {
         result += "abstract ";
     }
-    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::finalModifier))
+    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::FinalModifier))
     {
         result += "final ";
     }

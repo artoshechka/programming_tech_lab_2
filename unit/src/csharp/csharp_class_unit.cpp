@@ -15,17 +15,17 @@ std::string ResolveCSharpMemberAccessKeyword(codegen::CodeUnit::Flags flagsValue
 {
     switch (static_cast<codegen::AccessModifier>(flagsValue))
     {
-        case codegen::AccessModifier::publicAccess:
+        case codegen::AccessModifier::PublicAccess:
             return "public";
-        case codegen::AccessModifier::protectedAccess:
+        case codegen::AccessModifier::ProtectedAccess:
             return "protected";
-        case codegen::AccessModifier::privateProtectedAccess:
+        case codegen::AccessModifier::PrivateProtectedAccess:
             return "private protected";
-        case codegen::AccessModifier::internalAccess:
+        case codegen::AccessModifier::InternalAccess:
             return "internal";
-        case codegen::AccessModifier::protectedInternalAccess:
+        case codegen::AccessModifier::ProtectedInternalAccess:
             return "protected internal";
-        case codegen::AccessModifier::privateAccess:
+        case codegen::AccessModifier::PrivateAccess:
         default:
             return "private";
     }
@@ -35,19 +35,19 @@ std::string ResolveCSharpClassAccessPrefix(codegen::CodeUnit::Flags flagsValue)
 {
     switch (static_cast<codegen::AccessModifier>(flagsValue))
     {
-        case codegen::AccessModifier::publicAccess:
+        case codegen::AccessModifier::PublicAccess:
             return "public ";
-        case codegen::AccessModifier::privateAccess:
+        case codegen::AccessModifier::PrivateAccess:
             return "private ";
-        case codegen::AccessModifier::protectedAccess:
+        case codegen::AccessModifier::ProtectedAccess:
             return "protected ";
-        case codegen::AccessModifier::privateProtectedAccess:
+        case codegen::AccessModifier::PrivateProtectedAccess:
             return "private protected ";
-        case codegen::AccessModifier::internalAccess:
+        case codegen::AccessModifier::InternalAccess:
             return "internal ";
-        case codegen::AccessModifier::protectedInternalAccess:
+        case codegen::AccessModifier::ProtectedInternalAccess:
             return "protected internal ";
-        case codegen::AccessModifier::fileAccess:
+        case codegen::AccessModifier::FileAccess:
             return "file ";
         default:
             return "";
@@ -77,11 +77,11 @@ std::string CSharpClassUnit::Render(unsigned int indentLevel) const
     std::string result = MakeIndent(indentLevel) + ResolveCSharpClassAccessPrefix(GetClassFlags());
 
     // Добавляем модификаторы класса
-    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::abstractModifier))
+    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::AbstractModifier))
     {
         result += "abstract ";
     }
-    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::finalModifier))
+    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::FinalModifier))
     {
         result += "sealed ";  // В C# используется sealed вместо final
     }

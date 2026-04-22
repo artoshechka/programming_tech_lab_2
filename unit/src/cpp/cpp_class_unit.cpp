@@ -7,6 +7,26 @@ using codegen::CppClassUnit;
 
 const std::vector<std::string> CppClassUnit::accessModifiers_ = {"public", "protected", "private"};
 
+namespace
+{
+
+size_t ResolveAccessSectionIndex(codegen::AccessModifier accessModifier)
+{
+    switch (accessModifier)
+    {
+        case codegen::AccessModifier::PublicAccess:
+            return 0;
+        case codegen::AccessModifier::ProtectedAccess:
+            return 1;
+        case codegen::AccessModifier::PrivateAccess:
+            return 2;
+        default:
+            return 2;
+    }
+}
+
+}  // namespace
+
 CppClassUnit::CppClassUnit(const std::string& name, Flags classModifiersValue)
     : codegen::detail::AbstractClassUnit(name, classModifiersValue)
 {
@@ -20,11 +40,7 @@ void CppClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier 
         throw std::invalid_argument("Class member must not be null");
     }
 
-    size_t modifierIndex = static_cast<size_t>(accessModifier);
-    if (modifierIndex >= accessModifiers_.size())
-    {
-        modifierIndex = static_cast<size_t>(AccessModifier::privateAccess);
-    }
+    const size_t modifierIndex = ResolveAccessSectionIndex(accessModifier);
     fields_[modifierIndex].push_back(unit);
 }
 
@@ -38,7 +54,7 @@ std::string CppClassUnit::Render(unsigned int indentLevel) const
     std::string result = MakeIndent(indentLevel) + "class " + GetClassName();
 
     // Добавляем модификатор final для C++ (C++11 и позже)
-    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::finalModifier))
+    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::FinalModifier))
     {
         result += " final";
     }

@@ -12,10 +12,10 @@ CppMethodUnit::CppMethodUnit(const std::string& name, const std::string& returnT
 std::string CppMethodUnit::RenderPrefixModifiers() const
 {
     std::string result;
-    if (GetMethodFlags() & ToFlags(MethodModifier::staticModifier))
+    if (GetMethodFlags() & ToFlags(MethodModifier::StaticModifier))
     {
         result += "static ";
-    } else if (GetMethodFlags() & ToFlags(MethodModifier::virtualModifier))
+    } else if (GetMethodFlags() & ToFlags(MethodModifier::VirtualModifier))
     {
         result += "virtual ";
     }
@@ -25,11 +25,11 @@ std::string CppMethodUnit::RenderPrefixModifiers() const
 std::string CppMethodUnit::RenderSuffixModifiers() const
 {
     std::string result;
-    if (GetMethodFlags() & ToFlags(MethodModifier::finalModifier))
+    if (GetMethodFlags() & ToFlags(MethodModifier::FinalModifier))
     {
         result += " final";
     }
-    if (GetMethodFlags() & ToFlags(MethodModifier::constModifier))
+    if (GetMethodFlags() & ToFlags(MethodModifier::ConstModifier))
     {
         result += " const";
     }
@@ -38,7 +38,7 @@ std::string CppMethodUnit::RenderSuffixModifiers() const
 
 bool CppMethodUnit::IsAbstractMethod() const
 {
-    return (GetMethodFlags() & ToFlags(MethodModifier::abstractModifier)) != 0;
+    return (GetMethodFlags() & ToFlags(MethodModifier::AbstractModifier)) != 0;
 }
 
 std::string CppMethodUnit::RenderAbstractTerminator() const
