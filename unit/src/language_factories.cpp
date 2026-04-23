@@ -4,6 +4,7 @@
 #include <src/cpp/cpp_factory.hpp>
 #include <src/csharp/csharp_factory.hpp>
 #include <src/java/java_factory.hpp>
+#include <stdexcept>
 
 namespace codegen
 {

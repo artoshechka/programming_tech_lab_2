@@ -17,6 +17,8 @@ endif()
 
 add_subdirectory(unit)
 
+add_compile_options(-Wno-return-type)
+
 if(PROGRAM_GENERATOR_BUILD_TESTS)
     add_subdirectory(tests)
 endif()

@@ -1,6 +1,7 @@
 /// @file
 /// @brief Реализация генератора поля Java.
 #include <src/java/java_field_unit.hpp>
+#include <stdexcept>
 #include <utility>
 
 namespace codegen::java
