@@ -1,6 +1,7 @@
 /// @file
 /// @brief Определение базовых абстракций для генерации кода.
 /// @author Artemenko Anton
+#include <codegen_types.hpp>
 #include <stdexcept>
 #include <unit.hpp>
 
@@ -14,6 +15,11 @@ void CodeUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue)
     (void)unit;
     (void)flagsValue;
     throw std::runtime_error("Not supported");
+}
+
+void CodeUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier accessModifier)
+{
+    Append(unit, accessModifier | AccessModifier::Unknown);
 }
 
 /// @brief Создает строку отступа по заданному уровню.

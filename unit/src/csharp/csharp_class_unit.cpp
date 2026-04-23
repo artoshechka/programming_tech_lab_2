@@ -13,44 +13,71 @@ namespace
 
 std::string ResolveCSharpMemberAccessKeyword(codegen::CodeUnit::Flags flagsValue)
 {
-    switch (static_cast<codegen::AccessModifier>(flagsValue))
+    switch (codegen::ToAccessModifierMask(flagsValue))
     {
-        case codegen::AccessModifier::publicAccess:
+        case codegen::AccessModifier::PublicAccess:
             return "public";
-        case codegen::AccessModifier::protectedAccess:
+        case codegen::AccessModifier::ProtectedAccess:
             return "protected";
-        case codegen::AccessModifier::privateProtectedAccess:
+        case codegen::AccessModifier::PrivateProtectedAccess:
             return "private protected";
-        case codegen::AccessModifier::internalAccess:
+        case codegen::AccessModifier::InternalAccess:
             return "internal";
-        case codegen::AccessModifier::protectedInternalAccess:
+        case codegen::AccessModifier::ProtectedInternalAccess:
             return "protected internal";
-        case codegen::AccessModifier::privateAccess:
-        default:
+        case codegen::AccessModifier::PrivateAccess:
             return "private";
+        case codegen::AccessModifier::Unknown:
+        default:
+            throw std::invalid_argument("Unsupported C# member access modifier");
     }
 }
 
 std::string ResolveCSharpClassAccessPrefix(codegen::CodeUnit::Flags flagsValue)
 {
-    switch (static_cast<codegen::AccessModifier>(flagsValue))
+    const auto accessMask = codegen::AccessModifier::PublicAccess | codegen::AccessModifier::ProtectedAccess |
+                            codegen::AccessModifier::PrivateAccess | codegen::AccessModifier::InternalAccess |
+                            codegen::AccessModifier::FileAccess;
+    const auto accessFlags = flagsValue & accessMask;
+
+    switch (codegen::ToAccessModifierMask(accessFlags))
     {
-        case codegen::AccessModifier::publicAccess:
+        case codegen::AccessModifier::Unknown:
+            return "";
+        case codegen::AccessModifier::PublicAccess:
             return "public ";
-        case codegen::AccessModifier::privateAccess:
+        case codegen::AccessModifier::PrivateAccess:
             return "private ";
-        case codegen::AccessModifier::protectedAccess:
+        case codegen::AccessModifier::ProtectedAccess:
             return "protected ";
-        case codegen::AccessModifier::privateProtectedAccess:
+        case codegen::AccessModifier::PrivateProtectedAccess:
             return "private protected ";
-        case codegen::AccessModifier::internalAccess:
+        case codegen::AccessModifier::InternalAccess:
             return "internal ";
-        case codegen::AccessModifier::protectedInternalAccess:
+        case codegen::AccessModifier::ProtectedInternalAccess:
             return "protected internal ";
-        case codegen::AccessModifier::fileAccess:
+        case codegen::AccessModifier::FileAccess:
             return "file ";
         default:
+            throw std::invalid_argument("Unsupported C# class access modifier");
+    }
+}
+
+std::string RenderCSharpClassModifiers(codegen::CodeUnit::Flags classFlags)
+{
+    switch (codegen::ToClassModifierMask(
+        classFlags & (codegen::ClassModifier::AbstractModifier | codegen::ClassModifier::FinalModifier)))
+    {
+        case codegen::ClassModifier::Unknown:
             return "";
+        case codegen::ClassModifier::AbstractModifier:
+            return "abstract ";
+        case codegen::ClassModifier::FinalModifier:
+            return "sealed ";  // В C# используется sealed вместо final
+        case codegen::ClassModifier::AbstractFinalModifier:
+            return "abstract sealed ";
+        default:
+            throw std::invalid_argument("Unsupported C# class modifier");
     }
 }
 
@@ -75,16 +102,7 @@ void CSharpClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsV
 std::string CSharpClassUnit::Render(unsigned int indentLevel) const
 {
     std::string result = MakeIndent(indentLevel) + ResolveCSharpClassAccessPrefix(GetClassFlags());
-
-    // Добавляем модификаторы класса
-    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::abstractModifier))
-    {
-        result += "abstract ";
-    }
-    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::finalModifier))
-    {
-        result += "sealed ";  // В C# используется sealed вместо final
-    }
+    result += RenderCSharpClassModifiers(GetClassFlags());
 
     result += "class " + GetClassName() + " {\n";
     for (const auto& member : members_)

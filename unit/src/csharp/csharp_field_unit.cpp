@@ -1,10 +1,34 @@
 /// @file
 /// @brief Реализация генератора поля C#.
 #include <src/csharp/csharp_field_unit.hpp>
+#include <stdexcept>
 #include <utility>
 
 namespace codegen::csharp
 {
+
+namespace
+{
+
+std::string RenderCSharpFieldPrefixModifiers(codegen::CodeUnit::Flags fieldFlags)
+{
+    switch (codegen::ToMethodModifierMask(
+        fieldFlags & (codegen::MethodModifier::StaticModifier | codegen::MethodModifier::FinalModifier)))
+    {
+        case codegen::MethodModifier::Unknown:
+            return "";
+        case codegen::MethodModifier::StaticModifier:
+            return "static ";
+        case codegen::MethodModifier::FinalModifier:
+            return "readonly ";
+        case codegen::MethodModifier::StaticFinalModifier:
+            return "static readonly ";
+        default:
+            throw std::invalid_argument("Unsupported C# field modifier");
+    }
+}
+
+}  // namespace
 
 CSharpFieldUnit::CSharpFieldUnit(std::string name, std::string type, Flags flagsValue)
     : codegen::detail::AbstractFieldUnit(std::move(name), std::move(type), flagsValue)
@@ -13,16 +37,7 @@ CSharpFieldUnit::CSharpFieldUnit(std::string name, std::string type, Flags flags
 
 std::string CSharpFieldUnit::RenderPrefixModifiers() const
 {
-    std::string result;
-    if (GetFieldFlags() & codegen::ToFlags(codegen::MethodModifier::staticModifier))
-    {
-        result += "static ";
-    }
-    if (GetFieldFlags() & codegen::ToFlags(codegen::MethodModifier::finalModifier))
-    {
-        result += "readonly ";
-    }
-    return result;
+    return RenderCSharpFieldPrefixModifiers(GetFieldFlags());
 }
 
 }  // namespace codegen::csharp

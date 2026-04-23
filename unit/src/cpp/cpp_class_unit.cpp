@@ -7,6 +7,39 @@ using codegen::CppClassUnit;
 
 const std::vector<std::string> CppClassUnit::accessModifiers_ = {"public", "protected", "private"};
 
+namespace
+{
+
+size_t ResolveAccessSectionIndex(codegen::CodeUnit::Flags accessFlags)
+{
+    switch (codegen::ToAccessModifierMask(accessFlags))
+    {
+        case codegen::AccessModifier::PublicAccess:
+            return 0;
+        case codegen::AccessModifier::ProtectedAccess:
+            return 1;
+        case codegen::AccessModifier::PrivateAccess:
+            return 2;
+        default:
+            throw std::invalid_argument("Unsupported C++ class access modifier");
+    }
+}
+
+std::string RenderCppClassModifierSuffix(codegen::CodeUnit::Flags classFlags)
+{
+    switch (codegen::ToClassModifierMask(classFlags & codegen::ClassModifier::FinalModifier))
+    {
+        case codegen::ClassModifier::Unknown:
+            return "";
+        case codegen::ClassModifier::FinalModifier:
+            return " final";
+        default:
+            throw std::invalid_argument("Unsupported C++ class modifier");
+    }
+}
+
+}  // namespace
+
 CppClassUnit::CppClassUnit(const std::string& name, Flags classModifiersValue)
     : codegen::detail::AbstractClassUnit(name, classModifiersValue)
 {
@@ -20,28 +53,25 @@ void CppClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier 
         throw std::invalid_argument("Class member must not be null");
     }
 
-    size_t modifierIndex = static_cast<size_t>(accessModifier);
-    if (modifierIndex >= accessModifiers_.size())
-    {
-        modifierIndex = static_cast<size_t>(AccessModifier::privateAccess);
-    }
+    const size_t modifierIndex = ResolveAccessSectionIndex(accessModifier | AccessModifier::Unknown);
     fields_[modifierIndex].push_back(unit);
 }
 
 void CppClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue)
 {
-    Append(unit, static_cast<AccessModifier>(flagsValue));
+    if (!unit)
+    {
+        throw std::invalid_argument("Class member must not be null");
+    }
+
+    const size_t modifierIndex = ResolveAccessSectionIndex(flagsValue);
+    fields_[modifierIndex].push_back(unit);
 }
 
 std::string CppClassUnit::Render(unsigned int indentLevel) const
 {
     std::string result = MakeIndent(indentLevel) + "class " + GetClassName();
-
-    // Добавляем модификатор final для C++ (C++11 и позже)
-    if (GetClassFlags() & codegen::ToFlags(codegen::ClassModifier::finalModifier))
-    {
-        result += " final";
-    }
+    result += RenderCppClassModifierSuffix(GetClassFlags());
 
     result += " {\n";
 
