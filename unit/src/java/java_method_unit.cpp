@@ -1,6 +1,7 @@
 /// @file
 /// @brief Реализация генератора Java-метода.
 #include <src/java/java_method_unit.hpp>
+#include <stdexcept>
 #include <utility>
 
 namespace codegen::java
