@@ -269,6 +269,76 @@ cmake --build .
 
 </details>
 
+### Тестирование с помощью `Demo(...)`
+
+Для ручной проверки генерации примеров используется функция `examples::Demo(...)` из [examples.hpp](./examples.hpp).
+Она принимает:
+
+- `language` — целевой язык генерации (`CppLanguage`, `JavaLanguage`, `CSharpLanguage`);
+- `classFlags` — флаги модификаторов класса;
+- `methods` — список методов `std::vector<examples::MethodConfig>`;
+- `fields` — список полей `std::vector<examples::FieldConfig>`;
+- `className` — необязательное имя класса, по умолчанию `"DemoClass"`.
+
+Сигнатура:
+
+```cpp
+std::string Demo(codegen::Language language,
+                 codegen::CodeUnit::Flags classFlags,
+                 const std::vector<MethodConfig>& methods,
+                 const std::vector<FieldConfig>& fields,
+                 const std::string& className = "DemoClass");
+```
+
+Структуры параметров:
+
+```cpp
+struct MethodConfig
+{
+    std::string name;
+    std::string returnType;
+    codegen::CodeUnit::Flags flags;
+    codegen::AccessModifier access;
+    std::vector<std::string> printStatements;
+};
+
+struct FieldConfig
+{
+    std::string name;
+    std::string type;
+    codegen::CodeUnit::Flags flags;
+    codegen::AccessModifier access;
+};
+```
+
+Пример заполнения:
+
+```cpp
+std::cout << examples::Demo(
+    codegen::Language::CppLanguage,
+    0,
+    {
+        {"Run", "void", 0, codegen::AccessModifier::PublicAccess, {"Hello from method"}},
+        {"Log", "void", examples::ToFlags(codegen::MethodModifier::StaticModifier),
+         codegen::AccessModifier::ProtectedAccess, {"Static call"}},
+    },
+    {
+        {"name_", "std::string", examples::ToFlags(codegen::MethodModifier::ConstModifier),
+         codegen::AccessModifier::PrivateAccess},
+        {"count_", "int", 0, codegen::AccessModifier::PrivateAccess},
+    },
+    "ManualDemo");
+```
+
+Что делает `Demo(...)`:
+
+1. Создает фабрику через `CreateFactory(language)`.
+2. Создает класс с именем `className` и флагами `classFlags`.
+3. Добавляет все поля из `fields`.
+4. Добавляет все методы из `methods`.
+5. Для каждого текста из `printStatements` создает print-оператор и вставляет его в тело метода.
+6. Возвращает итоговый результат `Render()`.
+
 ### Unit-тесты (GoogleTest)
 
 Сборка и запуск unit-тестов:
