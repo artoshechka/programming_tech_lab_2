@@ -4,9 +4,8 @@
 #include <code_factory.hpp>
 #include <codegen_types.hpp>
 #include <memory>
-#include <src/cpp/cpp_class_unit.hpp>
 #include <src/common/abstract_print_unit.hpp>
-#include <src/common/access_controlled_unit.hpp>
+#include <src/cpp/cpp_class_unit.hpp>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -23,15 +22,6 @@ bool Contains(const std::string& source, const std::string& fragment)
 {
     return source.find(fragment) != std::string::npos;
 }
-
-class IndentedLineUnit final : public codegen::CodeUnit
-{
-   public:
-    std::string Render(unsigned int indentLevel) const override
-    {
-        return MakeIndent(indentLevel) + "payload;\n";
-    }
-};
 
 class RawLineUnit final : public codegen::CodeUnit
 {
@@ -107,8 +97,7 @@ TEST(CreateFactoryTest, UnknownLanguageThrows)
 // Кейс: Побитовые helper-функции и маски модификаторов возвращают ожидаемые значения.
 TEST(CodegenTypesTest, BitHelpersPreserveMasksAndFlags)
 {
-    const auto accessFlags =
-        codegen::AccessModifier::ProtectedAccess | codegen::AccessModifier::InternalAccess;
+    const auto accessFlags = codegen::AccessModifier::ProtectedAccess | codegen::AccessModifier::InternalAccess;
     EXPECT_EQ(codegen::ToAccessModifierMask(accessFlags), codegen::AccessModifier::ProtectedInternalAccess);
     EXPECT_EQ(accessFlags & codegen::AccessModifier::ProtectedAccess,
               static_cast<codegen::CodeUnit::Flags>(codegen::AccessModifier::ProtectedAccess));
@@ -257,16 +246,6 @@ TEST(ExceptionHandlingTest, CppClassAppendAccessOverloadThrowsForNullMember)
     EXPECT_THROW(classUnit->Append(nullptr, codegen::AccessModifier::PublicAccess), std::invalid_argument);
 }
 
-// Кейс: AccessControlledUnit создается всегда, но некорректные аргументы выявляются при Render().
-TEST(ExceptionHandlingTest, AccessControlledUnitThrowsForInvalidArguments)
-{
-    const codegen::detail::AccessControlledUnit emptyKeywordUnit("", std::make_shared<RawLineUnit>());
-    EXPECT_THROW(emptyKeywordUnit.Render(0), std::runtime_error);
-
-    const codegen::detail::AccessControlledUnit nullWrappedUnit("public", std::shared_ptr<codegen::CodeUnit>());
-    EXPECT_THROW(nullWrappedUnit.Render(0), std::runtime_error);
-}
-
 // Кейс: Базовый класс объявления класса отдает сохраненные флаги и имя без ошибок.
 TEST(AbstractClassUnitTest, ExposesStoredFlagsAndName)
 {
@@ -283,22 +262,6 @@ TEST(AbstractPrintUnitTest, ExposesStoredTextAndRenderExpression)
 
     EXPECT_EQ(unit.ReadStoredText(), "payload");
     EXPECT_EQ(unit.Render(2), "  print(payload)\n");
-}
-
-// Кейс: Обертка доступа добавляет ключевое слово, когда строка начинается с нужного отступа.
-TEST(AccessControlledUnitTest, AddsKeywordWhenRenderedLineStartsWithIndent)
-{
-    const auto wrapped = codegen::detail::AccessControlledUnit("public", std::make_shared<IndentedLineUnit>());
-
-    EXPECT_EQ(wrapped.Render(2), "  public payload;\n");
-}
-
-// Кейс: Обертка доступа не изменяет строку, если префикс отступа отсутствует.
-TEST(AccessControlledUnitTest, KeepsRenderedLineWithoutIndentPrefix)
-{
-    const auto wrapped = codegen::detail::AccessControlledUnit("public", std::make_shared<RawLineUnit>());
-
-    EXPECT_EQ(wrapped.Render(3), "payload;\n");
 }
 
 // Кейс: C++ класс выбрасывает исключение для неподдерживаемого модификатора доступа.
@@ -488,7 +451,8 @@ TEST(JavaRenderTest, ClassRendersPrivateMember)
     const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
     const auto classUnit = factory->CreateClass("Secrets", 0);
 
-    classUnit->Append(factory->CreateField("token", "String", 0), ToAccessFlags(codegen::AccessModifier::PrivateAccess));
+    classUnit->Append(factory->CreateField("token", "String", 0),
+                      ToAccessFlags(codegen::AccessModifier::PrivateAccess));
 
     EXPECT_TRUE(Contains(classUnit->Render(), "private String token;"));
 }

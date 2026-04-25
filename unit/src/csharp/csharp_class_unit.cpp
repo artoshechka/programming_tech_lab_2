@@ -1,6 +1,5 @@
 /// @file
 /// @brief Реализация генератора C#-класса.
-#include <src/common/access_controlled_unit.hpp>
 #include <src/csharp/csharp_class_unit.hpp>
 #include <stdexcept>
 #include <utility>
@@ -11,9 +10,26 @@ namespace codegen::csharp
 namespace
 {
 
-std::string ResolveCSharpMemberAccessKeyword(codegen::CodeUnit::Flags flagsValue)
+codegen::AccessModifier ResolveCSharpMemberAccess(codegen::CodeUnit::Flags flagsValue)
 {
     switch (codegen::ToAccessModifierMask(flagsValue))
+    {
+        case codegen::AccessModifier::PublicAccess:
+        case codegen::AccessModifier::ProtectedAccess:
+        case codegen::AccessModifier::PrivateAccess:
+        case codegen::AccessModifier::PrivateProtectedAccess:
+        case codegen::AccessModifier::InternalAccess:
+        case codegen::AccessModifier::ProtectedInternalAccess:
+            return codegen::ToAccessModifierMask(flagsValue);
+        case codegen::AccessModifier::Unknown:
+        default:
+            throw std::invalid_argument("Unsupported C# member access modifier");
+    }
+}
+
+std::string ResolveCSharpMemberAccessKeyword(codegen::AccessModifier access)
+{
+    switch (access)
     {
         case codegen::AccessModifier::PublicAccess:
             return "public";
@@ -27,7 +43,6 @@ std::string ResolveCSharpMemberAccessKeyword(codegen::CodeUnit::Flags flagsValue
             return "protected internal";
         case codegen::AccessModifier::PrivateAccess:
             return "private";
-        case codegen::AccessModifier::Unknown:
         default:
             throw std::invalid_argument("Unsupported C# member access modifier");
     }
@@ -73,7 +88,7 @@ std::string RenderCSharpClassModifiers(codegen::CodeUnit::Flags classFlags)
         case codegen::ClassModifier::AbstractModifier:
             return "abstract ";
         case codegen::ClassModifier::FinalModifier:
-            return "sealed ";  // В C# используется sealed вместо final
+            return "sealed ";
         case codegen::ClassModifier::AbstractFinalModifier:
             return "abstract sealed ";
         default:
@@ -95,8 +110,7 @@ void CSharpClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsV
         throw std::invalid_argument("Class member must not be null");
     }
 
-    const std::string accessKeyword = ResolveCSharpMemberAccessKeyword(flagsValue);
-    members_.push_back(std::make_shared<codegen::detail::AccessControlledUnit>(accessKeyword, unit));
+    members_.emplace_back(ResolveCSharpMemberAccess(flagsValue), unit);
 }
 
 std::string CSharpClassUnit::Render(unsigned int indentLevel) const
@@ -105,9 +119,16 @@ std::string CSharpClassUnit::Render(unsigned int indentLevel) const
     result += RenderCSharpClassModifiers(GetClassFlags());
 
     result += "class " + GetClassName() + " {\n";
-    for (const auto& member : members_)
+    for (const auto& [access, member] : members_)
     {
-        result += member->Render(indentLevel + 1);
+        const std::string accessKeyword = ResolveCSharpMemberAccessKeyword(access);
+        std::string rendered = member->Render(indentLevel + 1);
+        const std::string indent = MakeIndent(indentLevel + 1);
+        if (rendered.rfind(indent, 0) == 0)
+        {
+            rendered.insert(indent.size(), accessKeyword + " ");
+        }
+        result += rendered;
     }
     result += MakeIndent(indentLevel) + "}\n";
     return result;
