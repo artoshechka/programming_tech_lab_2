@@ -13,7 +13,6 @@ classDiagram
             <<abstract>>
             +Flags
             +Append(unit, flagsValue)
-            +Append(unit, accessModifier)
             +Render(indentLevel) string
             #MakeIndent(indentLevel) string
         }
@@ -74,10 +73,6 @@ classDiagram
             #GetFieldFlags() Flags
         }
 
-        class AccessControlledUnit {
-            +Render(indentLevel) string
-        }
-
 
     namespace codegen_cpp {
         class CppCodeFactory {
@@ -122,12 +117,15 @@ classDiagram
         class JavaClassUnit {
             +Append(unit, flagsValue)
             +Render(indentLevel) string
+            -members_ List~Pair~AccessModifier, CodeUnit~~
         }
 
         class JavaMethodUnit {
+            +GetAccess() OptionalAccessModifier
             #RenderPrefixModifiers() string
             #IsAbstractMethod() bool
             #RenderAbstractTerminator() string
+            -access_ OptionalAccessModifier
         }
 
         class JavaPrintUnit {
@@ -135,7 +133,9 @@ classDiagram
         }
 
         class JavaFieldUnit {
+            +GetAccess() OptionalAccessModifier
             #RenderPrefixModifiers() string
+            -access_ OptionalAccessModifier
         }
     }
 
@@ -151,12 +151,15 @@ classDiagram
         class CSharpClassUnit {
             +Append(unit, flagsValue)
             +Render(indentLevel) string
+            -members_ List~Pair~AccessModifier, CodeUnit~~
         }
 
         class CSharpMethodUnit {
+            +GetAccess() OptionalAccessModifier
             #RenderPrefixModifiers() string
             #IsAbstractMethod() bool
             #RenderAbstractTerminator() string
+            -access_ OptionalAccessModifier
         }
 
         class CSharpPrintUnit {
@@ -164,7 +167,9 @@ classDiagram
         }
 
         class CSharpFieldUnit {
+            +GetAccess() OptionalAccessModifier
             #RenderPrefixModifiers() string
+            -access_ OptionalAccessModifier
         }
     }
 
@@ -192,8 +197,6 @@ classDiagram
     AbstractPrintUnit <|-- CSharpPrintUnit
     AbstractFieldUnit <|-- CSharpFieldUnit
 
-    CodeUnit <|-- AccessControlledUnit
-
     CreateFactory --> Language
     CreateFactory --> ICodeFactory
 
@@ -211,7 +214,4 @@ classDiagram
     JavaCodeFactory --> JavaMethodUnit
     JavaCodeFactory --> JavaFieldUnit
     JavaCodeFactory --> JavaPrintUnit
-
-    JavaClassUnit --> AccessControlledUnit
-    CSharpClassUnit --> AccessControlledUnit
 ```

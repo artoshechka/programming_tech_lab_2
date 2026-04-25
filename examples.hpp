@@ -3,7 +3,6 @@
 
 #include <code_factory.hpp>
 #include <codegen_types.hpp>
-
 #include <string>
 #include <utility>
 #include <vector>
@@ -98,10 +97,16 @@ inline std::string RenderRegularClass(codegen::Language language)
         {"publicMethod", "void", 0, codegen::AccessModifier::PublicAccess, {}},
         {"privateMethod", "void", 0, codegen::AccessModifier::PrivateAccess, {}},
         {"protectedMethod", "void", 0, codegen::AccessModifier::ProtectedAccess, {}},
-        {"printMethod", "void", ToFlags(codegen::MethodModifier::StaticModifier),
-         codegen::AccessModifier::PublicAccess, {"Hello, world!"}},
-        {"finalMethod", "void", ToFlags(codegen::MethodModifier::FinalModifier),
-         codegen::AccessModifier::PublicAccess, {"This is a final method"}},
+        {"printMethod",
+         "void",
+         ToFlags(codegen::MethodModifier::StaticModifier),
+         codegen::AccessModifier::PublicAccess,
+         {"Hello, world!"}},
+        {"finalMethod",
+         "void",
+         ToFlags(codegen::MethodModifier::FinalModifier),
+         codegen::AccessModifier::PublicAccess,
+         {"This is a final method"}},
     };
 
     if (IsLanguage(language, codegen::Language::CSharpLanguage))
@@ -132,14 +137,14 @@ inline std::string RenderFinalClass(codegen::Language language)
     if (IsLanguage(language, codegen::Language::CSharpLanguage))
     {
         return Demo(language, ToFlags(codegen::ClassModifier::FinalModifier),
-                    {{"Execute", "void", 0, codegen::AccessModifier::PublicAccess, {"Sealed class execution..."}}},
-                    {}, "SealedImpl");
+                    {{"Execute", "void", 0, codegen::AccessModifier::PublicAccess, {"Sealed class execution..."}}}, {},
+                    "SealedImpl");
     }
 
-    return Demo(language, ToFlags(codegen::ClassModifier::FinalModifier),
-                {{"doSomething", "void", 0, codegen::AccessModifier::PublicAccess,
-                  {"Final class cannot be derived..."}}},
-                {}, "FinalClass");
+    return Demo(
+        language, ToFlags(codegen::ClassModifier::FinalModifier),
+        {{"doSomething", "void", 0, codegen::AccessModifier::PublicAccess, {"Final class cannot be derived..."}}}, {},
+        "FinalClass");
 }
 
 inline std::string RenderAbstractClass(codegen::Language language)
@@ -148,8 +153,11 @@ inline std::string RenderAbstractClass(codegen::Language language)
     {
         return Demo(language, ToFlags(codegen::ClassModifier::AbstractModifier),
                     {
-                        {"processData", "void", ToFlags(codegen::MethodModifier::AbstractModifier),
-                         codegen::AccessModifier::PublicAccess, {}},
+                        {"processData",
+                         "void",
+                         ToFlags(codegen::MethodModifier::AbstractModifier),
+                         codegen::AccessModifier::PublicAccess,
+                         {}},
                         {"validateInput", "boolean", 0, codegen::AccessModifier::PublicAccess, {"Validating..."}},
                     },
                     {}, "InterfaceImpl");
@@ -159,21 +167,32 @@ inline std::string RenderAbstractClass(codegen::Language language)
     {
         return Demo(language, ToFlags(codegen::ClassModifier::AbstractModifier),
                     {
-                        {"Execute", "void", ToFlags(codegen::MethodModifier::AbstractModifier),
-                         codegen::AccessModifier::PublicAccess, {}},
-                        {"Configure", "void", ToFlags(codegen::MethodModifier::VirtualModifier),
-                         codegen::AccessModifier::PublicAccess, {"Configuring..."}},
+                        {"Execute",
+                         "void",
+                         ToFlags(codegen::MethodModifier::AbstractModifier),
+                         codegen::AccessModifier::PublicAccess,
+                         {}},
+                        {"Configure",
+                         "void",
+                         ToFlags(codegen::MethodModifier::VirtualModifier),
+                         codegen::AccessModifier::PublicAccess,
+                         {"Configuring..."}},
                     },
                     {}, "InterfaceImpl");
     }
 
     return Demo(language, ToFlags(codegen::ClassModifier::AbstractModifier),
                 {
-                    {"process", "void",
+                    {"process",
+                     "void",
                      ToFlags(codegen::MethodModifier::VirtualModifier | codegen::MethodModifier::AbstractModifier),
-                     codegen::AccessModifier::PublicAccess, {}},
-                    {"cleanup", "void", ToFlags(codegen::MethodModifier::VirtualModifier),
-                     codegen::AccessModifier::PublicAccess, {"Cleaning up..."}},
+                     codegen::AccessModifier::PublicAccess,
+                     {}},
+                    {"cleanup",
+                     "void",
+                     ToFlags(codegen::MethodModifier::VirtualModifier),
+                     codegen::AccessModifier::PublicAccess,
+                     {"Cleaning up..."}},
                 },
                 {}, "InterfaceImpl");
 }
@@ -184,11 +203,16 @@ inline std::string RenderStaticExample(codegen::Language language)
     {
         return Demo(language, 0,
                     {
-                        {"sqrt", "double", ToFlags(codegen::MethodModifier::StaticModifier),
-                         codegen::AccessModifier::PublicAccess, {"Computing square root..."}},
-                        {"PI_VALUE", "double",
+                        {"sqrt",
+                         "double",
+                         ToFlags(codegen::MethodModifier::StaticModifier),
+                         codegen::AccessModifier::PublicAccess,
+                         {"Computing square root..."}},
+                        {"PI_VALUE",
+                         "double",
                          ToFlags(codegen::MethodModifier::StaticModifier | codegen::MethodModifier::FinalModifier),
-                         codegen::AccessModifier::PublicAccess, {}},
+                         codegen::AccessModifier::PublicAccess,
+                         {}},
                     },
                     {
                         {"PI", "double",
@@ -202,11 +226,16 @@ inline std::string RenderStaticExample(codegen::Language language)
     {
         return Demo(language, 0,
                     {
-                        {"Add", "int", ToFlags(codegen::MethodModifier::StaticModifier),
-                         codegen::AccessModifier::PublicAccess, {"Adding numbers..."}},
-                        {"Version", "string",
+                        {"Add",
+                         "int",
+                         ToFlags(codegen::MethodModifier::StaticModifier),
+                         codegen::AccessModifier::PublicAccess,
+                         {"Adding numbers..."}},
+                        {"Version",
+                         "string",
                          ToFlags(codegen::MethodModifier::StaticModifier | codegen::MethodModifier::FinalModifier),
-                         codegen::AccessModifier::PublicAccess, {}},
+                         codegen::AccessModifier::PublicAccess,
+                         {}},
                     },
                     {
                         {"Version_", "string",
@@ -218,8 +247,11 @@ inline std::string RenderStaticExample(codegen::Language language)
 
     return Demo(language, 0,
                 {
-                    {"calculate", "int", ToFlags(codegen::MethodModifier::StaticModifier),
-                     codegen::AccessModifier::PublicAccess, {"Calculating..."}},
+                    {"calculate",
+                     "int",
+                     ToFlags(codegen::MethodModifier::StaticModifier),
+                     codegen::AccessModifier::PublicAccess,
+                     {"Calculating..."}},
                 },
                 {
                     {"kVersion_", "const char*",

@@ -6,6 +6,7 @@
 #include <codegen_types.hpp>
 #include <src/common/abstract_class_unit.hpp>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace codegen::csharp
@@ -31,7 +32,8 @@ class CSharpClassUnit : public codegen::detail::AbstractClassUnit
     std::string Render(unsigned int indentLevel) const override;
 
    private:
-    std::vector<std::shared_ptr<codegen::CodeUnit>> members_;  ///< Элементы (методы, свойства) класса.
+    using Member = std::pair<codegen::AccessModifier, std::shared_ptr<codegen::CodeUnit>>;
+    std::vector<Member> members_;  ///< Элементы класса с их модификаторами доступа.
 };
 
 }  // namespace codegen::csharp

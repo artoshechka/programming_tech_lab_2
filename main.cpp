@@ -1,8 +1,7 @@
 #include <code_factory.hpp>
+#include <examples.hpp>
 #include <exception>
 #include <iostream>
-
-#include <examples.hpp>
 
 namespace
 {
@@ -18,7 +17,7 @@ void PrintLanguageExamples(codegen::Language language)
     std::cout << "\nStatic Methods:\n" << examples::RenderStaticExample(language);
 }
 
-} // namespace
+}  // namespace
 
 int main()
 {
@@ -28,12 +27,10 @@ int main()
         PrintLanguageExamples(codegen::Language::JavaLanguage);
         PrintLanguageExamples(codegen::Language::CSharpLanguage);
         return 0;
-    }
-    catch (const std::exception &error)
+    } catch (const std::exception& error)
     {
         std::cerr << "Error: " << error.what() << "\n";
-    }
-    catch (...)
+    } catch (...)
     {
         std::cerr << "Error: unknown exception\n";
     }
