@@ -1,6 +1,5 @@
 /// @file
 /// @brief Реализация генератора Java-класса.
-#include <src/common/access_controlled_unit.hpp>
 #include <src/java/java_class_unit.hpp>
 #include <stdexcept>
 #include <utility>
@@ -11,9 +10,23 @@ namespace codegen::java
 namespace
 {
 
-std::string ResolveJavaClassAccessKeyword(codegen::CodeUnit::Flags flagsValue)
+codegen::AccessModifier ResolveJavaClassAccess(codegen::CodeUnit::Flags flagsValue)
 {
     switch (codegen::ToAccessModifierMask(flagsValue))
+    {
+        case codegen::AccessModifier::PublicAccess:
+        case codegen::AccessModifier::ProtectedAccess:
+        case codegen::AccessModifier::PrivateAccess:
+            return codegen::ToAccessModifierMask(flagsValue);
+        case codegen::AccessModifier::Unknown:
+        default:
+            throw std::invalid_argument("Unsupported Java class access modifier");
+    }
+}
+
+std::string ResolveJavaAccessKeyword(codegen::AccessModifier access)
+{
+    switch (access)
     {
         case codegen::AccessModifier::PublicAccess:
             return "public";
@@ -21,9 +34,8 @@ std::string ResolveJavaClassAccessKeyword(codegen::CodeUnit::Flags flagsValue)
             return "protected";
         case codegen::AccessModifier::PrivateAccess:
             return "private";
-        case codegen::AccessModifier::Unknown:
         default:
-            throw std::invalid_argument("Unsupported Java class access modifier");
+            throw std::invalid_argument("Unsupported Java access modifier");
     }
 }
 
@@ -58,8 +70,7 @@ void JavaClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsVal
         throw std::invalid_argument("Class member must not be null");
     }
 
-    const std::string accessKeyword = ResolveJavaClassAccessKeyword(flagsValue);
-    members_.push_back(std::make_shared<codegen::detail::AccessControlledUnit>(accessKeyword, unit));
+    members_.emplace_back(ResolveJavaClassAccess(flagsValue), unit);
 }
 
 std::string JavaClassUnit::Render(unsigned int indentLevel) const
@@ -67,9 +78,16 @@ std::string JavaClassUnit::Render(unsigned int indentLevel) const
     std::string result = MakeIndent(indentLevel) + RenderJavaClassModifiers(GetClassFlags());
 
     result += "class " + GetClassName() + " {\n";
-    for (const auto& member : members_)
+    for (const auto& [access, member] : members_)
     {
-        result += member->Render(indentLevel + 1);
+        const std::string accessKeyword = ResolveJavaAccessKeyword(access);
+        std::string rendered = member->Render(indentLevel + 1);
+        const std::string indent = MakeIndent(indentLevel + 1);
+        if (rendered.rfind(indent, 0) == 0)
+        {
+            rendered.insert(indent.size(), accessKeyword + " ");
+        }
+        result += rendered;
     }
     result += MakeIndent(indentLevel) + "}\n";
     return result;
