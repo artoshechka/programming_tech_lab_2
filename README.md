@@ -30,7 +30,7 @@ https://disk.yandex.ru/i/dtd6RCsC1FCtcg
 
 ### UML-диаграмма классов
 
-![UML-диаграмма классов](documentation/uml.svg)
+![UML-диаграмма классов](documentation/uml.png)
 
 ### Архитектура решения
 Основные компоненты:
