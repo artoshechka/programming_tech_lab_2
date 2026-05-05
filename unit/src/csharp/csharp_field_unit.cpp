@@ -10,7 +10,7 @@ namespace codegen::csharp
 namespace
 {
 
-std::string RenderCSharpFieldPrefixModifiers(codegen::CodeUnit::Flags fieldFlags)
+std::string RenderCSharpFieldPrefixModifiers(codegen::MethodModifier fieldFlags)
 {
     switch (codegen::ToMethodModifierMask(
         fieldFlags & (codegen::MethodModifier::StaticModifier | codegen::MethodModifier::FinalModifier)))
@@ -30,7 +30,7 @@ std::string RenderCSharpFieldPrefixModifiers(codegen::CodeUnit::Flags fieldFlags
 
 }  // namespace
 
-CSharpFieldUnit::CSharpFieldUnit(std::string name, std::string type, Flags flagsValue)
+CSharpFieldUnit::CSharpFieldUnit(std::string name, std::string type, MethodModifier flagsValue)
     : codegen::detail::AbstractFieldUnit(std::move(name), std::move(type), flagsValue)
 {
 }

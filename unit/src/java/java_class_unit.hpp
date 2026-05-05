@@ -19,7 +19,7 @@ class JavaClassUnit : public codegen::detail::AbstractClassUnit
     /// @brief Конструктор генератора объявления Java-класса.
     /// @param[in] name Имя создаваемого Java-класса.
     /// @param[in] classModifiersValue Флаги модификаторов класса (final, abstract и т.д.).
-    explicit JavaClassUnit(std::string name, Flags classModifiersValue = 0);
+    explicit JavaClassUnit(std::string name, ClassModifier classModifiersValue = ClassModifier::Unknown);
 
     using codegen::detail::AbstractClassUnit::Append;
 

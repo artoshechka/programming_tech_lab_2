@@ -16,7 +16,7 @@ class AbstractClassUnit : public codegen::CodeUnit
     /// @brief Конструктор базового юнита класса.
     /// @param[in] name Имя класса.
     /// @param[in] classFlagsValue Флаги модификаторов класса.
-    AbstractClassUnit(std::string name, Flags classFlagsValue);
+    AbstractClassUnit(std::string name, ClassModifier classFlagsValue);
 
     /// @brief Виртуальный деструктор.
     ~AbstractClassUnit() override = default;
@@ -35,11 +35,11 @@ class AbstractClassUnit : public codegen::CodeUnit
 
     /// @brief Возвращает флаги модификаторов класса.
     /// @return Флаги модификаторов.
-    Flags GetClassFlags() const;
+    ClassModifier GetClassFlags() const;
 
    private:
-    std::string className_;  ///< Имя класса.
-    Flags classFlags_;       ///< Флаги модификаторов класса.
+    std::string className_;     ///< Имя класса.
+    ClassModifier classFlags_;  ///< Флаги модификаторов класса.
 };
 
 }  // namespace codegen::detail

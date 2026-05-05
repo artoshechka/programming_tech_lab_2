@@ -18,8 +18,8 @@ class CSharpClassUnit : public codegen::detail::AbstractClassUnit
    public:
     /// @brief Конструктор генератора объявления C#-класса.
     /// @param[in] name Имя создаваемого класса.
-    /// @param[in] accessFlagsValue Флаги модификаторов доступа C#-класса.
-    explicit CSharpClassUnit(std::string name, Flags accessFlagsValue = 0);
+    /// @param[in] classModifiersValue Флаги модификаторов класса.
+    explicit CSharpClassUnit(std::string name, ClassModifier classModifiersValue = ClassModifier::Unknown);
 
     using codegen::detail::AbstractClassUnit::Append;
 

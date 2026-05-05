@@ -29,56 +29,26 @@ class ICodeFactory
 
     /// @brief Создаёт узел объявления класса.
     /// @param[in] name Имя создаваемого класса.
-    /// @param[in] flagsValue Битовая маска флагов модификаторов класса.
+    /// @param[in] modifier Битовая маска модификаторов класса.
     /// @return Указатель на созданный узел объявления класса.
-    virtual std::shared_ptr<CodeUnit> CreateClass(const std::string& name, CodeUnit::Flags flagsValue = 0) const = 0;
-
-    /// @brief Создаёт узел объявления класса по одному модификатору класса.
-    /// @param[in] name Имя создаваемого класса.
-    /// @param[in] modifier Модификатор класса.
-    /// @return Указатель на созданный узел объявления класса.
-    std::shared_ptr<CodeUnit> CreateClass(const std::string& name, ClassModifier modifier) const
-    {
-        return CreateClass(name, modifier | ClassModifier::Unknown);
-    }
+    virtual std::shared_ptr<CodeUnit> CreateClass(const std::string& name,
+                                                  ClassModifier modifier = ClassModifier::Unknown) const = 0;
 
     /// @brief Создаёт узел объявления метода.
     /// @param[in] name Имя создаваемого метода.
     /// @param[in] returnType Тип возвращаемого значения метода.
-    /// @param[in] flagsValue Битовая маска флагов модификаторов метода (static, virtual, const).
+    /// @param[in] modifier Битовая маска модификаторов метода (static, virtual, const).
     /// @return Указатель на созданный узел объявления метода.
     virtual std::shared_ptr<CodeUnit> CreateMethod(const std::string& name, const std::string& returnType,
-                                                   CodeUnit::Flags flagsValue) const = 0;
-
-    /// @brief Создаёт узел объявления метода по одному модификатору метода.
-    /// @param[in] name Имя создаваемого метода.
-    /// @param[in] returnType Тип возвращаемого значения метода.
-    /// @param[in] modifier Модификатор метода.
-    /// @return Указатель на созданный узел объявления метода.
-    std::shared_ptr<CodeUnit> CreateMethod(const std::string& name, const std::string& returnType,
-                                           MethodModifier modifier) const
-    {
-        return CreateMethod(name, returnType, modifier | MethodModifier::Unknown);
-    }
+                                                   MethodModifier modifier) const = 0;
 
     /// @brief Создаёт узел объявления поля.
     /// @param[in] name Имя поля.
     /// @param[in] type Тип поля.
-    /// @param[in] flagsValue Битовая маска модификаторов поля (static, const/final).
+    /// @param[in] modifier Битовая маска модификаторов поля (static, const/final).
     /// @return Указатель на созданный узел объявления поля.
     virtual std::shared_ptr<CodeUnit> CreateField(const std::string& name, const std::string& type,
-                                                  CodeUnit::Flags flagsValue) const = 0;
-
-    /// @brief Создаёт узел объявления поля по одному модификатору метода.
-    /// @param[in] name Имя поля.
-    /// @param[in] type Тип поля.
-    /// @param[in] modifier Модификатор поля.
-    /// @return Указатель на созданный узел объявления поля.
-    std::shared_ptr<CodeUnit> CreateField(const std::string& name, const std::string& type,
-                                          MethodModifier modifier) const
-    {
-        return CreateField(name, type, modifier | MethodModifier::Unknown);
-    }
+                                                  MethodModifier modifier) const = 0;
 
     /// @brief Создаёт узел инструкции вывода на печать.
     /// @param[in] text Текст для печати.

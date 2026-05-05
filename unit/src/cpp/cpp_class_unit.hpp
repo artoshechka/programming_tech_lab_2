@@ -18,7 +18,7 @@ class CppClassUnit : public codegen::detail::AbstractClassUnit
     /// @brief Конструктор генератора объявления C++ класса.
     /// @param[in] name Имя класса.
     /// @param[in] classModifiersValue Флаги модификаторов класса (final и т.д.).
-    explicit CppClassUnit(const std::string& name, Flags classModifiersValue = 0);
+    explicit CppClassUnit(const std::string& name, ClassModifier classModifiersValue = ClassModifier::Unknown);
 
     using codegen::detail::AbstractClassUnit::Append;
 

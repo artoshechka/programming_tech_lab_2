@@ -18,7 +18,7 @@ class CppMethodUnit : public codegen::detail::AbstractMethodUnit
     /// @param[in] name Имя метода.
     /// @param[in] returnType Тип возвращаемого значения.
     /// @param[in] flagsValue Флаги модификаторов метода.
-    CppMethodUnit(const std::string& name, const std::string& returnType, Flags flagsValue);
+    CppMethodUnit(const std::string& name, const std::string& returnType, MethodModifier flagsValue);
 
    protected:
     /// @brief Формирует модификаторы C++ перед типом метода.

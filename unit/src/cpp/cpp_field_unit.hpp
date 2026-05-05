@@ -18,7 +18,7 @@ class CppFieldUnit : public codegen::detail::AbstractFieldUnit
     /// @param[in] name Имя поля.
     /// @param[in] type Тип поля.
     /// @param[in] flagsValue Флаги модификаторов.
-    CppFieldUnit(const std::string& name, const std::string& type, Flags flagsValue);
+    CppFieldUnit(const std::string& name, const std::string& type, MethodModifier flagsValue);
 
    protected:
     /// @brief Формирует префикс модификаторов поля C++.

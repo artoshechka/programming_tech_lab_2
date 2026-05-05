@@ -10,19 +10,19 @@ namespace codegen::java
 {
 
 std::shared_ptr<codegen::CodeUnit> JavaCodeFactory::CreateClass(const std::string& name,
-                                                                codegen::CodeUnit::Flags flagsValue) const
+                                                                codegen::ClassModifier flagsValue) const
 {
     return std::make_shared<JavaClassUnit>(name, flagsValue);
 }
 
 std::shared_ptr<codegen::CodeUnit> JavaCodeFactory::CreateMethod(const std::string& name, const std::string& returnType,
-                                                                 codegen::CodeUnit::Flags flagsValue) const
+                                                                 codegen::MethodModifier flagsValue) const
 {
     return std::make_shared<JavaMethodUnit>(name, returnType, flagsValue);
 }
 
 std::shared_ptr<codegen::CodeUnit> JavaCodeFactory::CreateField(const std::string& name, const std::string& type,
-                                                                codegen::CodeUnit::Flags flagsValue) const
+                                                                codegen::MethodModifier flagsValue) const
 {
     return std::make_shared<JavaFieldUnit>(name, type, flagsValue);
 }

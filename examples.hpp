@@ -14,7 +14,7 @@ struct MethodConfig
 {
     std::string name;
     std::string returnType;
-    codegen::CodeUnit::Flags flags = 0;
+    codegen::MethodModifier flags = codegen::MethodModifier::Unknown;
     codegen::AccessModifier access = codegen::AccessModifier::PublicAccess;
     std::vector<std::string> printStatements;
 };
@@ -23,14 +23,14 @@ struct FieldConfig
 {
     std::string name;
     std::string type;
-    codegen::CodeUnit::Flags flags = 0;
+    codegen::MethodModifier flags = codegen::MethodModifier::Unknown;
     codegen::AccessModifier access = codegen::AccessModifier::PrivateAccess;
 };
 
 template <typename EnumType>
-inline codegen::CodeUnit::Flags ToFlags(EnumType value)
+inline EnumType ToFlags(EnumType value)
 {
-    return static_cast<codegen::CodeUnit::Flags>(value);
+    return value;
 }
 
 inline bool IsLanguage(codegen::Language actual, codegen::Language expected)
@@ -51,7 +51,7 @@ inline std::string GetStringType(codegen::Language language)
     return "std::string";
 }
 
-inline codegen::CodeUnit::Flags GetImmutableFieldFlags(codegen::Language language)
+inline codegen::MethodModifier GetImmutableFieldFlags(codegen::Language language)
 {
     if (IsLanguage(language, codegen::Language::CppLanguage))
     {
@@ -60,7 +60,7 @@ inline codegen::CodeUnit::Flags GetImmutableFieldFlags(codegen::Language languag
     return ToFlags(codegen::MethodModifier::FinalModifier);
 }
 
-inline std::string Demo(codegen::Language language, codegen::CodeUnit::Flags classFlags,
+inline std::string Demo(codegen::Language language, codegen::ClassModifier classFlags,
                         const std::vector<MethodConfig>& methods, const std::vector<FieldConfig>& fields,
                         const std::string& className = "DemoClass")
 {
@@ -88,16 +88,12 @@ inline std::string Demo(codegen::Language language, codegen::CodeUnit::Flags cla
 
 inline std::string RenderRegularClass(codegen::Language language)
 {
-    codegen::CodeUnit::Flags classFlags = 0;
-    if (IsLanguage(language, codegen::Language::CSharpLanguage))
-    {
-        classFlags = codegen::AccessModifier::FileAccess | codegen::AccessModifier::Unknown;
-    }
+    codegen::ClassModifier classFlags = codegen::ClassModifier::Unknown;
 
     std::vector<MethodConfig> methods = {
-        {"publicMethod", "void", 0, codegen::AccessModifier::PublicAccess, {}},
-        {"privateMethod", "void", 0, codegen::AccessModifier::PrivateAccess, {}},
-        {"protectedMethod", "void", 0, codegen::AccessModifier::ProtectedAccess, {}},
+        {"publicMethod", "void", codegen::MethodModifier::Unknown, codegen::AccessModifier::PublicAccess, {}},
+        {"privateMethod", "void", codegen::MethodModifier::Unknown, codegen::AccessModifier::PrivateAccess, {}},
+        {"protectedMethod", "void", codegen::MethodModifier::Unknown, codegen::AccessModifier::ProtectedAccess, {}},
         {"printMethod",
          "void",
          ToFlags(codegen::MethodModifier::StaticModifier),
@@ -112,9 +108,18 @@ inline std::string RenderRegularClass(codegen::Language language)
 
     if (IsLanguage(language, codegen::Language::CSharpLanguage))
     {
-        methods.push_back({"privateProtectedMethod", "void", 0, codegen::AccessModifier::PrivateProtectedAccess, {}});
-        methods.push_back({"internalMethod", "void", 0, codegen::AccessModifier::InternalAccess, {}});
-        methods.push_back({"protectedInternalMethod", "void", 0, codegen::AccessModifier::ProtectedInternalAccess, {}});
+        methods.push_back({"privateProtectedMethod",
+                           "void",
+                           codegen::MethodModifier::Unknown,
+                           codegen::AccessModifier::PrivateProtectedAccess,
+                           {}});
+        methods.push_back(
+            {"internalMethod", "void", codegen::MethodModifier::Unknown, codegen::AccessModifier::InternalAccess, {}});
+        methods.push_back({"protectedInternalMethod",
+                           "void",
+                           codegen::MethodModifier::Unknown,
+                           codegen::AccessModifier::ProtectedInternalAccess,
+                           {}});
     }
 
     const std::vector<FieldConfig> fields = {
@@ -131,21 +136,32 @@ inline std::string RenderFinalClass(codegen::Language language)
     if (IsLanguage(language, codegen::Language::JavaLanguage))
     {
         return Demo(language, ToFlags(codegen::ClassModifier::FinalModifier),
-                    {{"getValue", "int", 0, codegen::AccessModifier::PublicAccess, {"Returning immutable value..."}}},
+                    {{"getValue",
+                      "int",
+                      codegen::MethodModifier::Unknown,
+                      codegen::AccessModifier::PublicAccess,
+                      {"Returning immutable value..."}}},
                     {}, "ImmutableData");
     }
 
     if (IsLanguage(language, codegen::Language::CSharpLanguage))
     {
         return Demo(language, ToFlags(codegen::ClassModifier::FinalModifier),
-                    {{"Execute", "void", 0, codegen::AccessModifier::PublicAccess, {"Sealed class execution..."}}}, {},
-                    "SealedImpl");
+                    {{"Execute",
+                      "void",
+                      codegen::MethodModifier::Unknown,
+                      codegen::AccessModifier::PublicAccess,
+                      {"Sealed class execution..."}}},
+                    {}, "SealedImpl");
     }
 
-    return Demo(
-        language, ToFlags(codegen::ClassModifier::FinalModifier),
-        {{"doSomething", "void", 0, codegen::AccessModifier::PublicAccess, {"Final class cannot be derived..."}}}, {},
-        "FinalClass");
+    return Demo(language, ToFlags(codegen::ClassModifier::FinalModifier),
+                {{"doSomething",
+                  "void",
+                  codegen::MethodModifier::Unknown,
+                  codegen::AccessModifier::PublicAccess,
+                  {"Final class cannot be derived..."}}},
+                {}, "FinalClass");
 }
 
 inline std::string RenderAbstractClass(codegen::Language language)
@@ -159,7 +175,11 @@ inline std::string RenderAbstractClass(codegen::Language language)
                          ToFlags(codegen::MethodModifier::AbstractModifier),
                          codegen::AccessModifier::PublicAccess,
                          {}},
-                        {"validateInput", "boolean", 0, codegen::AccessModifier::PublicAccess, {"Validating..."}},
+                        {"validateInput",
+                         "boolean",
+                         codegen::MethodModifier::Unknown,
+                         codegen::AccessModifier::PublicAccess,
+                         {"Validating..."}},
                     },
                     {}, "InterfaceImpl");
     }
@@ -202,7 +222,7 @@ inline std::string RenderStaticExample(codegen::Language language)
 {
     if (IsLanguage(language, codegen::Language::JavaLanguage))
     {
-        return Demo(language, 0,
+        return Demo(language, codegen::ClassModifier::Unknown,
                     {
                         {"sqrt",
                          "double",
@@ -225,7 +245,7 @@ inline std::string RenderStaticExample(codegen::Language language)
 
     if (IsLanguage(language, codegen::Language::CSharpLanguage))
     {
-        return Demo(language, 0,
+        return Demo(language, codegen::ClassModifier::Unknown,
                     {
                         {"Add",
                          "int",
@@ -246,7 +266,7 @@ inline std::string RenderStaticExample(codegen::Language language)
                     "Calculator");
     }
 
-    return Demo(language, 0,
+    return Demo(language, codegen::ClassModifier::Unknown,
                 {
                     {"calculate",
                      "int",
@@ -283,7 +303,7 @@ inline std::string RenderIncorrectExamples(codegen::Language language)
     // Некорректно: Java-поле не может использовать virtual-модификатор, поэтому генератор обязан отвергнуть такой набор
     // флагов.
     appendFailure("Java invalid field modifier:", "Некорректно: virtual недоступен для Java-поля.", [&]() {
-        return Demo(language, 0, {},
+        return Demo(language, codegen::ClassModifier::Unknown, {},
                     {
                         {"brokenField", "int", ToFlags(codegen::MethodModifier::VirtualModifier),
                          codegen::AccessModifier::PrivateAccess},
@@ -291,25 +311,23 @@ inline std::string RenderIncorrectExamples(codegen::Language language)
                     "BrokenJavaDemo");
     });
 
-    // Некорректно: сочетание public и private в одном наборе флагов не является валидным класс-видимым модификатором.
-    appendFailure(
-        "Conflicting class access modifiers:",
-        "Некорректно: public|private не может быть одновременно применён к одному классу.", [&]() {
-            const auto classUnit = factory->CreateClass(
-                IsLanguage(language, codegen::Language::CSharpLanguage) ? "BrokenCSharpDemo" : "BrokenCppDemo",
-                codegen::AccessModifier::PublicAccess | codegen::AccessModifier::PrivateAccess);
-            return classUnit->Render();
-        });
+    // Некорректно: передан неподдерживаемый модификатор класса.
+    appendFailure("Unsupported class modifier:", "Некорректно: неподдерживаемое значение модификатора класса.", [&]() {
+        const auto classUnit = factory->CreateClass(
+            IsLanguage(language, codegen::Language::CSharpLanguage) ? "BrokenCSharpDemo" : "BrokenCppDemo",
+            static_cast<codegen::ClassModifier>(999));
+        return classUnit->Render();
+    });
 
     // Некорректно: имя класса пустое, а генератор должен отказаться рендерить такой объект.
     appendFailure("Empty class name:", "Некорректно: пустое имя класса нарушает базовый инвариант генератора.",
-                  [&]() { return Demo(language, 0, {}, {}, ""); });
+                  [&]() { return Demo(language, codegen::ClassModifier::Unknown, {}, {}, ""); });
 
     // Некорректно: поле без типа нельзя сгенерировать, потому что тип обязателен для объявления.
     appendFailure("Empty field type:", "Некорректно: поле без типа не может быть корректно объявлено.", [&]() {
-        return Demo(language, 0, {},
+        return Demo(language, codegen::ClassModifier::Unknown, {},
                     {
-                        {"missingType", "", 0, codegen::AccessModifier::PrivateAccess},
+                        {"missingType", "", codegen::MethodModifier::Unknown, codegen::AccessModifier::PrivateAccess},
                     },
                     "BrokenFieldDemo");
     });

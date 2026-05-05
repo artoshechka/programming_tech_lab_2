@@ -18,7 +18,7 @@ class CppCodeFactory final : public codegen::ICodeFactory
     /// @param[in] flagsValue Флаги модификаторов класса (в C++-реализации не используются).
     /// @return Указатель на объект CppClassUnit.
     std::shared_ptr<codegen::CodeUnit> CreateClass(const std::string& name,
-                                                   codegen::CodeUnit::Flags flagsValue) const override;
+                                                   codegen::ClassModifier flagsValue) const override;
 
     /// @brief Создаёт узел объявления C++-метода.
     /// @param[in] name Имя создаваемого метода.
@@ -26,7 +26,7 @@ class CppCodeFactory final : public codegen::ICodeFactory
     /// @param[in] flagsValue Флаги модификаторов (static, virtual, const).
     /// @return Указатель на объект CppMethodUnit.
     std::shared_ptr<codegen::CodeUnit> CreateMethod(const std::string& name, const std::string& returnType,
-                                                    codegen::CodeUnit::Flags flagsValue) const override;
+                                                    codegen::MethodModifier flagsValue) const override;
 
     /// @brief Создаёт узел объявления C++-поля.
     /// @param[in] name Имя поля.
@@ -34,7 +34,7 @@ class CppCodeFactory final : public codegen::ICodeFactory
     /// @param[in] flagsValue Флаги модификаторов (static, const).
     /// @return Указатель на объект CppFieldUnit.
     std::shared_ptr<codegen::CodeUnit> CreateField(const std::string& name, const std::string& type,
-                                                   codegen::CodeUnit::Flags flagsValue) const override;
+                                                   codegen::MethodModifier flagsValue) const override;
 
     /// @brief Создаёт узел инструкции printf на C++.
     /// @param[in] text Текст для печати.

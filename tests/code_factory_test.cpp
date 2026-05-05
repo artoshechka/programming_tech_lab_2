@@ -54,11 +54,12 @@ class ProbePrintUnit final : public codegen::detail::AbstractPrintUnit
 class ProbeClassUnit final : public codegen::detail::AbstractClassUnit
 {
    public:
-    ProbeClassUnit(std::string name, Flags flagsValue) : codegen::detail::AbstractClassUnit(std::move(name), flagsValue)
+    ProbeClassUnit(std::string name, codegen::ClassModifier flagsValue)
+        : codegen::detail::AbstractClassUnit(std::move(name), flagsValue)
     {
     }
 
-    Flags ReadFlags() const
+    codegen::ClassModifier ReadFlags() const
     {
         return GetClassFlags();
     }
@@ -120,7 +121,7 @@ TEST(CodegenTypesTest, BitHelpersPreserveMasksAndFlags)
 TEST(BaseCodeUnitTest, AppendOnLeafFieldThrowsNotSupported)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
-    const auto field = factory->CreateField("value_", "int", 0);
+    const auto field = factory->CreateField("value_", "int", codegen::MethodModifier::Unknown);
 
     EXPECT_THROW(field->Append(factory->CreatePrintStatement("x"), 0), std::runtime_error);
 }
@@ -129,7 +130,7 @@ TEST(BaseCodeUnitTest, AppendOnLeafFieldThrowsNotSupported)
 TEST(BaseCodeUnitTest, AppendOnLeafFieldWithAccessModifierThrowsNotSupported)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
-    const auto field = factory->CreateField("value_", "int", 0);
+    const auto field = factory->CreateField("value_", "int", codegen::MethodModifier::Unknown);
 
     EXPECT_THROW(
         field->Append(factory->CreatePrintStatement("x"), ToAccessFlags(codegen::AccessModifier::PublicAccess)),
@@ -151,7 +152,7 @@ TEST(ExceptionHandlingTest, CreateClassTracksEmptyNameOnRender)
         ASSERT_NE(factory, nullptr);
 
         std::shared_ptr<codegen::CodeUnit> classUnit;
-        EXPECT_NO_THROW(classUnit = factory->CreateClass("", 0));
+        EXPECT_NO_THROW(classUnit = factory->CreateClass("", codegen::ClassModifier::Unknown));
         ASSERT_NE(classUnit, nullptr);
         EXPECT_THROW(classUnit->Render(), std::runtime_error);
     }
@@ -165,12 +166,12 @@ TEST(ExceptionHandlingTest, CreateMethodTracksEmptyNameOrTypeOnRender)
     ASSERT_NE(factory, nullptr);
 
     std::shared_ptr<codegen::CodeUnit> emptyNameMethod;
-    EXPECT_NO_THROW(emptyNameMethod = factory->CreateMethod("", "void", 0));
+    EXPECT_NO_THROW(emptyNameMethod = factory->CreateMethod("", "void", codegen::MethodModifier::Unknown));
     ASSERT_NE(emptyNameMethod, nullptr);
     EXPECT_THROW(emptyNameMethod->Render(), std::runtime_error);
 
     std::shared_ptr<codegen::CodeUnit> emptyTypeMethod;
-    EXPECT_NO_THROW(emptyTypeMethod = factory->CreateMethod("Run", "", 0));
+    EXPECT_NO_THROW(emptyTypeMethod = factory->CreateMethod("Run", "", codegen::MethodModifier::Unknown));
     ASSERT_NE(emptyTypeMethod, nullptr);
     EXPECT_THROW(emptyTypeMethod->Render(), std::runtime_error);
 }
@@ -183,12 +184,12 @@ TEST(ExceptionHandlingTest, CreateFieldTracksEmptyNameOrTypeOnRender)
     ASSERT_NE(factory, nullptr);
 
     std::shared_ptr<codegen::CodeUnit> emptyNameField;
-    EXPECT_NO_THROW(emptyNameField = factory->CreateField("", "int", 0));
+    EXPECT_NO_THROW(emptyNameField = factory->CreateField("", "int", codegen::MethodModifier::Unknown));
     ASSERT_NE(emptyNameField, nullptr);
     EXPECT_THROW(emptyNameField->Render(), std::runtime_error);
 
     std::shared_ptr<codegen::CodeUnit> emptyTypeField;
-    EXPECT_NO_THROW(emptyTypeField = factory->CreateField("value_", "", 0));
+    EXPECT_NO_THROW(emptyTypeField = factory->CreateField("value_", "", codegen::MethodModifier::Unknown));
     ASSERT_NE(emptyTypeField, nullptr);
     EXPECT_THROW(emptyTypeField->Render(), std::runtime_error);
 }
@@ -220,7 +221,7 @@ TEST(ExceptionHandlingTest, ClassAppendThrowsForNullMember)
         const auto factory = codegen::CreateFactory(language);
         ASSERT_NE(factory, nullptr);
 
-        const auto classUnit = factory->CreateClass("Container", 0);
+        const auto classUnit = factory->CreateClass("Container", codegen::ClassModifier::Unknown);
         ASSERT_NE(classUnit, nullptr);
         EXPECT_THROW(classUnit->Append(nullptr, 0), std::invalid_argument);
     }
@@ -232,7 +233,7 @@ TEST(ExceptionHandlingTest, MethodAppendThrowsForNullStatement)
     const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
     ASSERT_NE(factory, nullptr);
 
-    const auto method = factory->CreateMethod("Run", "void", 0);
+    const auto method = factory->CreateMethod("Run", "void", codegen::MethodModifier::Unknown);
     ASSERT_NE(method, nullptr);
     EXPECT_THROW(method->Append(nullptr, 0), std::invalid_argument);
 }
@@ -241,7 +242,8 @@ TEST(ExceptionHandlingTest, MethodAppendThrowsForNullStatement)
 TEST(ExceptionHandlingTest, CppClassAppendAccessOverloadThrowsForNullMember)
 {
     auto classUnit = std::static_pointer_cast<codegen::CppClassUnit>(
-        codegen::CreateFactory(codegen::Language::CppLanguage)->CreateClass("Container", 0));
+        codegen::CreateFactory(codegen::Language::CppLanguage)
+            ->CreateClass("Container", codegen::ClassModifier::Unknown));
 
     ASSERT_NE(classUnit, nullptr);
     EXPECT_THROW(classUnit->Append(nullptr, codegen::AccessModifier::PublicAccess), std::invalid_argument);
@@ -250,9 +252,9 @@ TEST(ExceptionHandlingTest, CppClassAppendAccessOverloadThrowsForNullMember)
 // Кейс: Базовый класс объявления класса отдает сохраненные флаги и имя без ошибок.
 TEST(AbstractClassUnitTest, ExposesStoredFlagsAndName)
 {
-    const ProbeClassUnit unit("Named", static_cast<codegen::CodeUnit::Flags>(codegen::ClassModifier::FinalModifier));
+    const ProbeClassUnit unit("Named", codegen::ClassModifier::FinalModifier);
 
-    EXPECT_EQ(unit.ReadFlags(), static_cast<codegen::CodeUnit::Flags>(codegen::ClassModifier::FinalModifier));
+    EXPECT_EQ(unit.ReadFlags(), codegen::ClassModifier::FinalModifier);
     EXPECT_EQ(unit.Render(2), "  Named");
 }
 
@@ -269,11 +271,11 @@ TEST(AbstractPrintUnitTest, ExposesStoredTextAndRenderExpression)
 TEST(CppRenderTest, ClassThrowsForUnsupportedAccess)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
-    const auto classUnit = factory->CreateClass("FallbackDemo", 0);
+    const auto classUnit = factory->CreateClass("FallbackDemo", codegen::ClassModifier::Unknown);
 
-    EXPECT_THROW(
-        classUnit->Append(factory->CreateField("value_", "int", 0), ToAccessFlags(codegen::AccessModifier::FileAccess)),
-        std::invalid_argument);
+    EXPECT_THROW(classUnit->Append(factory->CreateField("value_", "int", codegen::MethodModifier::Unknown),
+                                   ToAccessFlags(codegen::AccessModifier::FileAccess)),
+                 std::invalid_argument);
 }
 
 // Кейс: C++ метод отдает приоритет static над virtual и рендерит суффиксы final/const.
@@ -309,7 +311,7 @@ TEST(CppRenderTest, AbstractMethodUsesPureVirtualTerminator)
 TEST(CppRenderTest, PlainMethodRendersWithoutExtraModifiers)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
-    const auto methodUnit = factory->CreateMethod("Run", "void", 0);
+    const auto methodUnit = factory->CreateMethod("Run", "void", codegen::MethodModifier::Unknown);
     methodUnit->Append(factory->CreatePrintStatement("ok"), 0);
 
     const std::string rendered = methodUnit->Render(1);
@@ -391,8 +393,9 @@ TEST(CodeRenderTest, CppRendersFinalClassWithPureVirtualMethod)
 // Кейс: C++ конкретная перегрузка Append(accessModifier) раскладывает членов по секциям доступа.
 TEST(CodeRenderTest, CppConcreteAppendOverloadRendersProtectedAndPrivateSections)
 {
-    auto classUnit = std::static_pointer_cast<codegen::CppClassUnit>(
-        codegen::CreateFactory(codegen::Language::CppLanguage)->CreateClass("Sections", 0));
+    auto classUnit =
+        std::static_pointer_cast<codegen::CppClassUnit>(codegen::CreateFactory(codegen::Language::CppLanguage)
+                                                            ->CreateClass("Sections", codegen::ClassModifier::Unknown));
 
     classUnit->Append(std::make_shared<RawLineUnit>(), codegen::AccessModifier::PublicAccess);
     classUnit->Append(std::make_shared<RawLineUnit>(), codegen::AccessModifier::ProtectedAccess);
@@ -412,7 +415,7 @@ TEST(JavaRenderTest, ClassRendersModifiersAndThrowsForUnsupportedAccess)
     const auto classFlags = codegen::ClassModifier::AbstractModifier | codegen::ClassModifier::FinalModifier;
     const auto classUnit = factory->CreateClass("JavaDemo", classFlags);
 
-    EXPECT_THROW(classUnit->Append(factory->CreateMethod("Run", "void", 0),
+    EXPECT_THROW(classUnit->Append(factory->CreateMethod("Run", "void", codegen::MethodModifier::Unknown),
                                    ToAccessFlags(codegen::AccessModifier::InternalAccess)),
                  std::invalid_argument);
 
@@ -425,7 +428,7 @@ TEST(JavaRenderTest, ClassRendersModifiersAndThrowsForUnsupportedAccess)
 TEST(JavaRenderTest, ClassWithoutModifiersRendersPlainHeader)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
-    const auto classUnit = factory->CreateClass("PlainJava", 0);
+    const auto classUnit = factory->CreateClass("PlainJava", codegen::ClassModifier::Unknown);
 
     const std::string rendered = classUnit->Render();
 
@@ -450,9 +453,9 @@ TEST(JavaRenderTest, ClassWithFinalModifierRendersFinalHeader)
 TEST(JavaRenderTest, ClassRendersPrivateMember)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
-    const auto classUnit = factory->CreateClass("Secrets", 0);
+    const auto classUnit = factory->CreateClass("Secrets", codegen::ClassModifier::Unknown);
 
-    classUnit->Append(factory->CreateField("token", "String", 0),
+    classUnit->Append(factory->CreateField("token", "String", codegen::MethodModifier::Unknown),
                       ToAccessFlags(codegen::AccessModifier::PrivateAccess));
 
     EXPECT_TRUE(Contains(classUnit->Render(), "private String token;"));
@@ -476,7 +479,7 @@ TEST(JavaRenderTest, AbstractMethodUsesSemicolonWithoutBody)
 TEST(JavaRenderTest, ConcreteMethodRendersBody)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
-    const auto methodUnit = factory->CreateMethod("Print", "void", 0);
+    const auto methodUnit = factory->CreateMethod("Print", "void", codegen::MethodModifier::Unknown);
     methodUnit->Append(factory->CreatePrintStatement("ok"), 0);
 
     const std::string rendered = methodUnit->Render(1);
@@ -536,7 +539,7 @@ TEST(JavaRenderTest, FieldSupportsStandaloneStaticAndFinalModifiers)
 TEST(JavaRenderTest, FieldWithoutModifiersRendersPlainDeclaration)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
-    const auto fieldUnit = factory->CreateField("value", "int", 0);
+    const auto fieldUnit = factory->CreateField("value", "int", codegen::MethodModifier::Unknown);
 
     EXPECT_EQ(fieldUnit->Render(1), " int value;\n");
 }
@@ -583,61 +586,44 @@ TEST(JavaRenderTest, MethodThrowsForUnsupportedModifier)
 TEST(JavaRenderTest, ClassThrowsForUnsupportedModifier)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::JavaLanguage);
-    const auto classUnit = factory->CreateClass("BrokenClass", static_cast<codegen::CodeUnit::Flags>(999));
+    const auto classUnit = factory->CreateClass("BrokenClass", static_cast<codegen::ClassModifier>(999));
 
     EXPECT_THROW(classUnit->Render(), std::invalid_argument);
 }
 
-// Кейс: Для C# класса корректно рендерятся префиксы всех поддерживаемых модификаторов доступа.
-TEST(CSharpRenderTest, ClassAccessKeywordsAreRendered)
+// Кейс: C# класс без модификаторов не добавляет ключевых слов доступа.
+TEST(CSharpRenderTest, ClassWithoutAccessModifierOmitsKeyword)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
-    struct AccessCase
-    {
-        codegen::AccessModifier access;
-        const char* keyword;
-    };
+    const auto classUnit = factory->CreateClass("AccessDemo", codegen::ClassModifier::Unknown);
 
-    const std::array<AccessCase, 7> accessCases = {
-        AccessCase{codegen::AccessModifier::PublicAccess, "public"},
-        AccessCase{codegen::AccessModifier::ProtectedAccess, "protected"},
-        AccessCase{codegen::AccessModifier::PrivateAccess, "private"},
-        AccessCase{codegen::AccessModifier::PrivateProtectedAccess, "private protected"},
-        AccessCase{codegen::AccessModifier::InternalAccess, "internal"},
-        AccessCase{codegen::AccessModifier::ProtectedInternalAccess, "protected internal"},
-        AccessCase{codegen::AccessModifier::FileAccess, "file"},
-    };
+    const std::string rendered = classUnit->Render();
 
-    for (const auto& accessCase : accessCases)
-    {
-        SCOPED_TRACE(accessCase.keyword);
-
-        const auto classUnit = factory->CreateClass("AccessDemo", ToAccessFlags(accessCase.access));
-        const std::string rendered = classUnit->Render();
-
-        EXPECT_TRUE(Contains(rendered, std::string(accessCase.keyword) + " class AccessDemo")) << rendered;
-    }
+    EXPECT_TRUE(Contains(rendered, "class AccessDemo"));
+    EXPECT_FALSE(Contains(rendered, "public class AccessDemo"));
+    EXPECT_FALSE(Contains(rendered, "private class AccessDemo"));
+    EXPECT_FALSE(Contains(rendered, "protected class AccessDemo"));
 }
 
 // Кейс: Для членов C# поддержаны все варианты доступа, а невалидный доступ вызывает исключение.
 TEST(CSharpRenderTest, MemberAccessKeywordsIncludeAllSupportedVariants)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
-    const auto classUnit = factory->CreateClass("Service", 0);
+    const auto classUnit = factory->CreateClass("Service", codegen::ClassModifier::Unknown);
 
-    classUnit->Append(factory->CreateMethod("PublicMethod", "void", 0),
+    classUnit->Append(factory->CreateMethod("PublicMethod", "void", codegen::MethodModifier::Unknown),
                       ToAccessFlags(codegen::AccessModifier::PublicAccess));
-    classUnit->Append(factory->CreateMethod("ProtectedMethod", "void", 0),
+    classUnit->Append(factory->CreateMethod("ProtectedMethod", "void", codegen::MethodModifier::Unknown),
                       ToAccessFlags(codegen::AccessModifier::ProtectedAccess));
-    classUnit->Append(factory->CreateMethod("PrivateMethod", "void", 0),
+    classUnit->Append(factory->CreateMethod("PrivateMethod", "void", codegen::MethodModifier::Unknown),
                       ToAccessFlags(codegen::AccessModifier::PrivateAccess));
-    classUnit->Append(factory->CreateMethod("PrivateProtectedMethod", "void", 0),
+    classUnit->Append(factory->CreateMethod("PrivateProtectedMethod", "void", codegen::MethodModifier::Unknown),
                       ToAccessFlags(codegen::AccessModifier::PrivateProtectedAccess));
-    classUnit->Append(factory->CreateMethod("InternalMethod", "void", 0),
+    classUnit->Append(factory->CreateMethod("InternalMethod", "void", codegen::MethodModifier::Unknown),
                       ToAccessFlags(codegen::AccessModifier::InternalAccess));
-    classUnit->Append(factory->CreateMethod("ProtectedInternalMethod", "void", 0),
+    classUnit->Append(factory->CreateMethod("ProtectedInternalMethod", "void", codegen::MethodModifier::Unknown),
                       ToAccessFlags(codegen::AccessModifier::ProtectedInternalAccess));
-    EXPECT_THROW(classUnit->Append(factory->CreateMethod("FallbackMethod", "void", 0),
+    EXPECT_THROW(classUnit->Append(factory->CreateMethod("FallbackMethod", "void", codegen::MethodModifier::Unknown),
                                    static_cast<codegen::CodeUnit::Flags>(999)),
                  std::invalid_argument);
 
@@ -734,7 +720,7 @@ TEST(CSharpRenderTest, FieldSupportsStandaloneStaticModifier)
 TEST(CSharpRenderTest, FieldWithoutModifiersRendersPlainDeclaration)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
-    const auto fieldUnit = factory->CreateField("count_", "int", 0);
+    const auto fieldUnit = factory->CreateField("count_", "int", codegen::MethodModifier::Unknown);
 
     EXPECT_EQ(fieldUnit->Render(1), " int count_;\n");
 }
@@ -764,17 +750,17 @@ TEST(CSharpRenderTest, ClassSupportsAbstractSealedCombination)
 TEST(CSharpRenderTest, MemberAccessThrowsForUnknownModifier)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
-    const auto classUnit = factory->CreateClass("BrokenAccess", 0);
+    const auto classUnit = factory->CreateClass("BrokenAccess", codegen::ClassModifier::Unknown);
 
-    EXPECT_THROW(classUnit->Append(factory->CreateMethod("Ghost", "void", 0), 0), std::invalid_argument);
+    EXPECT_THROW(classUnit->Append(factory->CreateMethod("Ghost", "void", codegen::MethodModifier::Unknown), 0),
+                 std::invalid_argument);
 }
 
-// Кейс: C# класс выбрасывает исключение для несовместимой комбинации публичного и приватного доступа.
-TEST(CSharpRenderTest, ClassThrowsForUnsupportedAccessCombination)
+// Кейс: C# класс выбрасывает исключение для неподдерживаемого модификатора класса.
+TEST(CSharpRenderTest, ClassThrowsForUnsupportedModifier)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CSharpLanguage);
-    const auto invalidAccessFlags = codegen::AccessModifier::PublicAccess | codegen::AccessModifier::PrivateAccess;
-    const auto classUnit = factory->CreateClass("BrokenClass", invalidAccessFlags);
+    const auto classUnit = factory->CreateClass("BrokenClass", static_cast<codegen::ClassModifier>(999));
 
     EXPECT_THROW(classUnit->Render(), std::invalid_argument);
 }
