@@ -10,7 +10,7 @@ namespace codegen::java
 namespace
 {
 
-std::string RenderJavaFieldPrefixModifiers(codegen::CodeUnit::Flags fieldFlags)
+std::string RenderJavaFieldPrefixModifiers(codegen::MethodModifier fieldFlags)
 {
     switch (codegen::ToMethodModifierMask(fieldFlags))
     {
@@ -29,7 +29,7 @@ std::string RenderJavaFieldPrefixModifiers(codegen::CodeUnit::Flags fieldFlags)
 
 }  // namespace
 
-JavaFieldUnit::JavaFieldUnit(std::string name, std::string type, Flags flagsValue)
+JavaFieldUnit::JavaFieldUnit(std::string name, std::string type, MethodModifier flagsValue)
     : codegen::detail::AbstractFieldUnit(std::move(name), std::move(type), flagsValue)
 {
 }

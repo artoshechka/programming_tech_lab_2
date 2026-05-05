@@ -48,40 +48,9 @@ std::string ResolveCSharpMemberAccessKeyword(codegen::AccessModifier access)
     }
 }
 
-std::string ResolveCSharpClassAccessPrefix(codegen::CodeUnit::Flags flagsValue)
+std::string RenderCSharpClassModifiers(codegen::ClassModifier classFlags)
 {
-    const auto accessMask = codegen::AccessModifier::PublicAccess | codegen::AccessModifier::ProtectedAccess |
-                            codegen::AccessModifier::PrivateAccess | codegen::AccessModifier::InternalAccess |
-                            codegen::AccessModifier::FileAccess;
-    const auto accessFlags = flagsValue & accessMask;
-
-    switch (codegen::ToAccessModifierMask(accessFlags))
-    {
-        case codegen::AccessModifier::Unknown:
-            return "";
-        case codegen::AccessModifier::PublicAccess:
-            return "public ";
-        case codegen::AccessModifier::PrivateAccess:
-            return "private ";
-        case codegen::AccessModifier::ProtectedAccess:
-            return "protected ";
-        case codegen::AccessModifier::PrivateProtectedAccess:
-            return "private protected ";
-        case codegen::AccessModifier::InternalAccess:
-            return "internal ";
-        case codegen::AccessModifier::ProtectedInternalAccess:
-            return "protected internal ";
-        case codegen::AccessModifier::FileAccess:
-            return "file ";
-        default:
-            throw std::invalid_argument("Unsupported C# class access modifier");
-    }
-}
-
-std::string RenderCSharpClassModifiers(codegen::CodeUnit::Flags classFlags)
-{
-    switch (codegen::ToClassModifierMask(
-        classFlags & (codegen::ClassModifier::AbstractModifier | codegen::ClassModifier::FinalModifier)))
+    switch (codegen::ToClassModifierMask(static_cast<codegen::CodeUnit::Flags>(classFlags)))
     {
         case codegen::ClassModifier::Unknown:
             return "";
@@ -98,8 +67,8 @@ std::string RenderCSharpClassModifiers(codegen::CodeUnit::Flags classFlags)
 
 }  // namespace
 
-CSharpClassUnit::CSharpClassUnit(std::string name, Flags accessFlagsValue)
-    : codegen::detail::AbstractClassUnit(std::move(name), accessFlagsValue)
+CSharpClassUnit::CSharpClassUnit(std::string name, ClassModifier classModifiersValue)
+    : codegen::detail::AbstractClassUnit(std::move(name), classModifiersValue)
 {
 }
 
@@ -115,8 +84,7 @@ void CSharpClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsV
 
 std::string CSharpClassUnit::Render(unsigned int indentLevel) const
 {
-    std::string result = MakeIndent(indentLevel) + ResolveCSharpClassAccessPrefix(GetClassFlags());
-    result += RenderCSharpClassModifiers(GetClassFlags());
+    std::string result = MakeIndent(indentLevel) + RenderCSharpClassModifiers(GetClassFlags());
 
     result += "class " + GetClassName() + " {\n";
     for (const auto& [access, member] : members_)

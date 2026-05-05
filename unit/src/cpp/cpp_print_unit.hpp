@@ -6,7 +6,7 @@
 #include <src/common/abstract_print_unit.hpp>
 #include <string>
 
-namespace codegen
+namespace codegen::cpp
 {
 
 /// @brief Класс, который формирует оператор печати.
@@ -24,6 +24,6 @@ class CppPrintUnit : public codegen::detail::AbstractPrintUnit
     std::string RenderPrintExpression(const std::string& text) const override;
 };
 
-}  // namespace codegen
+}  // namespace codegen::cpp
 
 #endif  // GUID_2cc37e3f_1e21_43f6_87ca_86320db03ddd

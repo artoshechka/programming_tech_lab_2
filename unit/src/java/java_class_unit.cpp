@@ -39,9 +39,9 @@ std::string ResolveJavaAccessKeyword(codegen::AccessModifier access)
     }
 }
 
-std::string RenderJavaClassModifiers(codegen::CodeUnit::Flags classFlags)
+std::string RenderJavaClassModifiers(codegen::ClassModifier classFlags)
 {
-    switch (codegen::ToClassModifierMask(classFlags))
+    switch (codegen::ToClassModifierMask(static_cast<codegen::CodeUnit::Flags>(classFlags)))
     {
         case codegen::ClassModifier::Unknown:
             return "";
@@ -58,7 +58,7 @@ std::string RenderJavaClassModifiers(codegen::CodeUnit::Flags classFlags)
 
 }  // namespace
 
-JavaClassUnit::JavaClassUnit(std::string name, Flags classModifiersValue)
+JavaClassUnit::JavaClassUnit(std::string name, ClassModifier classModifiersValue)
     : codegen::detail::AbstractClassUnit(std::move(name), classModifiersValue)
 {
 }

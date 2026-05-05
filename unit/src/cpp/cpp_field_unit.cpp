@@ -3,12 +3,13 @@
 #include <src/cpp/cpp_field_unit.hpp>
 #include <stdexcept>
 
-using codegen::CppFieldUnit;
+namespace codegen::cpp
+{
 
 namespace
 {
 
-std::string RenderCppFieldPrefixModifiers(codegen::CodeUnit::Flags fieldFlags)
+std::string RenderCppFieldPrefixModifiers(codegen::MethodModifier fieldFlags)
 {
     switch (codegen::ToMethodModifierMask(fieldFlags))
     {
@@ -27,7 +28,7 @@ std::string RenderCppFieldPrefixModifiers(codegen::CodeUnit::Flags fieldFlags)
 
 }  // namespace
 
-CppFieldUnit::CppFieldUnit(const std::string& name, const std::string& type, Flags flagsValue)
+CppFieldUnit::CppFieldUnit(const std::string& name, const std::string& type, MethodModifier flagsValue)
     : codegen::detail::AbstractFieldUnit(name, type, flagsValue)
 {
 }
@@ -36,3 +37,5 @@ std::string CppFieldUnit::RenderPrefixModifiers() const
 {
     return RenderCppFieldPrefixModifiers(GetFieldFlags());
 }
+
+}  // namespace codegen::cpp

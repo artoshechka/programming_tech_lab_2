@@ -3,6 +3,7 @@
 #ifndef GUID_0ef9f91e_57ea_411b_89a7_97f8d2f70c9d
 #define GUID_0ef9f91e_57ea_411b_89a7_97f8d2f70c9d
 
+#include <codegen_types.hpp>
 #include <string>
 #include <unit.hpp>
 
@@ -17,7 +18,7 @@ class AbstractFieldUnit : public codegen::CodeUnit
     /// @param[in] name Имя поля.
     /// @param[in] type Тип поля.
     /// @param[in] flagsValue Флаги модификаторов поля.
-    AbstractFieldUnit(std::string name, std::string type, Flags flagsValue);
+    AbstractFieldUnit(std::string name, std::string type, MethodModifier flagsValue);
 
     /// @brief Формирует строку объявления поля.
     /// @param[in] indentLevel Уровень отступа.
@@ -38,12 +39,12 @@ class AbstractFieldUnit : public codegen::CodeUnit
 
     /// @brief Возвращает флаги модификаторов поля.
     /// @return Флаги модификаторов.
-    Flags GetFieldFlags() const;
+    MethodModifier GetFieldFlags() const;
 
    private:
-    std::string name_;  ///< Имя поля.
-    std::string type_;  ///< Тип поля.
-    Flags flags_;       ///< Флаги модификаторов поля.
+    std::string name_;      ///< Имя поля.
+    std::string type_;      ///< Тип поля.
+    MethodModifier flags_;  ///< Флаги модификаторов поля.
 };
 
 }  // namespace codegen::detail

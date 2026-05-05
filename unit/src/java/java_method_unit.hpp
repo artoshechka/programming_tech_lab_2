@@ -18,7 +18,7 @@ class JavaMethodUnit : public codegen::detail::AbstractMethodUnit
     /// @param[in] name Имя метода.
     /// @param[in] returnType Тип возвращаемого значения.
     /// @param[in] flagsValue Флаги модификаторов.
-    JavaMethodUnit(std::string name, std::string returnType, Flags flagsValue);
+    JavaMethodUnit(std::string name, std::string returnType, MethodModifier flagsValue);
 
    protected:
     /// @brief Формирует модификаторы Java перед типом метода.

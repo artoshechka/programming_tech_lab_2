@@ -10,7 +10,7 @@ namespace codegen::java
 namespace
 {
 
-std::string RenderJavaMethodPrefixModifiers(codegen::CodeUnit::Flags methodFlags)
+std::string RenderJavaMethodPrefixModifiers(codegen::MethodModifier methodFlags)
 {
     switch (codegen::ToMethodModifierMask(methodFlags))
     {
@@ -37,7 +37,7 @@ std::string RenderJavaMethodPrefixModifiers(codegen::CodeUnit::Flags methodFlags
 
 }  // namespace
 
-JavaMethodUnit::JavaMethodUnit(std::string name, std::string returnType, Flags flagsValue)
+JavaMethodUnit::JavaMethodUnit(std::string name, std::string returnType, MethodModifier flagsValue)
     : codegen::detail::AbstractMethodUnit(std::move(name), std::move(returnType), flagsValue)
 {
 }

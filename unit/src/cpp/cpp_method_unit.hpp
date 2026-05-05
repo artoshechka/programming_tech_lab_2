@@ -7,7 +7,7 @@
 #include <src/common/abstract_method_unit.hpp>
 #include <string>
 
-namespace codegen
+namespace codegen::cpp
 {
 
 /// @brief Класс, который формирует объявление метода C++ класса.
@@ -18,7 +18,7 @@ class CppMethodUnit : public codegen::detail::AbstractMethodUnit
     /// @param[in] name Имя метода.
     /// @param[in] returnType Тип возвращаемого значения.
     /// @param[in] flagsValue Флаги модификаторов метода.
-    CppMethodUnit(const std::string& name, const std::string& returnType, Flags flagsValue);
+    CppMethodUnit(const std::string& name, const std::string& returnType, MethodModifier flagsValue);
 
    protected:
     /// @brief Формирует модификаторы C++ перед типом метода.
@@ -38,6 +38,6 @@ class CppMethodUnit : public codegen::detail::AbstractMethodUnit
     std::string RenderAbstractTerminator() const override;
 };
 
-}  // namespace codegen
+}  // namespace codegen::cpp
 
 #endif  // GUID_55f5a170_8f2a_4112_842f_c0f6af77ff6e

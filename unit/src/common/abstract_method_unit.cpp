@@ -7,7 +7,7 @@
 namespace codegen::detail
 {
 
-AbstractMethodUnit::AbstractMethodUnit(std::string name, std::string returnType, Flags flagsValue)
+AbstractMethodUnit::AbstractMethodUnit(std::string name, std::string returnType, MethodModifier flagsValue)
     : name_(std::move(name)), returnType_(std::move(returnType)), flags_(flagsValue)
 {
 }
@@ -62,7 +62,7 @@ std::string AbstractMethodUnit::RenderSuffixModifiers() const
     return "";
 }
 
-codegen::CodeUnit::Flags AbstractMethodUnit::GetMethodFlags() const
+codegen::MethodModifier AbstractMethodUnit::GetMethodFlags() const
 {
     return flags_;
 }

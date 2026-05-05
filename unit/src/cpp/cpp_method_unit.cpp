@@ -3,12 +3,13 @@
 #include <src/cpp/cpp_method_unit.hpp>
 #include <stdexcept>
 
-using codegen::CppMethodUnit;
+namespace codegen::cpp
+{
 
 namespace
 {
 
-std::string RenderCppMethodPrefixModifiers(codegen::CodeUnit::Flags methodFlags)
+std::string RenderCppMethodPrefixModifiers(codegen::MethodModifier methodFlags)
 {
     switch (codegen::ToMethodModifierMask(
         methodFlags & (codegen::MethodModifier::StaticModifier | codegen::MethodModifier::VirtualModifier)))
@@ -26,7 +27,7 @@ std::string RenderCppMethodPrefixModifiers(codegen::CodeUnit::Flags methodFlags)
     }
 }
 
-std::string RenderCppMethodSuffixModifiers(codegen::CodeUnit::Flags methodFlags)
+std::string RenderCppMethodSuffixModifiers(codegen::MethodModifier methodFlags)
 {
     switch (codegen::ToMethodModifierMask(
         methodFlags & (codegen::MethodModifier::FinalModifier | codegen::MethodModifier::ConstModifier)))
@@ -46,7 +47,7 @@ std::string RenderCppMethodSuffixModifiers(codegen::CodeUnit::Flags methodFlags)
 
 }  // namespace
 
-CppMethodUnit::CppMethodUnit(const std::string& name, const std::string& returnType, Flags flagsValue)
+CppMethodUnit::CppMethodUnit(const std::string& name, const std::string& returnType, MethodModifier flagsValue)
     : codegen::detail::AbstractMethodUnit(name, returnType, flagsValue)
 {
 }
@@ -70,3 +71,5 @@ std::string CppMethodUnit::RenderAbstractTerminator() const
 {
     return " = 0;\n";
 }
+
+}  // namespace codegen::cpp

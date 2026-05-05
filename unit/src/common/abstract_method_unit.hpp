@@ -3,6 +3,7 @@
 #ifndef GUID_8b34a2d7_38f8_4df4_8970_4f6f35498268
 #define GUID_8b34a2d7_38f8_4df4_8970_4f6f35498268
 
+#include <codegen_types.hpp>
 #include <string>
 #include <unit.hpp>
 #include <vector>
@@ -18,7 +19,7 @@ class AbstractMethodUnit : public codegen::CodeUnit
     /// @param[in] name Имя метода.
     /// @param[in] returnType Тип возвращаемого значения.
     /// @param[in] flagsValue Флаги модификаторов.
-    AbstractMethodUnit(std::string name, std::string returnType, Flags flagsValue);
+    AbstractMethodUnit(std::string name, std::string returnType, MethodModifier flagsValue);
 
     /// @brief Добавляет оператор в тело метода.
     /// @param[in] unit Вложенный оператор.
@@ -52,12 +53,12 @@ class AbstractMethodUnit : public codegen::CodeUnit
 
     /// @brief Возвращает флаги модификаторов метода.
     /// @return Флаги метода.
-    Flags GetMethodFlags() const;
+    MethodModifier GetMethodFlags() const;
 
    private:
     std::string name_;                                      ///< Имя метода.
     std::string returnType_;                                ///< Тип возвращаемого значения.
-    Flags flags_;                                           ///< Флаги модификаторов.
+    MethodModifier flags_;                                  ///< Флаги модификаторов.
     std::vector<std::shared_ptr<codegen::CodeUnit>> body_;  ///< Тело метода.
 };
 

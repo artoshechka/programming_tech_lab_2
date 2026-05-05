@@ -10,7 +10,7 @@ namespace codegen::csharp
 namespace
 {
 
-std::string RenderCSharpMethodPrimaryPrefix(codegen::CodeUnit::Flags methodFlags)
+std::string RenderCSharpMethodPrimaryPrefix(codegen::MethodModifier methodFlags)
 {
     switch (codegen::ToMethodModifierMask(
         methodFlags & (codegen::MethodModifier::StaticModifier | codegen::MethodModifier::VirtualModifier)))
@@ -28,7 +28,7 @@ std::string RenderCSharpMethodPrimaryPrefix(codegen::CodeUnit::Flags methodFlags
     }
 }
 
-std::string RenderCSharpMethodSecondaryPrefix(codegen::CodeUnit::Flags methodFlags)
+std::string RenderCSharpMethodSecondaryPrefix(codegen::MethodModifier methodFlags)
 {
     switch (codegen::ToMethodModifierMask(
         methodFlags & (codegen::MethodModifier::AbstractModifier | codegen::MethodModifier::FinalModifier)))
@@ -48,7 +48,7 @@ std::string RenderCSharpMethodSecondaryPrefix(codegen::CodeUnit::Flags methodFla
 
 }  // namespace
 
-CSharpMethodUnit::CSharpMethodUnit(std::string name, std::string returnType, Flags flagsValue)
+CSharpMethodUnit::CSharpMethodUnit(std::string name, std::string returnType, MethodModifier flagsValue)
     : codegen::detail::AbstractMethodUnit(std::move(name), std::move(returnType), flagsValue)
 {
 }

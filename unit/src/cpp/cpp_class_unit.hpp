@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-namespace codegen
+namespace codegen::cpp
 {
 
 /// @brief Класс, который собирает и формирует объявление C++ класса.
@@ -18,12 +18,9 @@ class CppClassUnit : public codegen::detail::AbstractClassUnit
     /// @brief Конструктор генератора объявления C++ класса.
     /// @param[in] name Имя класса.
     /// @param[in] classModifiersValue Флаги модификаторов класса (final и т.д.).
-    explicit CppClassUnit(const std::string& name, Flags classModifiersValue = 0);
+    explicit CppClassUnit(const std::string& name, ClassModifier classModifiersValue = ClassModifier::Unknown);
 
-    /// @brief Добавляет вложенный элемент в указанную секцию доступа.
-    /// @param[in] unit Вложенный узел.
-    /// @param[in] accessModifier Целевая секция доступа.
-    void Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier accessModifier);
+    using codegen::detail::AbstractClassUnit::Append;
 
     /// @brief Добавляет вложенный элемент с доступом, заданным через флаги.
     /// @param[in] unit Вложенный узел.
@@ -41,6 +38,6 @@ class CppClassUnit : public codegen::detail::AbstractClassUnit
     std::vector<Fields> fields_;  ///< Набор секций доступа и их элементов.
 };
 
-}  // namespace codegen
+}  // namespace codegen::cpp
 
 #endif  // GUID_8d9f6710_0cba_4e86_9c9f_32f88d7cff2f

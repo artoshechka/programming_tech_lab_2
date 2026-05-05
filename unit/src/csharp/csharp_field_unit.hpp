@@ -18,7 +18,7 @@ class CSharpFieldUnit : public codegen::detail::AbstractFieldUnit
     /// @param[in] name Имя поля.
     /// @param[in] type Тип поля.
     /// @param[in] flagsValue Флаги модификаторов.
-    CSharpFieldUnit(std::string name, std::string type, Flags flagsValue);
+    CSharpFieldUnit(std::string name, std::string type, MethodModifier flagsValue);
 
    protected:
     /// @brief Формирует префикс модификаторов поля C#.

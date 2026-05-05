@@ -10,20 +10,20 @@ namespace codegen::csharp
 {
 
 std::shared_ptr<codegen::CodeUnit> CSharpCodeFactory::CreateClass(const std::string& name,
-                                                                  codegen::CodeUnit::Flags flagsValue) const
+                                                                  codegen::ClassModifier flagsValue) const
 {
     return std::make_shared<CSharpClassUnit>(name, flagsValue);
 }
 
 std::shared_ptr<codegen::CodeUnit> CSharpCodeFactory::CreateMethod(const std::string& name,
                                                                    const std::string& returnType,
-                                                                   codegen::CodeUnit::Flags flagsValue) const
+                                                                   codegen::MethodModifier flagsValue) const
 {
     return std::make_shared<CSharpMethodUnit>(name, returnType, flagsValue);
 }
 
 std::shared_ptr<codegen::CodeUnit> CSharpCodeFactory::CreateField(const std::string& name, const std::string& type,
-                                                                  codegen::CodeUnit::Flags flagsValue) const
+                                                                  codegen::MethodModifier flagsValue) const
 {
     return std::make_shared<CSharpFieldUnit>(name, type, flagsValue);
 }
