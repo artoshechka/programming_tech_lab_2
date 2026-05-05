@@ -15,6 +15,7 @@ void PrintLanguageExamples(codegen::Language language)
     std::cout << "\nFinal Class:\n" << examples::RenderFinalClass(language);
     std::cout << "\nAbstract Class:\n" << examples::RenderAbstractClass(language);
     std::cout << "\nStatic Methods:\n" << examples::RenderStaticExample(language);
+    std::cout << "\nIncorrect Examples:\n" << examples::RenderIncorrectExamples(language);
 }
 
 }  // namespace
