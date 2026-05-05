@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-namespace codegen
+namespace codegen::cpp
 {
 
 /// @brief Класс, который собирает и формирует объявление C++ класса.
@@ -38,6 +38,6 @@ class CppClassUnit : public codegen::detail::AbstractClassUnit
     std::vector<Fields> fields_;  ///< Набор секций доступа и их элементов.
 };
 
-}  // namespace codegen
+}  // namespace codegen::cpp
 
 #endif  // GUID_8d9f6710_0cba_4e86_9c9f_32f88d7cff2f

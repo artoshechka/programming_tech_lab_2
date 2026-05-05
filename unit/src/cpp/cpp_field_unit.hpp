@@ -7,7 +7,7 @@
 #include <src/common/abstract_field_unit.hpp>
 #include <string>
 
-namespace codegen
+namespace codegen::cpp
 {
 
 /// @brief Класс для генерации объявления поля C++.
@@ -26,6 +26,6 @@ class CppFieldUnit : public codegen::detail::AbstractFieldUnit
     std::string RenderPrefixModifiers() const override;
 };
 
-}  // namespace codegen
+}  // namespace codegen::cpp
 
 #endif  // GUID_17258fdb_5682_468b_97e6_1f07aedf8a2e

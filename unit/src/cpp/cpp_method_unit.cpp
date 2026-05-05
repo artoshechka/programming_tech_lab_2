@@ -3,7 +3,8 @@
 #include <src/cpp/cpp_method_unit.hpp>
 #include <stdexcept>
 
-using codegen::CppMethodUnit;
+namespace codegen::cpp
+{
 
 namespace
 {
@@ -70,3 +71,5 @@ std::string CppMethodUnit::RenderAbstractTerminator() const
 {
     return " = 0;\n";
 }
+
+}  // namespace codegen::cpp

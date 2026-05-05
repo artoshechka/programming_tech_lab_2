@@ -3,7 +3,8 @@
 #include <src/cpp/cpp_class_unit.hpp>
 #include <stdexcept>
 
-using codegen::CppClassUnit;
+namespace codegen::cpp
+{
 
 const std::vector<std::string> CppClassUnit::accessModifiers_ = {"public", "protected", "private"};
 
@@ -81,3 +82,5 @@ std::string CppClassUnit::Render(unsigned int indentLevel) const
     result += MakeIndent(indentLevel) + "};\n";
     return result;
 }
+
+}  // namespace codegen::cpp

@@ -7,7 +7,7 @@
 #include <src/common/abstract_method_unit.hpp>
 #include <string>
 
-namespace codegen
+namespace codegen::cpp
 {
 
 /// @brief Класс, который формирует объявление метода C++ класса.
@@ -38,6 +38,6 @@ class CppMethodUnit : public codegen::detail::AbstractMethodUnit
     std::string RenderAbstractTerminator() const override;
 };
 
-}  // namespace codegen
+}  // namespace codegen::cpp
 
 #endif  // GUID_55f5a170_8f2a_4112_842f_c0f6af77ff6e

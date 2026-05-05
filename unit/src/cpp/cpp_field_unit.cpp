@@ -3,7 +3,8 @@
 #include <src/cpp/cpp_field_unit.hpp>
 #include <stdexcept>
 
-using codegen::CppFieldUnit;
+namespace codegen::cpp
+{
 
 namespace
 {
@@ -36,3 +37,5 @@ std::string CppFieldUnit::RenderPrefixModifiers() const
 {
     return RenderCppFieldPrefixModifiers(GetFieldFlags());
 }
+
+}  // namespace codegen::cpp

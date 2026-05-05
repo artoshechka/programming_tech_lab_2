@@ -12,19 +12,19 @@ namespace codegen::cpp
 std::shared_ptr<codegen::CodeUnit> CppCodeFactory::CreateClass(const std::string& name,
                                                                codegen::ClassModifier flagsValue) const
 {
-    return std::make_shared<codegen::CppClassUnit>(name, flagsValue);
+    return std::make_shared<codegen::cpp::CppClassUnit>(name, flagsValue);
 }
 
 std::shared_ptr<codegen::CodeUnit> CppCodeFactory::CreateMethod(const std::string& name, const std::string& returnType,
                                                                 codegen::MethodModifier flagsValue) const
 {
-    return std::make_shared<codegen::CppMethodUnit>(name, returnType, flagsValue);
+    return std::make_shared<codegen::cpp::CppMethodUnit>(name, returnType, flagsValue);
 }
 
 std::shared_ptr<codegen::CodeUnit> CppCodeFactory::CreateField(const std::string& name, const std::string& type,
                                                                codegen::MethodModifier flagsValue) const
 {
-    return std::make_shared<codegen::CppFieldUnit>(name, type, flagsValue);
+    return std::make_shared<codegen::cpp::CppFieldUnit>(name, type, flagsValue);
 }
 
 std::shared_ptr<codegen::CodeUnit> CppCodeFactory::CreatePrintStatement(const std::string& text) const

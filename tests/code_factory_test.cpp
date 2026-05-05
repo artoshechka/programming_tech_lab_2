@@ -241,7 +241,7 @@ TEST(ExceptionHandlingTest, MethodAppendThrowsForNullStatement)
 // Кейс: C++ перегрузка Append(accessModifier) проверяет null до преобразования модификатора.
 TEST(ExceptionHandlingTest, CppClassAppendAccessOverloadThrowsForNullMember)
 {
-    auto classUnit = std::static_pointer_cast<codegen::CppClassUnit>(
+    auto classUnit = std::static_pointer_cast<codegen::cpp::CppClassUnit>(
         codegen::CreateFactory(codegen::Language::CppLanguage)
             ->CreateClass("Container", codegen::ClassModifier::Unknown));
 
@@ -393,9 +393,9 @@ TEST(CodeRenderTest, CppRendersFinalClassWithPureVirtualMethod)
 // Кейс: C++ конкретная перегрузка Append(accessModifier) раскладывает членов по секциям доступа.
 TEST(CodeRenderTest, CppConcreteAppendOverloadRendersProtectedAndPrivateSections)
 {
-    auto classUnit =
-        std::static_pointer_cast<codegen::CppClassUnit>(codegen::CreateFactory(codegen::Language::CppLanguage)
-                                                            ->CreateClass("Sections", codegen::ClassModifier::Unknown));
+    auto classUnit = std::static_pointer_cast<codegen::cpp::CppClassUnit>(
+        codegen::CreateFactory(codegen::Language::CppLanguage)
+            ->CreateClass("Sections", codegen::ClassModifier::Unknown));
 
     classUnit->Append(std::make_shared<RawLineUnit>(), codegen::AccessModifier::PublicAccess);
     classUnit->Append(std::make_shared<RawLineUnit>(), codegen::AccessModifier::ProtectedAccess);
