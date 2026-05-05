@@ -125,14 +125,15 @@ TEST(BaseCodeUnitTest, AppendOnLeafFieldThrowsNotSupported)
     EXPECT_THROW(field->Append(factory->CreatePrintStatement("x"), 0), std::runtime_error);
 }
 
-// Кейс: Базовая перегрузка Append(accessModifier) на листовом юните также выбрасывает Not supported.
+// Кейс: Базовая перегрузка Append(flags) на листовом юните выбрасывает Not supported.
 TEST(BaseCodeUnitTest, AppendOnLeafFieldWithAccessModifierThrowsNotSupported)
 {
     const auto factory = codegen::CreateFactory(codegen::Language::CppLanguage);
     const auto field = factory->CreateField("value_", "int", 0);
 
-    EXPECT_THROW(field->Append(factory->CreatePrintStatement("x"), codegen::AccessModifier::PublicAccess),
-                 std::runtime_error);
+    EXPECT_THROW(
+        field->Append(factory->CreatePrintStatement("x"), ToAccessFlags(codegen::AccessModifier::PublicAccess)),
+        std::runtime_error);
 }
 
 // Кейс: Класс с пустым именем создается, но ошибка фиксируется при Render().

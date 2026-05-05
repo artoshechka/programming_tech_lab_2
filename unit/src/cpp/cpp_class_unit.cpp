@@ -46,17 +46,6 @@ CppClassUnit::CppClassUnit(const std::string& name, Flags classModifiersValue)
     fields_.resize(accessModifiers_.size());
 }
 
-void CppClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier accessModifier)
-{
-    if (!unit)
-    {
-        throw std::invalid_argument("Class member must not be null");
-    }
-
-    const size_t modifierIndex = ResolveAccessSectionIndex(accessModifier | AccessModifier::Unknown);
-    fields_[modifierIndex].push_back(unit);
-}
-
 void CppClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue)
 {
     if (!unit)

@@ -20,10 +20,7 @@ class CppClassUnit : public codegen::detail::AbstractClassUnit
     /// @param[in] classModifiersValue Флаги модификаторов класса (final и т.д.).
     explicit CppClassUnit(const std::string& name, Flags classModifiersValue = 0);
 
-    /// @brief Добавляет вложенный элемент в указанную секцию доступа.
-    /// @param[in] unit Вложенный узел.
-    /// @param[in] accessModifier Целевая секция доступа.
-    void Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier accessModifier);
+    using codegen::detail::AbstractClassUnit::Append;
 
     /// @brief Добавляет вложенный элемент с доступом, заданным через флаги.
     /// @param[in] unit Вложенный узел.

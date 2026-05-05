@@ -69,7 +69,8 @@ inline std::string Demo(codegen::Language language, codegen::CodeUnit::Flags cla
 
     for (const auto& field : fields)
     {
-        classUnit->Append(factory->CreateField(field.name, field.type, field.flags), field.access);
+        classUnit->Append(factory->CreateField(field.name, field.type, field.flags),
+                          field.access | codegen::AccessModifier::Unknown);
     }
 
     for (const auto& method : methods)
@@ -79,7 +80,7 @@ inline std::string Demo(codegen::Language language, codegen::CodeUnit::Flags cla
         {
             methodUnit->Append(factory->CreatePrintStatement(text), 0);
         }
-        classUnit->Append(methodUnit, method.access);
+        classUnit->Append(methodUnit, method.access | codegen::AccessModifier::Unknown);
     }
 
     return classUnit->Render();
@@ -266,8 +267,7 @@ inline std::string RenderIncorrectExamples(codegen::Language language)
     const auto factory = codegen::CreateFactory(language);
     std::string result;
 
-    const auto appendFailure = [&result](const std::string& title, const std::string& explanation,
-                                         const auto& action) {
+    const auto appendFailure = [&result](const std::string& title, const std::string& explanation, const auto& action) {
         result += title + "\n";
         result += explanation + "\n";
         try
@@ -280,47 +280,39 @@ inline std::string RenderIncorrectExamples(codegen::Language language)
         result += "\n";
     };
 
-    // Некорректно: Java-поле не может использовать virtual-модификатор, поэтому генератор обязан отвергнуть такой набор флагов.
-    appendFailure("Java invalid field modifier:",
-                  "Некорректно: virtual недоступен для Java-поля.",
-                  [&]() {
-                      return Demo(language, 0,
-                                  {},
-                                  {
-                                      {"brokenField",
-                                       "int",
-                                       ToFlags(codegen::MethodModifier::VirtualModifier),
-                                       codegen::AccessModifier::PrivateAccess},
-                                  },
-                                  "BrokenJavaDemo");
-                  });
+    // Некорректно: Java-поле не может использовать virtual-модификатор, поэтому генератор обязан отвергнуть такой набор
+    // флагов.
+    appendFailure("Java invalid field modifier:", "Некорректно: virtual недоступен для Java-поля.", [&]() {
+        return Demo(language, 0, {},
+                    {
+                        {"brokenField", "int", ToFlags(codegen::MethodModifier::VirtualModifier),
+                         codegen::AccessModifier::PrivateAccess},
+                    },
+                    "BrokenJavaDemo");
+    });
 
     // Некорректно: сочетание public и private в одном наборе флагов не является валидным класс-видимым модификатором.
-    appendFailure("Conflicting class access modifiers:",
-                  "Некорректно: public|private не может быть одновременно применён к одному классу.",
-                  [&]() {
-                      const auto classUnit = factory->CreateClass(
-                          IsLanguage(language, codegen::Language::CSharpLanguage) ? "BrokenCSharpDemo" : "BrokenCppDemo",
-                          codegen::AccessModifier::PublicAccess | codegen::AccessModifier::PrivateAccess);
-                      return classUnit->Render();
-                  });
+    appendFailure(
+        "Conflicting class access modifiers:",
+        "Некорректно: public|private не может быть одновременно применён к одному классу.", [&]() {
+            const auto classUnit = factory->CreateClass(
+                IsLanguage(language, codegen::Language::CSharpLanguage) ? "BrokenCSharpDemo" : "BrokenCppDemo",
+                codegen::AccessModifier::PublicAccess | codegen::AccessModifier::PrivateAccess);
+            return classUnit->Render();
+        });
 
     // Некорректно: имя класса пустое, а генератор должен отказаться рендерить такой объект.
-    appendFailure("Empty class name:",
-                  "Некорректно: пустое имя класса нарушает базовый инвариант генератора.",
+    appendFailure("Empty class name:", "Некорректно: пустое имя класса нарушает базовый инвариант генератора.",
                   [&]() { return Demo(language, 0, {}, {}, ""); });
 
     // Некорректно: поле без типа нельзя сгенерировать, потому что тип обязателен для объявления.
-    appendFailure("Empty field type:",
-                  "Некорректно: поле без типа не может быть корректно объявлено.",
-                  [&]() {
-                      return Demo(language, 0,
-                                  {},
-                                  {
-                                      {"missingType", "", 0, codegen::AccessModifier::PrivateAccess},
-                                  },
-                                  "BrokenFieldDemo");
-                  });
+    appendFailure("Empty field type:", "Некорректно: поле без типа не может быть корректно объявлено.", [&]() {
+        return Demo(language, 0, {},
+                    {
+                        {"missingType", "", 0, codegen::AccessModifier::PrivateAccess},
+                    },
+                    "BrokenFieldDemo");
+    });
 
     return result;
 }

@@ -11,8 +11,6 @@
 namespace codegen
 {
 
-enum class AccessModifier : unsigned int;
-
 /// @brief Базовый класс для элементов генерации кода.
 class CodeUnit
 {
@@ -27,13 +25,7 @@ class CodeUnit
     /// @brief Добавляет вложенный узел.
     /// @param[in] unit Вложенный узел.
     /// @param[in] flagsValue Дополнительные флаги добавления.
-
     virtual void Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue);
-
-    /// @brief Добавляет вложенный узел с модификатором доступа.
-    /// @param[in] unit Вложенный узел.
-    /// @param[in] accessModifier Модификатор доступа.
-    void Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier accessModifier);
     /// @brief Формирует текстовое представление узла.
     /// @param[in] indentLevel Уровень отступа.
     /// @return Сгенерированный текст узла.

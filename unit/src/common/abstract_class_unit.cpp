@@ -7,6 +7,11 @@
 namespace codegen::detail
 {
 
+void AbstractClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier accessModifier)
+{
+    Append(unit, accessModifier | AccessModifier::Unknown);
+}
+
 AbstractClassUnit::AbstractClassUnit(std::string name, Flags classFlagsValue)
     : className_(std::move(name)), classFlags_(classFlagsValue)
 {

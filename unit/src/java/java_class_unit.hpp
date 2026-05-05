@@ -21,6 +21,8 @@ class JavaClassUnit : public codegen::detail::AbstractClassUnit
     /// @param[in] classModifiersValue Флаги модификаторов класса (final, abstract и т.д.).
     explicit JavaClassUnit(std::string name, Flags classModifiersValue = 0);
 
+    using codegen::detail::AbstractClassUnit::Append;
+
     /// @brief Добавляет элемент класса с указанным модификатором доступа.
     /// @param[in] unit Вложенный узел.
     /// @param[in] flagsValue Флаги доступа.

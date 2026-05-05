@@ -21,6 +21,8 @@ class CSharpClassUnit : public codegen::detail::AbstractClassUnit
     /// @param[in] accessFlagsValue Флаги модификаторов доступа C#-класса.
     explicit CSharpClassUnit(std::string name, Flags accessFlagsValue = 0);
 
+    using codegen::detail::AbstractClassUnit::Append;
+
     /// @brief Добавляет элемент класса с указанным модификатором доступа.
     /// @param[in] unit Вложенный узел.
     /// @param[in] flagsValue Флаги доступа.
