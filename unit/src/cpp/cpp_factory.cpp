@@ -29,7 +29,7 @@ std::shared_ptr<codegen::CodeUnit> CppCodeFactory::CreateField(const std::string
 
 std::shared_ptr<codegen::CodeUnit> CppCodeFactory::CreatePrintStatement(const std::string& text) const
 {
-    return std::make_shared<codegen::CppPrintUnit>(text);
+    return std::make_shared<codegen::cpp::CppPrintUnit>(text);
 }
 
 std::string CppCodeFactory::GetLanguageName() const
