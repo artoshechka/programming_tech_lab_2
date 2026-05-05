@@ -7,7 +7,7 @@
 #include <src/common/abstract_field_unit.hpp>
 #include <string>
 
-namespace codegen
+namespace codegen::cpp
 {
 
 /// @brief Класс для генерации объявления поля C++.
@@ -18,7 +18,7 @@ class CppFieldUnit : public codegen::detail::AbstractFieldUnit
     /// @param[in] name Имя поля.
     /// @param[in] type Тип поля.
     /// @param[in] flagsValue Флаги модификаторов.
-    CppFieldUnit(const std::string& name, const std::string& type, Flags flagsValue);
+    CppFieldUnit(const std::string& name, const std::string& type, MethodModifier flagsValue);
 
    protected:
     /// @brief Формирует префикс модификаторов поля C++.
@@ -26,6 +26,6 @@ class CppFieldUnit : public codegen::detail::AbstractFieldUnit
     std::string RenderPrefixModifiers() const override;
 };
 
-}  // namespace codegen
+}  // namespace codegen::cpp
 
 #endif  // GUID_17258fdb_5682_468b_97e6_1f07aedf8a2e

@@ -8,7 +8,7 @@ config:
   look: classic
 ---
 classDiagram
-
+    namespace codegen {
         class CodeUnit {
             <<abstract>>
             +Flags
@@ -17,34 +17,27 @@ classDiagram
             #MakeIndent(indentLevel) string
         }
 
-        class Language {
-            <<enumeration>>
-            Unknown
-            CppLanguage
-            JavaLanguage
-            CSharpLanguage
-        }
-
         class ICodeFactory {
             <<interface>>
-            +CreateClass(name, flagsValue) CodeUnit
             +CreateClass(name, modifier) CodeUnit
-            +CreateMethod(name, returnType, flagsValue) CodeUnit
             +CreateMethod(name, returnType, modifier) CodeUnit
-            +CreateField(name, type, flagsValue) CodeUnit
             +CreateField(name, type, modifier) CodeUnit
             +CreatePrintStatement(text) CodeUnit
             +GetLanguageName() string
         }
 
         class CreateFactory {
+            <<utility>>
             +CreateFactory(language) ICodeFactory
         }
+    }
 
+    namespace codegen_detail {
         class AbstractClassUnit {
             <<abstract>>
+            +Append(unit, accessModifier)
             #GetClassName() string
-            #GetClassFlags() Flags
+            #GetClassFlags() ClassModifier
         }
 
         class AbstractMethodUnit {
@@ -55,7 +48,7 @@ classDiagram
             #RenderSuffixModifiers() string
             #IsAbstractMethod() bool
             #RenderAbstractTerminator() string
-            #GetMethodFlags() Flags
+            #GetMethodFlags() MethodModifier
         }
 
         class AbstractPrintUnit {
@@ -70,23 +63,24 @@ classDiagram
             +Render(indentLevel) string
             #RenderPrefixModifiers() string
             #RenderSuffixModifiers() string
-            #GetFieldFlags() Flags
+            #GetFieldFlags() MethodModifier
         }
-
+    }
 
     namespace codegen_cpp {
         class CppCodeFactory {
-            +CreateClass(name, flagsValue) CodeUnit
-            +CreateMethod(name, returnType, flagsValue) CodeUnit
-            +CreateField(name, type, flagsValue) CodeUnit
+            +CreateClass(name, modifier) CodeUnit
+            +CreateMethod(name, returnType, modifier) CodeUnit
+            +CreateField(name, type, modifier) CodeUnit
             +CreatePrintStatement(text) CodeUnit
             +GetLanguageName() string
         }
-        
+
         class CppClassUnit {
             +Append(unit, accessModifier)
             +Append(unit, flagsValue)
             +Render(indentLevel) string
+            -fields_ List~List~CodeUnit~~
         }
 
         class CppMethodUnit {
@@ -96,20 +90,20 @@ classDiagram
             #RenderAbstractTerminator() string
         }
 
-        class CppPrintUnit {
-            #RenderPrintExpression(text) string
-        }
-
         class CppFieldUnit {
             #RenderPrefixModifiers() string
+        }
+
+        class CppPrintUnit {
+            #RenderPrintExpression(text) string
         }
     }
 
     namespace codegen_java {
         class JavaCodeFactory {
-            +CreateClass(name, flagsValue) CodeUnit
-            +CreateMethod(name, returnType, flagsValue) CodeUnit
-            +CreateField(name, type, flagsValue) CodeUnit
+            +CreateClass(name, modifier) CodeUnit
+            +CreateMethod(name, returnType, modifier) CodeUnit
+            +CreateField(name, type, modifier) CodeUnit
             +CreatePrintStatement(text) CodeUnit
             +GetLanguageName() string
         }
@@ -121,11 +115,9 @@ classDiagram
         }
 
         class JavaMethodUnit {
-            +GetAccess() OptionalAccessModifier
             #RenderPrefixModifiers() string
             #IsAbstractMethod() bool
             #RenderAbstractTerminator() string
-            -access_ OptionalAccessModifier
         }
 
         class JavaPrintUnit {
@@ -133,17 +125,15 @@ classDiagram
         }
 
         class JavaFieldUnit {
-            +GetAccess() OptionalAccessModifier
             #RenderPrefixModifiers() string
-            -access_ OptionalAccessModifier
         }
     }
 
     namespace codegen_csharp {
         class CSharpCodeFactory {
-            +CreateClass(name, flagsValue) CodeUnit
-            +CreateMethod(name, returnType, flagsValue) CodeUnit
-            +CreateField(name, type, flagsValue) CodeUnit
+            +CreateClass(name, modifier) CodeUnit
+            +CreateMethod(name, returnType, modifier) CodeUnit
+            +CreateField(name, type, modifier) CodeUnit
             +CreatePrintStatement(text) CodeUnit
             +GetLanguageName() string
         }
@@ -155,11 +145,9 @@ classDiagram
         }
 
         class CSharpMethodUnit {
-            +GetAccess() OptionalAccessModifier
             #RenderPrefixModifiers() string
             #IsAbstractMethod() bool
             #RenderAbstractTerminator() string
-            -access_ OptionalAccessModifier
         }
 
         class CSharpPrintUnit {
@@ -167,9 +155,7 @@ classDiagram
         }
 
         class CSharpFieldUnit {
-            +GetAccess() OptionalAccessModifier
             #RenderPrefixModifiers() string
-            -access_ OptionalAccessModifier
         }
     }
 
@@ -197,7 +183,6 @@ classDiagram
     AbstractPrintUnit <|-- CSharpPrintUnit
     AbstractFieldUnit <|-- CSharpFieldUnit
 
-    CreateFactory --> Language
     CreateFactory --> ICodeFactory
 
     CSharpCodeFactory --> CSharpClassUnit

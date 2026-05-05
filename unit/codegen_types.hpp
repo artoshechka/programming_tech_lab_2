@@ -59,10 +59,22 @@ inline constexpr MethodModifier ToMethodModifierMask(CodeUnit::Flags flags) noex
     return static_cast<MethodModifier>(flags);
 }
 
+/// @brief Преобразует enum-маску модификаторов метода в саму себя.
+inline constexpr MethodModifier ToMethodModifierMask(MethodModifier flags) noexcept
+{
+    return flags;
+}
+
 /// @brief Преобразует набор битов в enum-маску модификаторов класса.
 inline constexpr ClassModifier ToClassModifierMask(CodeUnit::Flags flags) noexcept
 {
     return static_cast<ClassModifier>(flags);
+}
+
+/// @brief Преобразует enum-маску модификаторов класса в саму себя.
+inline constexpr ClassModifier ToClassModifierMask(ClassModifier flags) noexcept
+{
+    return flags;
 }
 
 /// @brief Побитовое ИЛИ для флагов доступа.
@@ -102,9 +114,9 @@ inline constexpr CodeUnit::Flags operator&(AccessModifier lhs, CodeUnit::Flags r
 }
 
 /// @brief Побитовое ИЛИ для флагов методов.
-inline constexpr CodeUnit::Flags operator|(MethodModifier lhs, MethodModifier rhs) noexcept
+inline constexpr MethodModifier operator|(MethodModifier lhs, MethodModifier rhs) noexcept
 {
-    return static_cast<CodeUnit::Flags>(lhs) | static_cast<CodeUnit::Flags>(rhs);
+    return static_cast<MethodModifier>(static_cast<CodeUnit::Flags>(lhs) | static_cast<CodeUnit::Flags>(rhs));
 }
 
 /// @brief Побитовое И для флагов методов.
@@ -138,9 +150,9 @@ inline constexpr CodeUnit::Flags operator&(MethodModifier lhs, CodeUnit::Flags r
 }
 
 /// @brief Побитовое ИЛИ для флагов классов.
-inline constexpr CodeUnit::Flags operator|(ClassModifier lhs, ClassModifier rhs) noexcept
+inline constexpr ClassModifier operator|(ClassModifier lhs, ClassModifier rhs) noexcept
 {
-    return static_cast<CodeUnit::Flags>(lhs) | static_cast<CodeUnit::Flags>(rhs);
+    return static_cast<ClassModifier>(static_cast<CodeUnit::Flags>(lhs) | static_cast<CodeUnit::Flags>(rhs));
 }
 
 /// @brief Побитовое И для флагов классов.
@@ -191,10 +203,22 @@ inline constexpr bool HasFlag(CodeUnit::Flags flags, MethodModifier flag) noexce
     return HasFlag(flags, static_cast<CodeUnit::Flags>(flag));
 }
 
+/// @brief Проверяет наличие флага метода в enum-маске.
+inline constexpr bool HasFlag(MethodModifier flags, MethodModifier flag) noexcept
+{
+    return HasFlag(static_cast<CodeUnit::Flags>(flags), flag);
+}
+
 /// @brief Проверяет наличие флага класса в наборе флагов.
 inline constexpr bool HasFlag(CodeUnit::Flags flags, ClassModifier flag) noexcept
 {
     return HasFlag(flags, static_cast<CodeUnit::Flags>(flag));
+}
+
+/// @brief Проверяет наличие флага класса в enum-маске.
+inline constexpr bool HasFlag(ClassModifier flags, ClassModifier flag) noexcept
+{
+    return HasFlag(static_cast<CodeUnit::Flags>(flags), flag);
 }
 
 }  // namespace codegen

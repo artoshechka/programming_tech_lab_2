@@ -3,7 +3,8 @@
 #include <src/cpp/cpp_class_unit.hpp>
 #include <stdexcept>
 
-using codegen::CppClassUnit;
+namespace codegen::cpp
+{
 
 const std::vector<std::string> CppClassUnit::accessModifiers_ = {"public", "protected", "private"};
 
@@ -25,7 +26,7 @@ size_t ResolveAccessSectionIndex(codegen::CodeUnit::Flags accessFlags)
     }
 }
 
-std::string RenderCppClassModifierSuffix(codegen::CodeUnit::Flags classFlags)
+std::string RenderCppClassModifierSuffix(codegen::ClassModifier classFlags)
 {
     switch (codegen::ToClassModifierMask(classFlags & codegen::ClassModifier::FinalModifier))
     {
@@ -40,21 +41,10 @@ std::string RenderCppClassModifierSuffix(codegen::CodeUnit::Flags classFlags)
 
 }  // namespace
 
-CppClassUnit::CppClassUnit(const std::string& name, Flags classModifiersValue)
+CppClassUnit::CppClassUnit(const std::string& name, ClassModifier classModifiersValue)
     : codegen::detail::AbstractClassUnit(name, classModifiersValue)
 {
     fields_.resize(accessModifiers_.size());
-}
-
-void CppClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, AccessModifier accessModifier)
-{
-    if (!unit)
-    {
-        throw std::invalid_argument("Class member must not be null");
-    }
-
-    const size_t modifierIndex = ResolveAccessSectionIndex(accessModifier | AccessModifier::Unknown);
-    fields_[modifierIndex].push_back(unit);
 }
 
 void CppClassUnit::Append(const std::shared_ptr<CodeUnit>& unit, Flags flagsValue)
@@ -92,3 +82,5 @@ std::string CppClassUnit::Render(unsigned int indentLevel) const
     result += MakeIndent(indentLevel) + "};\n";
     return result;
 }
+
+}  // namespace codegen::cpp

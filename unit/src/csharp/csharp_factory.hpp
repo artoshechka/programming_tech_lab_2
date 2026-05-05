@@ -16,7 +16,7 @@ class CSharpCodeFactory final : public codegen::ICodeFactory
     /// @param[in] flagsValue Флаги модификаторов класса.
     /// @return Указатель на узел класса.
     std::shared_ptr<codegen::CodeUnit> CreateClass(const std::string& name,
-                                                   codegen::CodeUnit::Flags flagsValue) const override;
+                                                   codegen::ClassModifier flagsValue) const override;
 
     /// @brief Создает узел объявления C#-метода.
     /// @param[in] name Имя метода.
@@ -24,7 +24,7 @@ class CSharpCodeFactory final : public codegen::ICodeFactory
     /// @param[in] flagsValue Флаги модификаторов.
     /// @return Указатель на узел метода.
     std::shared_ptr<codegen::CodeUnit> CreateMethod(const std::string& name, const std::string& returnType,
-                                                    codegen::CodeUnit::Flags flagsValue) const override;
+                                                    codegen::MethodModifier flagsValue) const override;
 
     /// @brief Создает узел объявления поля C#.
     /// @param[in] name Имя поля.
@@ -32,7 +32,7 @@ class CSharpCodeFactory final : public codegen::ICodeFactory
     /// @param[in] flagsValue Флаги модификаторов (static, readonly).
     /// @return Указатель на узел поля.
     std::shared_ptr<codegen::CodeUnit> CreateField(const std::string& name, const std::string& type,
-                                                   codegen::CodeUnit::Flags flagsValue) const override;
+                                                   codegen::MethodModifier flagsValue) const override;
 
     /// @brief Создает инструкцию печати C#.
     /// @param[in] text Текст для вывода.

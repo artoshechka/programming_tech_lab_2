@@ -18,7 +18,7 @@ class JavaFieldUnit : public codegen::detail::AbstractFieldUnit
     /// @param[in] name Имя поля.
     /// @param[in] type Тип поля.
     /// @param[in] flagsValue Флаги модификаторов.
-    JavaFieldUnit(std::string name, std::string type, Flags flagsValue);
+    JavaFieldUnit(std::string name, std::string type, MethodModifier flagsValue);
 
    protected:
     /// @brief Формирует префикс модификаторов поля Java.
