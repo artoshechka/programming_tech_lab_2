@@ -2,6 +2,7 @@
 /// @brief Определение класса для генерации кода C++ класса.
 #include <src/cpp/cpp_class_unit.hpp>
 #include <stdexcept>
+#include <string>
 
 namespace codegen::cpp
 {
@@ -22,20 +23,21 @@ size_t ResolveAccessSectionIndex(codegen::CodeUnit::Flags accessFlags)
         case codegen::AccessModifier::PrivateAccess:
             return 2;
         default:
-            throw std::invalid_argument("Unsupported C++ class access modifier");
+            throw std::invalid_argument("Unsupported C++ class access modifier: " + std::to_string(accessFlags));
     }
 }
 
 std::string RenderCppClassModifierSuffix(codegen::ClassModifier classFlags)
 {
-    switch (codegen::ToClassModifierMask(classFlags & codegen::ClassModifier::FinalModifier))
+    switch (codegen::ToClassModifierMask(classFlags))
     {
         case codegen::ClassModifier::Unknown:
             return "";
         case codegen::ClassModifier::FinalModifier:
             return " final";
         default:
-            throw std::invalid_argument("Unsupported C++ class modifier");
+            throw std::invalid_argument("Unsupported C++ class modifier: " +
+                                        std::to_string(static_cast<unsigned int>(classFlags)));
     }
 }
 

@@ -2,6 +2,7 @@
 /// @brief Реализация генератора поля C#.
 #include <src/csharp/csharp_field_unit.hpp>
 #include <stdexcept>
+#include <string>
 #include <utility>
 
 namespace codegen::csharp
@@ -12,8 +13,7 @@ namespace
 
 std::string RenderCSharpFieldPrefixModifiers(codegen::MethodModifier fieldFlags)
 {
-    switch (codegen::ToMethodModifierMask(
-        fieldFlags & (codegen::MethodModifier::StaticModifier | codegen::MethodModifier::FinalModifier)))
+    switch (codegen::ToMethodModifierMask(fieldFlags))
     {
         case codegen::MethodModifier::Unknown:
             return "";
@@ -24,7 +24,8 @@ std::string RenderCSharpFieldPrefixModifiers(codegen::MethodModifier fieldFlags)
         case codegen::MethodModifier::StaticFinalModifier:
             return "static readonly ";
         default:
-            throw std::invalid_argument("Unsupported C# field modifier");
+            throw std::invalid_argument("Unsupported C# field modifier: " +
+                                        std::to_string(static_cast<unsigned int>(fieldFlags)));
     }
 }
 

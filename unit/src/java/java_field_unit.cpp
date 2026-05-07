@@ -2,6 +2,7 @@
 /// @brief Реализация генератора поля Java.
 #include <src/java/java_field_unit.hpp>
 #include <stdexcept>
+#include <string>
 #include <utility>
 
 namespace codegen::java
@@ -23,7 +24,8 @@ std::string RenderJavaFieldPrefixModifiers(codegen::MethodModifier fieldFlags)
         case codegen::MethodModifier::StaticFinalModifier:
             return "static final ";
         default:
-            throw std::invalid_argument("Unsupported Java field modifier");
+            throw std::invalid_argument("Unsupported Java field modifier: " +
+                                        std::to_string(static_cast<unsigned int>(fieldFlags)));
     }
 }
 
