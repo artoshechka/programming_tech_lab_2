@@ -36,20 +36,22 @@ https://disk.yandex.ru/i/dtd6RCsC1FCtcg
 Основные компоненты:
 - **main.cpp** — точка входа демонстрации. Создает фабрики для C++, Java и C#, генерирует примеры классов и выводит результат в консоль.
 - **code_factory** — контракт абстрактной фабрики:
-    - **ICodeFactory** — общий интерфейс создания узлов (`CreateClass`, `CreateMethod`, `CreatePrintStatement`);
+    - **ICodeFactory** — общий интерфейс создания узлов (`CreateClass`, `CreateMethod`, `CreateField`, `CreatePrintStatement`, `GetLanguageName`);
     - **CreateFactory(Language)** — выбор конкретной фабрики по целевому языку.
 - **unit / CodeUnit** — базовая иерархия узлов генерации:
     - **CodeUnit** — абстрактный базовый узел с `Append` и `Render`;
-    - конкретные узлы классов, методов и печати для каждого языка.
+    - конкретные узлы классов, методов, полей и печати для каждого языка.
+- **unit/src/common** — абстрактные базовые узлы (промежуточный слой):
+    - **AbstractClassUnit**, **AbstractMethodUnit**, **AbstractFieldUnit**, **AbstractPrintUnit**.
 - **unit/src/cpp** — C++-реализация генерации:
     - **CppCodeFactory**;
     - **CppClassUnit**, **CppMethodUnit**, **CppPrintUnit**, **CppFieldUnit**.
 - **unit/src/java** — Java-реализация генерации:
     - **JavaCodeFactory**;
-    - **JavaClassUnit**, **JavaMethodUnit**, **JavaPrintUnit**.
+    - **JavaClassUnit**, **JavaMethodUnit**, **JavaPrintUnit**, **JavaFieldUnit**.
 - **unit/src/csharp** — C#-реализация генерации:
     - **CSharpCodeFactory**;
-    - **CSharpClassUnit**, **CSharpMethodUnit**, **CSharpPrintUnit**.
+    - **CSharpClassUnit**, **CSharpMethodUnit**, **CSharpPrintUnit**, **CSharpFieldUnit**.
 - **unit/codegen_types.hpp** — общие перечисления модификаторов:
     - **AccessModifier** (включая C#-специфичные значения);
     - **MethodModifier** (`static`, `virtual`, `const`, `final`, `abstract`);
@@ -114,7 +116,7 @@ cmake --build .
 
 ```cpp
 std::string Demo(codegen::Language language,
-                 codegen::CodeUnit::Flags classFlags,
+                 codegen::ClassModifier classFlags,
                  const std::vector<MethodConfig>& methods,
                  const std::vector<FieldConfig>& fields,
                  const std::string& className = "DemoClass");
@@ -127,7 +129,7 @@ struct MethodConfig
 {
     std::string name;
     std::string returnType;
-    codegen::CodeUnit::Flags flags;
+    codegen::MethodModifier flags;
     codegen::AccessModifier access;
     std::vector<std::string> printStatements;
 };
@@ -136,7 +138,7 @@ struct FieldConfig
 {
     std::string name;
     std::string type;
-    codegen::CodeUnit::Flags flags;
+    codegen::MethodModifier flags;
     codegen::AccessModifier access;
 };
 ```
