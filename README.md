@@ -148,16 +148,16 @@ struct FieldConfig
 ```cpp
 std::cout << examples::Demo(
     codegen::Language::CppLanguage,
-    0,
+    codegen::ClassModifier::Unknown,
     {
-        {"Run", "void", 0, codegen::AccessModifier::PublicAccess, {"Hello from method"}},
+        {"Run", "void", codegen::MethodModifier::Unknown, codegen::AccessModifier::PublicAccess, {"Hello from method"}},
         {"Log", "void", examples::ToFlags(codegen::MethodModifier::StaticModifier),
          codegen::AccessModifier::ProtectedAccess, {"Static call"}},
     },
     {
         {"name_", "std::string", examples::ToFlags(codegen::MethodModifier::ConstModifier),
          codegen::AccessModifier::PrivateAccess},
-        {"count_", "int", 0, codegen::AccessModifier::PrivateAccess},
+        {"count_", "int", codegen::MethodModifier::Unknown, codegen::AccessModifier::PrivateAccess},
     },
     "ManualDemo");
 ```

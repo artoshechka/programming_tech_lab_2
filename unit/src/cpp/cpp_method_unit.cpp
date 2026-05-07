@@ -2,6 +2,7 @@
 /// @brief Определение класса для генерации кода метода.
 #include <src/cpp/cpp_method_unit.hpp>
 #include <stdexcept>
+#include <string>
 
 namespace codegen::cpp
 {
@@ -23,7 +24,8 @@ std::string RenderCppMethodPrefixModifiers(codegen::MethodModifier methodFlags)
         case codegen::MethodModifier::StaticVirtualModifier:
             return "static ";
         default:
-            throw std::invalid_argument("Unsupported C++ method modifier");
+            throw std::invalid_argument("Unsupported C++ method modifier: " +
+                                        std::to_string(static_cast<unsigned int>(methodFlags)));
     }
 }
 
@@ -41,7 +43,8 @@ std::string RenderCppMethodSuffixModifiers(codegen::MethodModifier methodFlags)
         case codegen::MethodModifier::FinalConstModifier:
             return " final const";
         default:
-            throw std::invalid_argument("Unsupported C++ method modifier");
+            throw std::invalid_argument("Unsupported C++ method modifier: " +
+                                        std::to_string(static_cast<unsigned int>(methodFlags)));
     }
 }
 

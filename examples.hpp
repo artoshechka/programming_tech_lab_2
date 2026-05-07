@@ -202,7 +202,7 @@ inline std::string RenderAbstractClass(codegen::Language language)
                     {}, "InterfaceImpl");
     }
 
-    return Demo(language, ToFlags(codegen::ClassModifier::AbstractModifier),
+    return Demo(language, codegen::ClassModifier::Unknown,
                 {
                     {"process",
                      "void",
@@ -275,8 +275,7 @@ inline std::string RenderStaticExample(codegen::Language language)
                      {"Calculating..."}},
                 },
                 {
-                    {"kVersion_", "const char*",
-                     ToFlags(codegen::MethodModifier::StaticModifier | codegen::MethodModifier::ConstModifier),
+                    {"kVersion_", "const char*", ToFlags(codegen::MethodModifier::StaticModifier),
                      codegen::AccessModifier::PublicAccess},
                 },
                 "Utils");
@@ -300,37 +299,35 @@ inline std::string RenderIncorrectExamples(codegen::Language language)
         result += "\n";
     };
 
-    // Некорректно: Java-поле не может использовать virtual-модификатор, поэтому генератор обязан отвергнуть такой набор
-    // флагов.
-    appendFailure("Java invalid field modifier:", "Некорректно: virtual недоступен для Java-поля.", [&]() {
-        return Demo(language, codegen::ClassModifier::Unknown, {},
-                    {
-                        {"brokenField", "int", ToFlags(codegen::MethodModifier::VirtualModifier),
-                         codegen::AccessModifier::PrivateAccess},
-                    },
-                    "BrokenJavaDemo");
-    });
-
-    // Некорректно: передан неподдерживаемый модификатор класса.
-    appendFailure("Unsupported class modifier:", "Некорректно: неподдерживаемое значение модификатора класса.", [&]() {
-        const auto classUnit = factory->CreateClass(
-            IsLanguage(language, codegen::Language::CSharpLanguage) ? "BrokenCSharpDemo" : "BrokenCppDemo",
-            static_cast<codegen::ClassModifier>(999));
-        return classUnit->Render();
-    });
-
-    // Некорректно: имя класса пустое, а генератор должен отказаться рендерить такой объект.
-    appendFailure("Empty class name:", "Некорректно: пустое имя класса нарушает базовый инвариант генератора.",
+    // Universal: empty class name must be rejected by all generators.
+    appendFailure("Empty class name:", "Empty class name violates the generator invariant.",
                   [&]() { return Demo(language, codegen::ClassModifier::Unknown, {}, {}, ""); });
 
-    // Некорректно: поле без типа нельзя сгенерировать, потому что тип обязателен для объявления.
-    appendFailure("Empty field type:", "Некорректно: поле без типа не может быть корректно объявлено.", [&]() {
+    // Universal: field without a type cannot be declared in any language.
+    appendFailure("Empty field type:", "A field without a type cannot be declared.", [&]() {
         return Demo(language, codegen::ClassModifier::Unknown, {},
-                    {
-                        {"missingType", "", codegen::MethodModifier::Unknown, codegen::AccessModifier::PrivateAccess},
-                    },
+                    {{"missingType", "", codegen::MethodModifier::Unknown, codegen::AccessModifier::PrivateAccess}},
                     "BrokenFieldDemo");
     });
+
+    // Universal: out-of-range class modifier must be rejected by all generators.
+    appendFailure("Unsupported class modifier:", "Out-of-range ClassModifier value must be rejected.", [&]() {
+        return factory
+            ->CreateClass("Broken" + factory->GetLanguageName() + "Demo", static_cast<codegen::ClassModifier>(999))
+            ->Render();
+    });
+
+    // C++ and Java reject VirtualModifier on a field. C# silently masks it out — no error there.
+    if (!IsLanguage(language, codegen::Language::CSharpLanguage))
+    {
+        appendFailure("Virtual modifier on field:", factory->GetLanguageName() + " does not support virtual fields.",
+                      [&]() {
+                          return Demo(language, codegen::ClassModifier::Unknown, {},
+                                      {{"brokenField", "int", ToFlags(codegen::MethodModifier::VirtualModifier),
+                                        codegen::AccessModifier::PrivateAccess}},
+                                      "BrokenFieldDemo");
+                      });
+    }
 
     return result;
 }
