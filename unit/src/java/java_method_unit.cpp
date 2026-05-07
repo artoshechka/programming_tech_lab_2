@@ -2,6 +2,7 @@
 /// @brief Реализация генератора Java-метода.
 #include <src/java/java_method_unit.hpp>
 #include <stdexcept>
+#include <string>
 #include <utility>
 
 namespace codegen::java
@@ -31,7 +32,8 @@ std::string RenderJavaMethodPrefixModifiers(codegen::MethodModifier methodFlags)
         case codegen::MethodModifier::StaticFinalAbstractModifier:
             return "static final abstract ";
         default:
-            throw std::invalid_argument("Unsupported Java method modifier");
+            throw std::invalid_argument("Unsupported Java method modifier: " +
+                                        std::to_string(static_cast<unsigned int>(methodFlags)));
     }
 }
 

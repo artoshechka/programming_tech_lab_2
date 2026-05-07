@@ -2,6 +2,7 @@
 /// @brief Реализация генератора поля C++.
 #include <src/cpp/cpp_field_unit.hpp>
 #include <stdexcept>
+#include <string>
 
 namespace codegen::cpp
 {
@@ -22,7 +23,8 @@ std::string RenderCppFieldPrefixModifiers(codegen::MethodModifier fieldFlags)
         case codegen::MethodModifier::StaticConstModifier:
             return "static const ";
         default:
-            throw std::invalid_argument("Unsupported C++ field modifier");
+            throw std::invalid_argument("Unsupported C++ field modifier: " +
+                                        std::to_string(static_cast<unsigned int>(fieldFlags)));
     }
 }
 

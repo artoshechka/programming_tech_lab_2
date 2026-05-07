@@ -2,6 +2,7 @@
 /// @brief Реализация генератора C#-класса.
 #include <src/csharp/csharp_class_unit.hpp>
 #include <stdexcept>
+#include <string>
 #include <utility>
 
 namespace codegen::csharp
@@ -23,7 +24,7 @@ codegen::AccessModifier ResolveCSharpMemberAccess(codegen::CodeUnit::Flags flags
             return codegen::ToAccessModifierMask(flagsValue);
         case codegen::AccessModifier::Unknown:
         default:
-            throw std::invalid_argument("Unsupported C# member access modifier");
+            throw std::invalid_argument("Unsupported C# member access modifier: " + std::to_string(flagsValue));
     }
 }
 
@@ -44,7 +45,8 @@ std::string ResolveCSharpMemberAccessKeyword(codegen::AccessModifier access)
         case codegen::AccessModifier::PrivateAccess:
             return "private";
         default:
-            throw std::invalid_argument("Unsupported C# member access modifier");
+            throw std::invalid_argument("Unsupported C# member access modifier: " +
+                                        std::to_string(static_cast<unsigned int>(access)));
     }
 }
 
@@ -61,7 +63,8 @@ std::string RenderCSharpClassModifiers(codegen::ClassModifier classFlags)
         case codegen::ClassModifier::AbstractFinalModifier:
             return "abstract sealed ";
         default:
-            throw std::invalid_argument("Unsupported C# class modifier");
+            throw std::invalid_argument("Unsupported C# class modifier: " +
+                                        std::to_string(static_cast<unsigned int>(classFlags)));
     }
 }
 

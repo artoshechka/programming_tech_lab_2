@@ -2,6 +2,7 @@
 /// @brief Реализация генератора Java-класса.
 #include <src/java/java_class_unit.hpp>
 #include <stdexcept>
+#include <string>
 #include <utility>
 
 namespace codegen::java
@@ -20,7 +21,7 @@ codegen::AccessModifier ResolveJavaClassAccess(codegen::CodeUnit::Flags flagsVal
             return codegen::ToAccessModifierMask(flagsValue);
         case codegen::AccessModifier::Unknown:
         default:
-            throw std::invalid_argument("Unsupported Java class access modifier");
+            throw std::invalid_argument("Unsupported Java class access modifier: " + std::to_string(flagsValue));
     }
 }
 
@@ -35,7 +36,8 @@ std::string ResolveJavaAccessKeyword(codegen::AccessModifier access)
         case codegen::AccessModifier::PrivateAccess:
             return "private";
         default:
-            throw std::invalid_argument("Unsupported Java access modifier");
+            throw std::invalid_argument("Unsupported Java access modifier: " +
+                                        std::to_string(static_cast<unsigned int>(access)));
     }
 }
 
@@ -52,7 +54,8 @@ std::string RenderJavaClassModifiers(codegen::ClassModifier classFlags)
         case codegen::ClassModifier::AbstractFinalModifier:
             return "abstract final ";
         default:
-            throw std::invalid_argument("Unsupported Java class modifier");
+            throw std::invalid_argument("Unsupported Java class modifier: " +
+                                        std::to_string(static_cast<unsigned int>(classFlags)));
     }
 }
 

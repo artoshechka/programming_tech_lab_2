@@ -2,6 +2,7 @@
 /// @brief Реализация генератора C#-метода.
 #include <src/csharp/csharp_method_unit.hpp>
 #include <stdexcept>
+#include <string>
 #include <utility>
 
 namespace codegen::csharp
@@ -24,7 +25,8 @@ std::string RenderCSharpMethodPrimaryPrefix(codegen::MethodModifier methodFlags)
         case codegen::MethodModifier::StaticVirtualModifier:
             return "static ";
         default:
-            throw std::invalid_argument("Unsupported C# method prefix modifier");
+            throw std::invalid_argument("Unsupported C# method prefix modifier: " +
+                                        std::to_string(static_cast<unsigned int>(methodFlags)));
     }
 }
 
@@ -42,7 +44,8 @@ std::string RenderCSharpMethodSecondaryPrefix(codegen::MethodModifier methodFlag
         case codegen::MethodModifier::FinalAbstractModifier:
             return "abstract sealed ";
         default:
-            throw std::invalid_argument("Unsupported C# method suffix modifier");
+            throw std::invalid_argument("Unsupported C# method suffix modifier: " +
+                                        std::to_string(static_cast<unsigned int>(methodFlags)));
     }
 }
 
